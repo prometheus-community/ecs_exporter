@@ -15,7 +15,3 @@ build:
 tarball:
     files:
         - LICENSE
-crossbuild:
-    platforms:
-    - linux
-    - darwin
