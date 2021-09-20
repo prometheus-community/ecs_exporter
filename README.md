@@ -1,4 +1,4 @@
-# ecs_prometheus_exporter
+# ecs_exporter
 
 🚧 🚧 🚧 This repo is still work in progress and is subject to change.
 
