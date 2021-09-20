@@ -22,7 +22,6 @@ import (
 
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/tklauser/go-sysconf"
 )
 
 var (
@@ -204,13 +203,3 @@ func cpuJiffiesToSeconds(j float64) float64 {
 }
 
 var clockTick int64 = 100 // Clock ticks are platform dependent, read from system config.
-
-func init() {
-	tick, err := sysconf.Sysconf(sysconf.SC_CLK_TCK)
-	if err != nil {
-		log.Printf("Can't get _SC_CLK_TCK; using 100 instead: %v\n", err)
-		return
-	}
-	log.Printf("sysconf(_SC_CLK_TCK) = %d", tick)
-	clockTick = tick
-}
