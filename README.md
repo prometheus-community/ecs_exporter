@@ -9,7 +9,7 @@ ECS task infra metrics in Prometheus format.
 Run the following container as a sidecar on ECS tasks:
 
 ```
-quay.io/prometheuscommunity/ecs-exporter:main
+quay.io/prometheuscommunity/ecs-exporter:v0.1.0
 ```
 
 An example Fargate task definition that includes the container
@@ -221,7 +221,7 @@ promhttp_metric_handler_requests_total{code="503"} 0
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "quay.io/prometheuscommunity/ecs-exporter:main",
+      "image": "quay.io/prometheuscommunity/ecs-exporter:v0.1.0",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
