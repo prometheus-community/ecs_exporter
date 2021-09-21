@@ -18,44 +18,50 @@ package ecsmetadata
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 )
 
-var endpoint string
-
-func init() {
-	const endpointEnv = "ECS_CONTAINER_METADATA_URI_V4"
-	endpoint = os.Getenv(endpointEnv)
-	if endpoint == "" {
-		log.Fatalf("%q environmental variable is not set, are you running this on ECS?", endpointEnv)
-	}
-}
-
 type Client struct {
+	endpoint string
+
 	// httpClient is the client to use when making HTTP requests
 	// when set. Otherwise, an internal default client will be used.
 	httpClient *http.Client
 }
 
-func NewClient(httpClient *http.Client) (*Client, error) {
+// NewClient creates a new ECS metadata client.
+// The endpoint is the ECS metadata server v4 endpoint.
+// If not set, it's inferred from thte ECS_CONTAINER_METADATA_URI_V4 environment variable.
+// httpClient is the custom client when making HTTP requests, optional.
+func NewClient(endpoint string, httpClient *http.Client) (*Client, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
-	return &Client{httpClient: httpClient}, nil
+	if endpoint == "" {
+		const endpointEnv = "ECS_CONTAINER_METADATA_URI_V4"
+		endpoint = os.Getenv(endpointEnv)
+		if endpoint == "" {
+			return nil, fmt.Errorf("no endpoint; %q is not set, are you running this on ECS?", endpointEnv)
+		}
+	}
+	return &Client{
+		endpoint:   endpoint,
+		httpClient: httpClient,
+	}, nil
 }
 
 func (c *Client) RetrieveTaskStats(ctx context.Context) (map[string]*ContainerStats, error) {
 	out := make(map[string]*ContainerStats)
-	err := c.request(ctx, endpoint+"/task/stats", &out)
+	err := c.request(ctx, c.endpoint+"/task/stats", &out)
 	return out, err
 }
 
 func (c *Client) RetrieveTaskMetadata(ctx context.Context) (*TaskMetadata, error) {
 	var out TaskMetadata
-	err := c.request(ctx, endpoint+"/task", &out)
+	err := c.request(ctx, c.endpoint+"/task", &out)
 	return &out, err
 }
 
