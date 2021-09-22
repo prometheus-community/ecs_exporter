@@ -1,5 +1,7 @@
 # ecs_exporter
 
+[![CircleCI](https://circleci.com/gh/prometheus-community/ecs_exporter/tree/main.svg?style=svg)](https://circleci.com/gh/prometheus-community/ecs_exporter/tree/main)
+
 🚧 🚧 🚧 This repo is still work in progress and is subject to change.
 
 This repo contains a Prometheus exporter for
