@@ -18,44 +18,53 @@ package ecsmetadata
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
-var endpoint string
-
-func init() {
-	const endpointEnv = "ECS_CONTAINER_METADATA_URI_V4"
-	endpoint = os.Getenv(endpointEnv)
-	if endpoint == "" {
-		log.Fatalf("%q environmental variable is not set, are you running this on ECS?", endpointEnv)
-	}
-}
-
 type Client struct {
-	// httpClient is the client to use when making HTTP requests
-	// when set. Otherwise, an internal default client will be used.
-	httpClient *http.Client
+	// HTTClient is the client to use when making HTTP requests when set.
+	HTTPClient *http.Client
+
+	// metadata server endpoint
+	endpoint string
 }
 
-func NewClient(httpClient *http.Client) (*Client, error) {
-	if httpClient == nil {
-		httpClient = &http.Client{}
+// NewClient returns a new Client. endpoint is the metadata server endpoint.
+func NewClient(endpoint string) *Client {
+	return &Client{
+		HTTPClient: &http.Client{},
+		endpoint:   endpoint,
 	}
-	return &Client{httpClient: httpClient}, nil
+}
+
+// NewClientFromEnvironment is like NewClient but endpoint
+// is discovered from the environment.
+func NewClientFromEnvironment() (*Client, error) {
+	const endpointEnv = "ECS_CONTAINER_METADATA_URI_V4"
+	endpoint := os.Getenv(endpointEnv)
+	if endpoint == "" {
+		return nil, fmt.Errorf("%q environmental variable is not set; not running on ECS", endpointEnv)
+	}
+	_, err := url.Parse(endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("can't parse %q as URL: %w", endpointEnv, err)
+	}
+	return NewClient(endpoint), nil
 }
 
 func (c *Client) RetrieveTaskStats(ctx context.Context) (map[string]*ContainerStats, error) {
 	out := make(map[string]*ContainerStats)
-	err := c.request(ctx, endpoint+"/task/stats", &out)
+	err := c.request(ctx, c.endpoint+"/task/stats", &out)
 	return out, err
 }
 
 func (c *Client) RetrieveTaskMetadata(ctx context.Context) (*TaskMetadata, error) {
 	var out TaskMetadata
-	err := c.request(ctx, endpoint+"/task", &out)
+	err := c.request(ctx, c.endpoint+"/task", &out)
 	return &out, err
 }
 
@@ -65,7 +74,7 @@ func (c *Client) request(ctx context.Context, uri string, out interface{}) error
 		return err
 	}
 	req = req.WithContext(ctx)
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
