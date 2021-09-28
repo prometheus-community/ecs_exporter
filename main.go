@@ -31,7 +31,7 @@ func main() {
 	flag.StringVar(&addr, "addr", ":9779", "The address to listen on for HTTP requests.")
 	flag.Parse()
 
-	client, err := ecsmetadata.NewClient(nil)
+	client, err := ecsmetadata.NewClientFromEnvironment()
 	if err != nil {
 		log.Fatalf("Error creating client: %v", err)
 	}
