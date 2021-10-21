@@ -16,7 +16,7 @@ quay.io/prometheuscommunity/ecs-exporter:v0.1.0
 ```
 
 An example Fargate task definition that includes the container
-is [available](#example_task_definition).
+is [available](#example-task-definition).
 
 To add ECS exporter to your existing ECS task:
 
@@ -29,7 +29,7 @@ To add ECS exporter to your existing ECS task:
 1. Click on "Add" to return back to task definition page.
 1. Click on "Create" to create a new revision.
 
-By default, it publishes Prometheus metrics on ":9779/metrics". The exporter in this repo can be a useful complementary sidecar for the scenario described in [this blog post](https://aws.amazon.com/blogs/opensource/metrics-collection-from-amazon-ecs-using-amazon-managed-service-for-prometheus/). Adding this sidecar to the ECS task definition would export task-level metrics in addition to the custom metrics described in the blog.  
+By default, it publishes Prometheus metrics on ":9779/metrics". The exporter in this repo can be a useful complementary sidecar for the scenario described in [this blog post](https://aws.amazon.com/blogs/opensource/metrics-collection-from-amazon-ecs-using-amazon-managed-service-for-prometheus/). Adding this sidecar to the ECS task definition would export task-level metrics in addition to the custom metrics described in the blog.
 
 The sidecar process is also supported on [AWS App Runner](https://aws.amazon.com/apprunner/)
 and can be used to publish infra metrics in Prometheus format
