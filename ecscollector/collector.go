@@ -45,6 +45,11 @@ var (
 		"Memory limit in bytes.",
 		labels, nil)
 
+	memCacheUsageDesc = prometheus.NewDesc(
+		"ecs_memory_cache_usage",
+		"Memory cache usage in bytes.",
+		labels, nil)
+
 	networkRxBytesDesc = prometheus.NewDesc(
 		"ecs_network_receive_bytes_total",
 		"Network recieved in bytes.",
@@ -162,6 +167,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			memUsageDesc:    s.MemoryStats.Usage,
 			memMaxUsageDesc: s.MemoryStats.MaxUsage,
 			memLimitDesc:    s.MemoryStats.Limit,
+			memCacheUsageDesc: s.MemoryStats.Stats.Cache,
 		} {
 			ch <- prometheus.MustNewConstMetric(
 				desc,
