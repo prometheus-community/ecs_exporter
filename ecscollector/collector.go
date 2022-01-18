@@ -120,6 +120,7 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- memUsageDesc
 	ch <- memMaxUsageDesc
 	ch <- memLimitDesc
+	ch <- memCacheUsageDesc
 	ch <- networkRxBytesDesc
 	ch <- networkRxPacketsDesc
 	ch <- networkRxDroppedDesc
@@ -164,9 +165,9 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		}
 
 		for desc, value := range map[*prometheus.Desc]float64{
-			memUsageDesc:    s.MemoryStats.Usage,
-			memMaxUsageDesc: s.MemoryStats.MaxUsage,
-			memLimitDesc:    s.MemoryStats.Limit,
+			memUsageDesc:      s.MemoryStats.Usage,
+			memMaxUsageDesc:   s.MemoryStats.MaxUsage,
+			memLimitDesc:      s.MemoryStats.Limit,
 			memCacheUsageDesc: s.MemoryStats.Stats.Cache,
 		} {
 			ch <- prometheus.MustNewConstMetric(
