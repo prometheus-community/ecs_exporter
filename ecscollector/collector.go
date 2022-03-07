@@ -30,6 +30,11 @@ var (
 		"Total CPU usage in seconds.",
 		cpuLabels, nil)
 
+	cpuPercentDesc = prometheus.NewDesc(
+		"ecs_cpu_percent",
+		"Percentage CPU usage.",
+		labels, nil)
+
 	memUsageDesc = prometheus.NewDesc(
 		"ecs_memory_bytes",
 		"Memory usage in bytes.",
@@ -117,6 +122,7 @@ type collector struct {
 
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- cpuTotalDesc
+	ch <- cpuPercentDesc
 	ch <- memUsageDesc
 	ch <- memMaxUsageDesc
 	ch <- memLimitDesc
@@ -164,6 +170,16 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			)
 		}
 
+		previousCPU := s.PreCPUStats.CPUUsage.TotalUsage
+		previousSystem := s.PreCPUStats.SystemCPUUsage
+		cpuPercent := calculateCPUPercent(previousCPU, previousSystem, s)
+		ch <- prometheus.MustNewConstMetric(
+			cpuPercentDesc,
+			prometheus.GaugeValue,
+			cpuPercent,
+			labelVals...,
+		)
+
 		for desc, value := range map[*prometheus.Desc]float64{
 			memUsageDesc:      s.MemoryStats.Usage,
 			memMaxUsageDesc:   s.MemoryStats.MaxUsage,
@@ -201,6 +217,21 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			}
 		}
 	}
+}
+
+func calculateCPUPercent(previousCPU float64, previousSystem float64, s *ecsmetadata.ContainerStats) float64 {
+	var (
+		cpuPercent = 0.0
+		// calculate the change for the cpu usage of the container in between readings
+		cpuDelta = float64(s.CPUStats.CPUUsage.TotalUsage) - float64(previousCPU)
+		// calculate the change for the entire system between readings
+		systemDelta = float64(s.CPUStats.SystemCPUUsage) - float64(previousSystem)
+	)
+
+	if systemDelta > 0.0 && cpuDelta > 0.0 {
+		cpuPercent = (cpuDelta / systemDelta) * 100.0
+	}
+	return cpuPercent
 }
 
 // cpuJiffiesToSeconds converts CPU metrics
