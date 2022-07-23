@@ -23,6 +23,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+
+	dockertypes "github.com/docker/docker/api/types"
 )
 
 type Client struct {
@@ -92,77 +94,9 @@ type ContainerStats struct {
 	ID       string  `json:"id"`
 	NumProcs float64 `json:"num_procs"`
 
-	CPUStats struct {
-		CPUUsage struct {
-			TotalUsage        float64   `json:"total_usage"`
-			PerCPUUsage       []float64 `json:"percpu_usage"`
-			UsageInKernelMode float64   `json:"usage_in_kernelmode"`
-			UsageInUserMode   float64   `json:"usage_in_usermode"`
-		} `json:"cpu_usage"`
-		SystemCPUUsage float64 `json:"system_cpu_usage"`
-		OnlineCPUs     float64 `json:"online_cpus"`
-		ThrottlingData struct {
-			Periods          float64 `json:"periods"`
-			ThrottledPeriods float64 `json:"throttled_periods"`
-			ThrottledTime    float64 `json:"throttled_time"`
-		} `json:"throttling_data"`
-	} `json:"cpu_stats"`
-
-	PreCPUStats struct {
-		CPUUsage struct {
-			TotalUsage        float64   `json:"total_usage"`
-			PerCPUUsage       []float64 `json:"percpu_usage"`
-			UsageInKernelMode float64   `json:"usage_in_kernelmode"`
-			UsageInUserMode   float64   `json:"usage_in_usermode"`
-		} `json:"cpu_usage"`
-		SystemCPUUsage float64 `json:"system_cpu_usage"`
-		OnlineCPUs     float64 `json:"online_cpus"`
-		ThrottlingData struct {
-			Periods          float64 `json:"periods"`
-			ThrottledPeriods float64 `json:"throttled_periods"`
-			ThrottledTime    float64 `json:"throttled_time"`
-		} `json:"throttling_data"`
-	} `json:"precpu_stats"`
-
-	MemoryStats struct {
-		Usage    float64 `json:"usage"`
-		MaxUsage float64 `json:"max_usage"`
-		Stats    struct {
-			ActiveAnon              float64 `json:"active_anon"`
-			ActiveFile              float64 `json:"active_file"`
-			Cache                   float64 `json:"cache"`
-			Dirty                   float64 `json:"dirty"`
-			HierarchicalMemoryLimit float64 `json:"hierarchical_memory_limit"`
-			HierarchicalMemswLimit  float64 `json:"hierarchical_memsw_limit"`
-			InactiveAnon            float64 `json:"inactive_anon"`
-			InactiveFile            float64 `json:"inactive_file"`
-			MappedFile              float64 `json:"mapped_file"`
-			Pgfault                 float64 `json:"pgfault"`
-			Pgmajfault              float64 `json:"pgmajfault"`
-			Pgpgin                  float64 `json:"pgpgin"`
-			Pgpgout                 float64 `json:"pgpgout"`
-			RSS                     float64 `json:"rss"`
-			RSSHuge                 float64 `json:"rss_huge"`
-			TotalActiveAnon         float64 `json:"total_active_anon"`
-			TotalActiveFile         float64 `json:"total_active_file"`
-			TotalCache              float64 `json:"total_cache"`
-			TotalDirty              float64 `json:"total_dirty"`
-			TotalInactiveAnon       float64 `json:"total_inactive_anon"`
-			TotalInactiveFile       float64 `json:"total_inactive_file"`
-			TotalMappedFile         float64 `json:"total_mapped_file"`
-			TotalPgfault            float64 `json:"total_pgfault"`
-			TotalPgmajfault         float64 `json:"total_pgmajfault"`
-			TotalPgpgin             float64 `json:"total_pgpgin"`
-			TotalPgpgout            float64 `json:"total_pgpgout"`
-			TotalRSS                float64 `json:"total_rss"`
-			TotalRSSHuge            float64 `json:"total_rss_huge"`
-			TotalUnevictable        float64 `json:"total_unevictable"`
-			TotalWriteback          float64 `json:"total_writeback"`
-			Unevictable             float64 `json:"unevictable"`
-			Writeback               float64 `json:"writeback"`
-		} `json:"stats"`
-		Limit float64 `json:"limit"`
-	} `json:"memory_stats"`
+	CPUStats    dockertypes.CPUStats
+	PreCPUStats dockertypes.CPUStats
+	MemoryStats dockertypes.MemoryStats
 
 	Networks map[string]struct {
 		RxBytes   float64 `json:"rx_bytes"`

@@ -24,6 +24,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// ECS cpu_stats are from upstream docker/moby. These values are in nanoseconds.
+// https://github.com/moby/moby/blob/49f021ebf00a76d74f5ce158244083e2dfba26fb/api/types/stats.go#L18-L40
+const nanoSeconds = 1.0e9
+
 var (
 	cpuTotalDesc = prometheus.NewDesc(
 		"ecs_cpu_seconds_total",
@@ -154,21 +158,26 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			container.Name,
 		}
 
-		for i, cpuUsage := range s.CPUStats.CPUUsage.PerCPUUsage {
+		for i, cpuUsage := range s.CPUStats.CPUUsage.PercpuUsage {
 			cpu := fmt.Sprintf("%d", i)
 			ch <- prometheus.MustNewConstMetric(
 				cpuTotalDesc,
 				prometheus.CounterValue,
-				cpuJiffiesToSeconds(cpuUsage),
+				float64(cpuUsage)/nanoSeconds,
 				append(labelVals, cpu)...,
 			)
 		}
 
+		cacheValue := 0.0
+		if val, ok := s.MemoryStats.Stats["cache"]; ok {
+			cacheValue = float64(val)
+		}
+
 		for desc, value := range map[*prometheus.Desc]float64{
-			memUsageDesc:      s.MemoryStats.Usage,
-			memMaxUsageDesc:   s.MemoryStats.MaxUsage,
-			memLimitDesc:      s.MemoryStats.Limit,
-			memCacheUsageDesc: s.MemoryStats.Stats.Cache,
+			memUsageDesc:      float64(s.MemoryStats.Usage),
+			memMaxUsageDesc:   float64(s.MemoryStats.MaxUsage),
+			memLimitDesc:      float64(s.MemoryStats.Limit),
+			memCacheUsageDesc: cacheValue,
 		} {
 			ch <- prometheus.MustNewConstMetric(
 				desc,
@@ -202,11 +211,3 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		}
 	}
 }
-
-// cpuJiffiesToSeconds converts CPU metrics
-// in jiffies to seconds.
-func cpuJiffiesToSeconds(j float64) float64 {
-	return j / float64(clockTick)
-}
-
-var clockTick int64 = 100 // Clock ticks are platform dependent, read from system config.
