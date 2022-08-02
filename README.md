@@ -12,7 +12,7 @@ ECS task infra metrics in Prometheus format.
 Run the following container as a sidecar on ECS tasks:
 
 ```
-quay.io/prometheuscommunity/ecs-exporter:v0.1.1
+quay.io/prometheuscommunity/ecs-exporter:latest
 ```
 
 An example Fargate task definition that includes the container
