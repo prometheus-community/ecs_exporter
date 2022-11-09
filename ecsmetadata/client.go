@@ -89,6 +89,7 @@ func (c *Client) request(ctx context.Context, uri string, out interface{}) error
 	return json.Unmarshal(body, out)
 }
 
+// TODO: Add other fileds: https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-metadata-endpoint-v4-fargate.html
 type ContainerStats struct {
 	Name     string  `json:"name"`
 	ID       string  `json:"id"`
@@ -118,12 +119,18 @@ type ContainerStats struct {
 // TODO(jbd): Add storage stats.
 
 type TaskMetadata struct {
-	Cluster          string `json:"Cluster"`
-	TaskARN          string `json:"TaskARN"`
-	Family           string `json:"Family"`
-	Revision         string `json:"Revision"`
-	DesiredStatus    string `json:"DesiredStatus"`
-	KnownStatus      string `json:"KnownStatus"`
+	Cluster       string `json:"Cluster"`
+	TaskARN       string `json:"TaskARN"`
+	Family        string `json:"Family"`
+	Revision      string `json:"Revision"`
+	DesiredStatus string `json:"DesiredStatus"`
+	KnownStatus   string `json:"KnownStatus"`
+	Limits        []struct {
+		CPU    float64 `json:"CPU"`
+		Memory float64 `json:"Memory"`
+	} `json:"Limits"`
+	PullStartedAt    string `json:"PullStartedAt"`
+	PullStoppedAt    string `json:"PullStoppedAt"`
 	AvailabilityZone string `json:"AvailabilityZone"`
 	LaunchType       string `json:"LaunchType"`
 	Containers       []struct {
@@ -135,7 +142,29 @@ type TaskMetadata struct {
 		Labels        map[string]string `json:"Labels"`
 		DesiredStatus string            `json:"DesiredStatus"`
 		KnownStatus   string            `json:"KnownStatus"`
-		Type          string            `json:"Type"`
-		ContainerARN  string            `json:"ContainerARN"`
+		Limits        []struct {
+			CPU    float64 `json:"CPU"`
+			Memory float64 `json:"Memory"`
+		} `json:"Limits"`
+
+		CreatedAt string `json:"CreatedAt"`
+		StartedAt string `json:"StartedAt"`
+		Type      string `json:"Type"`
+		Networks  []struct {
+			// TODO
+		} `json:"Networks"`
+		ClockDrift []struct {
+			ClockErrorBound            float64 `json:"ClockErrorBound"`
+			ReferenceTimestamp         string  `json:"ReferenceTimestamp"`
+			ClockSynchronizationStatus string  `json:"ClockSynchronizationStatus"`
+		} `json:"ClockDrift"`
+		ContainerARN string `json:"ContainerARN"`
+		LogOptions   []struct {
+			AwslogsCreateGroup string `json:"awslogs-create-group"`
+			AwslogsGroup       string `json:"awslogs-group"`
+			AwslogsRegion      string `json:"awslogs-region"`
+			AwslogsStream      string `json:"awslogs-stream"`
+		} `json:"LogOptions"`
+		LogDriver string `json:"LogDriver"`
 	} `json:"Containers"`
 }
