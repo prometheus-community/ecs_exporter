@@ -95,9 +95,9 @@ type ContainerStats struct {
 	ID       string  `json:"id"`
 	NumProcs float64 `json:"num_procs"`
 
-	CPUStats    dockertypes.CPUStats
-	PreCPUStats dockertypes.CPUStats
-	MemoryStats dockertypes.MemoryStats
+	CPUStats    dockertypes.CPUStats    `json:"cpu_stats"`
+	PreCPUStats dockertypes.CPUStats    `json:"precpu_stats"`
+	MemoryStats dockertypes.MemoryStats `json:"memory_stats"`
 
 	Networks map[string]struct {
 		RxBytes   float64 `json:"rx_bytes"`
