@@ -29,6 +29,21 @@ import (
 const nanoSeconds = 1.0e9
 
 var (
+	metadataDesc = prometheus.NewDesc(
+		"ecs_metadata",
+		"ECS service metadata.",
+		nil, nil)
+
+	svcCpuLimitDesc = prometheus.NewDesc(
+		"ecs_svc_cpu_limit",
+		"Total CPU Limit.",
+		nil, nil)
+
+	svcMemLimitDesc = prometheus.NewDesc(
+		"ecs_svc_cpu_limit",
+		"Total CPU Limit.",
+		nil, nil)
+
 	cpuTotalDesc = prometheus.NewDesc(
 		"ecs_cpu_seconds_total",
 		"Total CPU usage in seconds.",
@@ -142,11 +157,41 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		log.Printf("Failed to retrieve metadata: %v", err)
 		return
 	}
+
+	ch <- prometheus.MustNewConstMetric(
+		metadataDesc,
+		prometheus.GaugeValue,
+		1.0,
+		metadata.Cluster,
+		metadata.TaskARN,
+		metadata.Family,
+		metadata.Revision,
+		metadata.DesiredStatus,
+		metadata.KnownStatus,
+		metadata.PullStartedAt,
+		metadata.PullStoppedAt,
+		metadata.AvailabilityZone,
+		metadata.LaunchType,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		svcCpuLimitDesc,
+		prometheus.GaugeValue,
+		float64(metadata.Limits.CPU),
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		svcMemLimitDesc,
+		prometheus.GaugeValue,
+		float64(metadata.Limits.CPU),
+	)
+
 	stats, err := c.client.RetrieveTaskStats(ctx)
 	if err != nil {
 		log.Printf("Failed to retrieve container stats: %v", err)
 		return
 	}
+
 	for _, container := range metadata.Containers {
 		s := stats[container.DockerID]
 		if s == nil {

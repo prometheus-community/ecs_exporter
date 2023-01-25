@@ -93,11 +93,17 @@ type ContainerStats struct {
 	Name     string  `json:"name"`
 	ID       string  `json:"id"`
 	NumProcs float64 `json:"num_procs"`
+	Read     string  `json:"read"`
+	PreRead  string  `json:"preread"`
+
+	PidsStats    []struct{} `json:"pids_stats"`
+	StorageStats []struct{} `json:"storage_stats"`
 
 	CPUStats    dockertypes.CPUStats    `json:"cpu_stats"`
 	PreCPUStats dockertypes.CPUStats    `json:"precpu_stats"`
 	MemoryStats dockertypes.MemoryStats `json:"memory_stats"`
-
+	BlkioStats  dockertypes.BlkioStats  `json:"blkio_stats"`
+	
 	Networks map[string]struct {
 		RxBytes   float64 `json:"rx_bytes"`
 		RxPackets float64 `json:"rx_packets"`
@@ -115,15 +121,19 @@ type ContainerStats struct {
 	} `json:"network_rate_stats"`
 }
 
-// TODO(jbd): Add storage stats.
-
 type TaskMetadata struct {
-	Cluster          string `json:"Cluster"`
-	TaskARN          string `json:"TaskARN"`
-	Family           string `json:"Family"`
-	Revision         string `json:"Revision"`
-	DesiredStatus    string `json:"DesiredStatus"`
-	KnownStatus      string `json:"KnownStatus"`
+	Cluster       string `json:"Cluster"`
+	TaskARN       string `json:"TaskARN"`
+	Family        string `json:"Family"`
+	Revision      string `json:"Revision"`
+	DesiredStatus string `json:"DesiredStatus"`
+	KnownStatus   string `json:"KnownStatus"`
+	Limits        []struct {
+		CPU    float64 `json:"CPU"`
+		Memory float64 `json:"Memory"`
+	} `json:"Limits"`
+	PullStartedAt    string `json:"PullStartedAt"`
+	PullStoppedAt    string `json:"PullStoppedAt"`
 	AvailabilityZone string `json:"AvailabilityZone"`
 	LaunchType       string `json:"LaunchType"`
 	Containers       []struct {
@@ -135,7 +145,38 @@ type TaskMetadata struct {
 		Labels        map[string]string `json:"Labels"`
 		DesiredStatus string            `json:"DesiredStatus"`
 		KnownStatus   string            `json:"KnownStatus"`
-		Type          string            `json:"Type"`
-		ContainerARN  string            `json:"ContainerARN"`
+		Limits        []struct {
+			CPU    float64 `json:"CPU"`
+			Memory float64 `json:"Memory"`
+		} `json:"Limits"`
+		CreatedAt string `json:"CreatedAt"`
+		StartedAt string `json:"StartedAt"`
+		Type      string `json:"Type"`
+		Networks  []struct {
+			NetworkMore              string   `json:"NetworkMode"`
+			IPv4Addresses            []string `json:"IPv4Addresses"`
+			IPv6Addresses            []string `json:"IPv6Addresses"`
+			AttachmentIndex          float64  `json:"AttachmentIndex"`
+			MACAddress               string   `json:"MACAddress"`
+			IPv4SubnetCIDRBlock      string   `json:"IPv4SubnetCIDRBlock"`
+			IPv6SubnetCIDRBlock      string   `json:"IPv6SubnetCIDRBlock"`
+			DomainNameServers        []string `json:"DomainNameServers"`
+			DomainNameSearchList     []string `json:"DomainNameSearchList"`
+			PrivateDNSName           string   `json:"PrivateDNSName"`
+			SubnetGatewayIpv4Address string   `json:"SubnetGatewayIpv4Address"`
+		} `json:"Networks"`
+		ClockDrift []struct {
+			ClockErrorBound            float64 `json:"ClockErrorBound"`
+			ReferenceTimestamp         string  `json:"ReferenceTimestamp"`
+			ClockSynchronizationStatus string  `json:"ClockSynchronizationStatus"`
+		} `json:"ClockDrift"`
+		ContainerARN string `json:"ContainerARN"`
+		LogOptions   []struct {
+			AwslogsCreateGroup string `json:"awslogs-create-group"`
+			AwslogsGroup       string `json:"awslogs-group"`
+			AwslogsRegion      string `json:"awslogs-region"`
+			AwslogsStream      string `json:"awslogs-stream"`
+		} `json:"LogOptions"`
+		LogDriver string `json:"LogDriver"`
 	} `json:"Containers"`
 }
