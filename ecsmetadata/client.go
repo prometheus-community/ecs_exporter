@@ -89,15 +89,20 @@ func (c *Client) request(ctx context.Context, uri string, out interface{}) error
 	return json.Unmarshal(body, out)
 }
 
-// TODO: Add other fileds: https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-metadata-endpoint-v4-fargate.html
 type ContainerStats struct {
 	Name     string  `json:"name"`
 	ID       string  `json:"id"`
 	NumProcs float64 `json:"num_procs"`
+	Read     string  `json:"read"`
+	PreRead  string  `json:"preread"`
 
-	CPUStats    dockertypes.CPUStats
-	PreCPUStats dockertypes.CPUStats
-	MemoryStats dockertypes.MemoryStats
+	PidsStats    []struct{} `json:"pids_stats"`
+	StorageStats []struct{} `json:"storage_stats"`
+
+	CPUStats    dockertypes.CPUStats    `json:"cpu_stats"`
+	PreCPUStats dockertypes.CPUStats    `json:"precpu_stats"`
+	MemoryStats dockertypes.MemoryStats `json:"memory_stats"`
+	BlkioStats  dockertypes.BlkioStats  `json:"blkio_stats"`
 
 	Networks map[string]struct {
 		RxBytes   float64 `json:"rx_bytes"`
@@ -115,8 +120,6 @@ type ContainerStats struct {
 		TxBytesPerSec float64 `json:"tx_bytes_per_sec"`
 	} `json:"network_rate_stats"`
 }
-
-// TODO(jbd): Add storage stats.
 
 type TaskMetadata struct {
 	Cluster       string `json:"Cluster"`
@@ -146,12 +149,21 @@ type TaskMetadata struct {
 			CPU    float64 `json:"CPU"`
 			Memory float64 `json:"Memory"`
 		} `json:"Limits"`
-
 		CreatedAt string `json:"CreatedAt"`
 		StartedAt string `json:"StartedAt"`
 		Type      string `json:"Type"`
 		Networks  []struct {
-			// TODO
+			NetworkMore              string   `json:"NetworkMode"`
+			IPv4Addresses            []string `json:"IPv4Addresses"`
+			IPv6Addresses            []string `json:"IPv6Addresses"`
+			AttachmentIndex          float64  `json:"AttachmentIndex"`
+			MACAddress               string   `json:"MACAddress"`
+			IPv4SubnetCIDRBlock      string   `json:"IPv4SubnetCIDRBlock"`
+			IPv6SubnetCIDRBlock      string   `json:"IPv6SubnetCIDRBlock"`
+			DomainNameServers        []string `json:"DomainNameServers"`
+			DomainNameSearchList     []string `json:"DomainNameSearchList"`
+			PrivateDNSName           string   `json:"PrivateDNSName"`
+			SubnetGatewayIpv4Address string   `json:"SubnetGatewayIpv4Address"`
 		} `json:"Networks"`
 		ClockDrift []struct {
 			ClockErrorBound            float64 `json:"ClockErrorBound"`
