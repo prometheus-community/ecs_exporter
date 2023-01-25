@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b64f26d-a86d-4db0-954d-21292e21d0af" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/ecs_exporter.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.yamllint" beforeDir="false" afterPath="$PROJECT_DIR$/.yamllint" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile.common" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile.common" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ecsmetadata/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/ecsmetadata/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ecsmetadata/data.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -103,7 +103,7 @@ type ContainerStats struct {
 	PreCPUStats dockertypes.CPUStats    `json:"precpu_stats"`
 	MemoryStats dockertypes.MemoryStats `json:"memory_stats"`
 	BlkioStats  dockertypes.BlkioStats  `json:"blkio_stats"`
-
+	
 	Networks map[string]struct {
 		RxBytes   float64 `json:"rx_bytes"`
 		RxPackets float64 `json:"rx_packets"`
