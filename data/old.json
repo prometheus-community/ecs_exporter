@@ -1,0 +1,182 @@
+# HELP ecs_cpu_seconds_total Total CPU usage in seconds.
+# TYPE ecs_cpu_seconds_total counter
+ecs_cpu_seconds_total{container="app",cpu="0"} 9.4470300053e+08
+ecs_cpu_seconds_total{container="app",cpu="1"} 9.4936946397e+08
+ecs_cpu_seconds_total{container="logs_exp",cpu="0"} 4.415152604e+07
+ecs_cpu_seconds_total{container="logs_exp",cpu="1"} 4.473094821e+07
+ecs_cpu_seconds_total{container="metrics_exp",cpu="0"} 328796.47
+ecs_cpu_seconds_total{container="metrics_exp",cpu="1"} 2.90989507e+06
+# HELP ecs_memory_bytes Memory usage in bytes.
+# TYPE ecs_memory_bytes gauge
+ecs_memory_bytes{container="app"} 4.64080896e+08
+ecs_memory_bytes{container="logs_exp"} 6.8251648e+07
+ecs_memory_bytes{container="metrics_exp"} 3.096576e+06
+# HELP ecs_memory_limit_bytes Memory limit in bytes.
+# TYPE ecs_memory_limit_bytes gauge
+ecs_memory_limit_bytes{container="app"} 9.223372036854772e+18
+ecs_memory_limit_bytes{container="logs_exp"} 9.223372036854772e+18
+ecs_memory_limit_bytes{container="metrics_exp"} 9.223372036854772e+18
+# HELP ecs_memory_max_bytes Maximum memory usage in bytes.
+# TYPE ecs_memory_max_bytes gauge
+ecs_memory_max_bytes{container="app"} 4.75860992e+08
+ecs_memory_max_bytes{container="logs_exp"} 6.8591616e+07
+ecs_memory_max_bytes{container="metrics_exp"} 5.26336e+06
+# HELP ecs_network_receive_bytes_total Network recieved in bytes.
+# TYPE ecs_network_receive_bytes_total counter
+ecs_network_receive_bytes_total{container="app",device="eth1"} 4.87841181e+08
+ecs_network_receive_bytes_total{container="logs_exp",device="eth1"} 4.87841181e+08
+ecs_network_receive_bytes_total{container="metrics_exp",device="eth1"} 4.87841181e+08
+# HELP ecs_network_receive_dropped_total Network packets dropped in recieving.
+# TYPE ecs_network_receive_dropped_total counter
+ecs_network_receive_dropped_total{container="app",device="eth1"} 0
+ecs_network_receive_dropped_total{container="logs_exp",device="eth1"} 0
+ecs_network_receive_dropped_total{container="metrics_exp",device="eth1"} 0
+# HELP ecs_network_receive_errors_total Network errors in recieving.
+# TYPE ecs_network_receive_errors_total counter
+ecs_network_receive_errors_total{container="app",device="eth1"} 0
+ecs_network_receive_errors_total{container="logs_exp",device="eth1"} 0
+ecs_network_receive_errors_total{container="metrics_exp",device="eth1"} 0
+# HELP ecs_network_receive_packets_total Network packets recieved.
+# TYPE ecs_network_receive_packets_total counter
+ecs_network_receive_packets_total{container="app",device="eth1"} 534640
+ecs_network_receive_packets_total{container="logs_exp",device="eth1"} 534640
+ecs_network_receive_packets_total{container="metrics_exp",device="eth1"} 534640
+# HELP ecs_network_transmit_bytes_total Network transmitted in bytes.
+# TYPE ecs_network_transmit_bytes_total counter
+ecs_network_transmit_bytes_total{container="app",device="eth1"} 6.7037007e+07
+ecs_network_transmit_bytes_total{container="logs_exp",device="eth1"} 6.7037007e+07
+ecs_network_transmit_bytes_total{container="metrics_exp",device="eth1"} 6.7037007e+07
+# HELP ecs_network_transmit_dropped_total Network packets dropped in transmit.
+# TYPE ecs_network_transmit_dropped_total counter
+ecs_network_transmit_dropped_total{container="app",device="eth1"} 0
+ecs_network_transmit_dropped_total{container="logs_exp",device="eth1"} 0
+ecs_network_transmit_dropped_total{container="metrics_exp",device="eth1"} 0
+# HELP ecs_network_transmit_errors_total Network errors in transmit.
+# TYPE ecs_network_transmit_errors_total counter
+ecs_network_transmit_errors_total{container="app",device="eth1"} 0
+ecs_network_transmit_errors_total{container="logs_exp",device="eth1"} 0
+ecs_network_transmit_errors_total{container="metrics_exp",device="eth1"} 0
+# HELP ecs_network_transmit_packets_total Network packets transmitted.
+# TYPE ecs_network_transmit_packets_total counter
+ecs_network_transmit_packets_total{container="app",device="eth1"} 203201
+ecs_network_transmit_packets_total{container="logs_exp",device="eth1"} 203201
+ecs_network_transmit_packets_total{container="metrics_exp",device="eth1"} 203201
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 0
+go_gc_duration_seconds{quantile="0.25"} 0
+go_gc_duration_seconds{quantile="0.5"} 0
+go_gc_duration_seconds{quantile="0.75"} 0
+go_gc_duration_seconds{quantile="1"} 0
+go_gc_duration_seconds_sum 0
+go_gc_duration_seconds_count 0
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 7
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.17.1"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 943640
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 943640
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 4219
+# HELP go_memstats_frees_total Total number of frees.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 432
+# HELP go_memstats_gc_cpu_fraction The fraction of this program's available CPU time used by the GC since the program started.
+# TYPE go_memstats_gc_cpu_fraction gauge
+go_memstats_gc_cpu_fraction 0
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 4.048496e+06
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and still in use.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 943640
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 2.162688e+06
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use.
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 1.769472e+06
+# HELP go_memstats_heap_objects Number of allocated objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 4790
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 2.097152e+06
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 3.93216e+06
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 0
+# HELP go_memstats_lookups_total Total number of pointer lookups.
+# TYPE go_memstats_lookups_total counter
+go_memstats_lookups_total 0
+# HELP go_memstats_mallocs_total Total number of mallocs.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 5222
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 2400
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 16384
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 28424
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 32768
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 4.473924e+06
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 701733
+# HELP go_memstats_stack_inuse_bytes Number of bytes in use by the stack allocator.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 262144
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 262144
+# HELP go_memstats_sys_bytes Number of bytes obtained from system.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 8.997904e+06
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 4
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 0.31
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1024
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 10
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 9.19552e+06
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.67458316589e+09
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 7.27539712e+08
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# TYPE process_virtual_memory_max_bytes gauge
+process_virtual_memory_max_bytes 1.8446744073709552e+19
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+promhttp_metric_handler_requests_in_flight 1
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# TYPE promhttp_metric_handler_requests_total counter
+promhttp_metric_handler_requests_total{code="200"} 1
+promhttp_metric_handler_requests_total{code="500"} 0
+promhttp_metric_handler_requests_total{code="503"} 0
