@@ -1,3 +1,7 @@
+## 0.2.1 / 2023-01-24
+
+* [BUGFIX] Fix cpu and memory stats #49
+
 ## 0.2.0 / 2022-08-02
 
 * [BUGFIX] Fix CPU usage metrics #37
