@@ -96,9 +96,6 @@ type ContainerStats struct {
 	Read     string  `json:"read"`
 	PreRead  string  `json:"preread"`
 
-	//PidsStats    []struct{} `json:"pids_stats"`
-	//StorageStats []struct{} `json:"storage_stats"`
-
 	CPUStats    dockertypes.CPUStats    `json:"cpu_stats"`
 	PreCPUStats dockertypes.CPUStats    `json:"precpu_stats"`
 	MemoryStats dockertypes.MemoryStats `json:"memory_stats"`
@@ -147,14 +144,10 @@ type TaskMetadata struct {
 		Labels        map[string]string `json:"Labels"`
 		DesiredStatus string            `json:"DesiredStatus"`
 		KnownStatus   string            `json:"KnownStatus"`
-		//Limits        []struct {
-		//	CPU    float64 `json:"CPU"`
-		//	Memory float64 `json:"Memory"`
-		//} `json:"Limits"`
-		CreatedAt string `json:"CreatedAt"`
-		StartedAt string `json:"StartedAt"`
-		Type      string `json:"Type"`
-		Networks  []struct {
+		CreatedAt     string            `json:"CreatedAt"`
+		StartedAt     string            `json:"StartedAt"`
+		Type          string            `json:"Type"`
+		Networks      []struct {
 			NetworkMore              string   `json:"NetworkMode"`
 			IPv4Addresses            []string `json:"IPv4Addresses"`
 			IPv6Addresses            []string `json:"IPv6Addresses"`
@@ -173,12 +166,6 @@ type TaskMetadata struct {
 			ClockSynchronizationStatus string  `json:"ClockSynchronizationStatus"`
 		} `json:"ClockDrift"`
 		ContainerARN string `json:"ContainerARN"`
-		//LogOptions   []struct {
-		//AwslogsCreateGroup string `json:"awslogs-create-group"`
-		//AwslogsGroup       string `json:"awslogs-group"`
-		//AwslogsRegion      string `json:"awslogs-region"`
-		//AwslogsStream      string `json:"awslogs-stream"`
-		//} `json:"LogOptions"`
-		LogDriver string `json:"LogDriver"`
+		LogDriver    string `json:"LogDriver"`
 	} `json:"Containers"`
 }

@@ -5,7 +5,7 @@ LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com
 
 ARG ARCH="amd64"
 ARG OS="linux"
-COPY ecs_exporter /bin/ecs_exporter
+COPY .build/${OS}-${ARCH}/ecs_exporter /bin/ecs_exporter
 
 EXPOSE     9779
 USER       nobody

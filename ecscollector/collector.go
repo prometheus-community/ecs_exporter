@@ -34,15 +34,15 @@ var (
 		"ECS service metadata.",
 		metadataLabels, nil)
 
-	//svcCpuLimitDesc = prometheus.NewDesc(
-	//	"ecs_svc_cpu_limit",
-	//	"Total CPU Limit.",
-	//	nil, nil)
-	//
-	//svcMemLimitDesc = prometheus.NewDesc(
-	//	"ecs_svc_memory_limit",
-	//	"Total CPU Limit.",
-	//	nil, nil)
+	svcCpuLimitDesc = prometheus.NewDesc(
+		"ecs_svc_cpu_limit",
+		"Total CPU Limit.",
+		svcLabels, nil)
+
+	svcMemLimitDesc = prometheus.NewDesc(
+		"ecs_svc_memory_limit",
+		"Total MEM Limit.",
+		svcLabels, nil)
 
 	cpuTotalDesc = prometheus.NewDesc(
 		"ecs_cpu_seconds_total",
@@ -114,6 +114,10 @@ var labels = []string{
 	"container",
 }
 
+var svcLabels = []string{
+	"task_arn",
+}
+
 var metadataLabels = []string{
 	"cluster",
 	"task_arn",
@@ -166,14 +170,10 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ctx := context.Background()
 	metadata, err := c.client.RetrieveTaskMetadata(ctx)
-	fmt.Println("metadata")
-	fmt.Println(metadata)
 	if err != nil {
 		log.Printf("Failed to retrieve metadata: %v", err)
 		return
 	}
-
-	//s := prometheus.NewMetricWithTimestamp(t, prometheus.MustNewConstMetric(c.metric, prometheus.CounterValue, 123))
 
 	ch <- prometheus.MustNewConstMetric(
 		metadataDesc,
@@ -191,29 +191,25 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		metadata.LaunchType,
 	)
 
-	//labelVals := []string{
-	//	container.Name,
-	//}
-	//
-	//ch <- prometheus.MustNewConstMetric(
-	//	svcCpuLimitDesc,
-	//	prometheus.GaugeValue,
-	//	float64(metadata.Limits.CPU),
-	//	labelVals...,
-	//)
-	//
-	//ch <- prometheus.MustNewConstMetric(
-	//	svcMemLimitDesc,
-	//	prometheus.GaugeValue,
-	//	float64(metadata.Limits.Memory),
-	//	labelVals...,
-	//)
+	svcLabelsVals := []string{
+		metadata.TaskARN,
+	}
+
+	ch <- prometheus.MustNewConstMetric(
+		svcCpuLimitDesc,
+		prometheus.GaugeValue,
+		float64(metadata.Limits.CPU),
+		svcLabelsVals...,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		svcMemLimitDesc,
+		prometheus.GaugeValue,
+		float64(metadata.Limits.Memory),
+		svcLabelsVals...,
+	)
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
-
-	fmt.Println("stats")
-	fmt.Println(stats)
-
 	if err != nil {
 		log.Printf("Failed to retrieve container stats: %v", err)
 		return
