@@ -54,11 +54,6 @@ var (
 		"Memory usage in bytes.",
 		labels, nil)
 
-	memMaxUsageDesc = prometheus.NewDesc(
-		"ecs_memory_max_bytes",
-		"Maximum memory usage in bytes.",
-		labels, nil)
-
 	memLimitDesc = prometheus.NewDesc(
 		"ecs_memory_limit_bytes",
 		"Memory limit in bytes.",
@@ -154,7 +149,6 @@ type collector struct {
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- cpuTotalDesc
 	ch <- memUsageDesc
-	ch <- memMaxUsageDesc
 	ch <- memLimitDesc
 	ch <- memCacheUsageDesc
 	ch <- networkRxBytesDesc
@@ -191,22 +185,18 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		metadata.LaunchType,
 	)
 
-	svcLabelsVals := []string{
-		metadata.TaskARN,
-	}
-
 	ch <- prometheus.MustNewConstMetric(
 		svcCpuLimitDesc,
 		prometheus.GaugeValue,
 		float64(metadata.Limits.CPU),
-		svcLabelsVals...,
+		svcLabels...,
 	)
 
 	ch <- prometheus.MustNewConstMetric(
 		svcMemLimitDesc,
 		prometheus.GaugeValue,
 		float64(metadata.Limits.Memory),
-		svcLabelsVals...,
+		svcLabels...,
 	)
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
@@ -242,7 +232,6 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 		for desc, value := range map[*prometheus.Desc]float64{
 			memUsageDesc:      float64(s.MemoryStats.Usage),
-			memMaxUsageDesc:   float64(s.MemoryStats.MaxUsage),
 			memLimitDesc:      float64(s.MemoryStats.Limit),
 			memCacheUsageDesc: cacheValue,
 		} {

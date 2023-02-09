@@ -148,7 +148,7 @@ type TaskMetadata struct {
 		StartedAt     string            `json:"StartedAt"`
 		Type          string            `json:"Type"`
 		Networks      []struct {
-			NetworkMore              string   `json:"NetworkMode"`
+			NetworkMode              string   `json:"NetworkMode"`
 			IPv4Addresses            []string `json:"IPv4Addresses"`
 			IPv6Addresses            []string `json:"IPv6Addresses"`
 			AttachmentIndex          float64  `json:"AttachmentIndex"`
