@@ -30,7 +30,7 @@ const nanoSeconds = 1.0e9
 
 var (
 	metadataDesc = prometheus.NewDesc(
-		"ecs_metadata",
+		"ecs_metadata_info",
 		"ECS service metadata.",
 		metadataLabels, nil)
 
@@ -40,8 +40,8 @@ var (
 		svcLabels, nil)
 
 	svcMemLimitDesc = prometheus.NewDesc(
-		"ecs_svc_memory_limit",
-		"Total MEM Limit.",
+		"ecs_svc_memory_limit_bytes",
+		"Total MEM Limit in bytes.",
 		svcLabels, nil)
 
 	cpuTotalDesc = prometheus.NewDesc(
