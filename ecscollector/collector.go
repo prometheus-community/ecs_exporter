@@ -29,6 +29,21 @@ import (
 const nanoSeconds = 1.0e9
 
 var (
+	metadataDesc = prometheus.NewDesc(
+		"ecs_metadata_info",
+		"ECS service metadata.",
+		metadataLabels, nil)
+
+	svcCpuLimitDesc = prometheus.NewDesc(
+		"ecs_svc_cpu_limit",
+		"Total CPU Limit.",
+		svcLabels, nil)
+
+	svcMemLimitDesc = prometheus.NewDesc(
+		"ecs_svc_memory_limit_bytes",
+		"Total MEM Limit in bytes.",
+		svcLabels, nil)
+
 	cpuTotalDesc = prometheus.NewDesc(
 		"ecs_cpu_seconds_total",
 		"Total CPU usage in seconds.",
@@ -37,11 +52,6 @@ var (
 	memUsageDesc = prometheus.NewDesc(
 		"ecs_memory_bytes",
 		"Memory usage in bytes.",
-		labels, nil)
-
-	memMaxUsageDesc = prometheus.NewDesc(
-		"ecs_memory_max_bytes",
-		"Maximum memory usage in bytes.",
 		labels, nil)
 
 	memLimitDesc = prometheus.NewDesc(
@@ -99,6 +109,23 @@ var labels = []string{
 	"container",
 }
 
+var svcLabels = []string{
+	"task_arn",
+}
+
+var metadataLabels = []string{
+	"cluster",
+	"task_arn",
+	"family",
+	"revision",
+	"desired_status",
+	"known_status",
+	"pull_started_at",
+	"pull_stopped_at",
+	"availability_zone",
+	"launch_type",
+}
+
 var cpuLabels = append(
 	labels,
 	"cpu",
@@ -122,7 +149,6 @@ type collector struct {
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- cpuTotalDesc
 	ch <- memUsageDesc
-	ch <- memMaxUsageDesc
 	ch <- memLimitDesc
 	ch <- memCacheUsageDesc
 	ch <- networkRxBytesDesc
@@ -142,6 +168,37 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		log.Printf("Failed to retrieve metadata: %v", err)
 		return
 	}
+
+	ch <- prometheus.MustNewConstMetric(
+		metadataDesc,
+		prometheus.GaugeValue,
+		1.0,
+		metadata.Cluster,
+		metadata.TaskARN,
+		metadata.Family,
+		metadata.Revision,
+		metadata.DesiredStatus,
+		metadata.KnownStatus,
+		metadata.PullStartedAt,
+		metadata.PullStoppedAt,
+		metadata.AvailabilityZone,
+		metadata.LaunchType,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		svcCpuLimitDesc,
+		prometheus.GaugeValue,
+		float64(metadata.Limits.CPU),
+		svcLabels...,
+	)
+
+	ch <- prometheus.MustNewConstMetric(
+		svcMemLimitDesc,
+		prometheus.GaugeValue,
+		float64(metadata.Limits.Memory),
+		svcLabels...,
+	)
+
 	stats, err := c.client.RetrieveTaskStats(ctx)
 	if err != nil {
 		log.Printf("Failed to retrieve container stats: %v", err)
@@ -175,7 +232,6 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 		for desc, value := range map[*prometheus.Desc]float64{
 			memUsageDesc:      float64(s.MemoryStats.Usage),
-			memMaxUsageDesc:   float64(s.MemoryStats.MaxUsage),
 			memLimitDesc:      float64(s.MemoryStats.Limit),
 			memCacheUsageDesc: cacheValue,
 		} {
@@ -187,7 +243,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			)
 		}
 
-		// Network metrics per inteface.
+		// Network metrics per interface.
 		for iface, netStats := range s.Networks {
 			networkLabelVals := append(labelVals, iface)
 
