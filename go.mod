@@ -1,6 +1,6 @@
 module github.com/prometheus-community/ecs_exporter
 
-go 1.17
+go 1.20
 
 require (
 	github.com/docker/docker v23.0.1+incompatible
