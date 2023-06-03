@@ -3,7 +3,7 @@ module github.com/prometheus-community/ecs_exporter
 go 1.20
 
 require (
-	github.com/docker/docker v23.0.2+incompatible
+	github.com/docker/docker v24.0.2+incompatible
 	github.com/prometheus/client_golang v1.15.1
 )
 
