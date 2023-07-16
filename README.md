@@ -35,11 +35,16 @@ The sidecar process is also supported on [AWS App Runner](https://aws.amazon.com
 and can be used to publish infra metrics in Prometheus format
 from App Runner services.
 
+## CLI Flags
+
+1. **`--addr`**: Port to expose metrics on. Defaults to 9779.
+2. **`--ignore-exporter-metrics`**: If set, it removes the Go specific prometheus metrics of the exporter from being exposed.
+
 ## Labels
 
-* **container**: Container associated with a metric.
-* **cpu**: Available to CPU metrics, helps to breakdown metrics by CPU.
-* **device**: Network interface device associated with the metric. Only
+- **container**: Container associated with a metric.
+- **cpu**: Available to CPU metrics, helps to breakdown metrics by CPU.
+- **device**: Network interface device associated with the metric. Only
   available for several network metrics.
 
 ## Example output
