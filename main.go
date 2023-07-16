@@ -41,7 +41,7 @@ func main() {
 		log.Fatalf("Error creating client: %v", err)
 	}
 
-	if (shouldIgnoreExporterMetrics) {
+	if shouldIgnoreExporterMetrics {
 		log.Printf("Exporter metrics will not be exposed.")
 
 		// Create a new registry and exclude the default Go metrics
