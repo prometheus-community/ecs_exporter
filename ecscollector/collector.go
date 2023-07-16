@@ -185,18 +185,22 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		metadata.LaunchType,
 	)
 
+	svcLableVals := []string{
+		metadata.TaskARN,
+	}
+
 	ch <- prometheus.MustNewConstMetric(
 		svcCpuLimitDesc,
 		prometheus.GaugeValue,
 		float64(metadata.Limits.CPU),
-		svcLabels...,
+		svcLableVals...,
 	)
 
 	ch <- prometheus.MustNewConstMetric(
 		svcMemLimitDesc,
 		prometheus.GaugeValue,
 		float64(metadata.Limits.Memory),
-		svcLabels...,
+		svcLableVals...,
 	)
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
