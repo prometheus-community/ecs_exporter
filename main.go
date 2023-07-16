@@ -26,19 +26,35 @@ import (
 )
 
 var addr string
+var shouldIgnoreExporterMetrics bool
 
 func main() {
 	flag.StringVar(&addr, "addr", ":9779", "The address to listen on for HTTP requests.")
+	flag.BoolVar(&shouldIgnoreExporterMetrics,
+		"ignore-exporter-metrics",
+		false,
+		"Flag to stop the exporter should expose its own metrics. To enable it, just add `--ignore-exporter-metrics` to the command line.`")
 	flag.Parse()
 
 	client, err := ecsmetadata.NewClientFromEnvironment()
 	if err != nil {
 		log.Fatalf("Error creating client: %v", err)
 	}
-	prometheus.MustRegister(ecscollector.NewCollector(client))
+
+	if (shouldIgnoreExporterMetrics) {
+		log.Printf("Exporter metrics will not be exposed.")
+
+		// Create a new registry and exclude the default Go metrics
+		registry := prometheus.NewRegistry()
+		registry.MustRegister(ecscollector.NewCollector(client))
+		http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	} else {
+		log.Printf("Exporter metrics will be exposed.")
+		prometheus.MustRegister(ecscollector.NewCollector(client))
+		http.Handle("/metrics", promhttp.Handler())
+	}
 
 	http.Handle("/", http.RedirectHandler("/metrics", http.StatusMovedPermanently))
-	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "ok")
