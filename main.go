@@ -19,6 +19,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/prometheus-community/ecs_exporter/cgroup"
 	"github.com/prometheus-community/ecs_exporter/ecscollector"
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
@@ -36,6 +37,7 @@ func main() {
 		log.Fatalf("Error creating client: %v", err)
 	}
 	prometheus.MustRegister(ecscollector.NewCollector(client))
+	prometheus.MustRegister(cgroup.NewCGroupMemoryCollector())
 
 	http.Handle("/", http.RedirectHandler("/metrics", http.StatusMovedPermanently))
 	http.Handle("/metrics", promhttp.Handler())
