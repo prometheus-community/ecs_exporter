@@ -19,6 +19,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
@@ -179,25 +180,32 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		metadata.Revision,
 		metadata.DesiredStatus,
 		metadata.KnownStatus,
-		metadata.PullStartedAt,
-		metadata.PullStoppedAt,
+		metadata.PullStartedAt.Format(time.RFC3339Nano),
+		metadata.PullStoppedAt.Format(time.RFC3339Nano),
 		metadata.AvailabilityZone,
 		metadata.LaunchType,
 	)
 
-	ch <- prometheus.MustNewConstMetric(
-		svcCpuLimitDesc,
-		prometheus.GaugeValue,
-		float64(metadata.Limits.CPU),
-		svcLabels...,
-	)
-
-	ch <- prometheus.MustNewConstMetric(
-		svcMemLimitDesc,
-		prometheus.GaugeValue,
-		float64(metadata.Limits.Memory),
-		svcLabels...,
-	)
+	// Task CPU/memory limits are optional when running on EC2 - the relevant
+	// limits may only exist at the container level.
+	if metadata.Limits != nil {
+		if metadata.Limits.CPU != nil {
+			ch <- prometheus.MustNewConstMetric(
+				svcCpuLimitDesc,
+				prometheus.GaugeValue,
+				*metadata.Limits.CPU,
+				metadata.TaskARN,
+			)
+		}
+		if metadata.Limits.Memory != nil {
+			ch <- prometheus.MustNewConstMetric(
+				svcMemLimitDesc,
+				prometheus.GaugeValue,
+				float64(*metadata.Limits.Memory),
+				metadata.TaskARN,
+			)
+		}
+	}
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
 	if err != nil {
@@ -205,9 +213,9 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 	for _, container := range metadata.Containers {
-		s := stats[container.DockerID]
+		s := stats[container.ID]
 		if s == nil {
-			log.Printf("Couldn't find container with ID %q in stats", container.DockerID)
+			log.Printf("Couldn't find container with ID %q in stats", container.ID)
 			continue
 		}
 
@@ -248,14 +256,14 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			networkLabelVals := append(labelVals, iface)
 
 			for desc, value := range map[*prometheus.Desc]float64{
-				networkRxBytesDesc:   netStats.RxBytes,
-				networkRxPacketsDesc: netStats.RxPackets,
-				networkRxDroppedDesc: netStats.RxDropped,
-				networkRxErrorsDesc:  netStats.RxErrors,
-				networkTxBytesDesc:   netStats.TxBytes,
-				networkTxPacketsDesc: netStats.TxPackets,
-				networkTxDroppedDesc: netStats.TxDropped,
-				networkTxErrorsDesc:  netStats.TxErrors,
+				networkRxBytesDesc:   float64(netStats.RxBytes),
+				networkRxPacketsDesc: float64(netStats.RxPackets),
+				networkRxDroppedDesc: float64(netStats.RxDropped),
+				networkRxErrorsDesc:  float64(netStats.RxErrors),
+				networkTxBytesDesc:   float64(netStats.TxBytes),
+				networkTxPacketsDesc: float64(netStats.TxPackets),
+				networkTxDroppedDesc: float64(netStats.TxDropped),
+				networkTxErrorsDesc:  float64(netStats.TxErrors),
 			} {
 				ch <- prometheus.MustNewConstMetric(
 					desc,
