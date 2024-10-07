@@ -49,11 +49,11 @@ func NewClientFromEnvironment() (*Client, error) {
 	const endpointEnv = "ECS_CONTAINER_METADATA_URI_V4"
 	endpoint := os.Getenv(endpointEnv)
 	if endpoint == "" {
-		return nil, fmt.Errorf("%q environmental variable is not set; not running on ECS", endpointEnv)
+		return nil, fmt.Errorf("%s is not set; not running on ECS?", endpointEnv)
 	}
 	_, err := url.Parse(endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("can't parse %q as URL: %w", endpointEnv, err)
+		return nil, fmt.Errorf("can't parse %s as URL: %w", endpointEnv, err)
 	}
 	return NewClient(endpoint), nil
 }
@@ -98,5 +98,10 @@ func (c *Client) request(ctx context.Context, uri string, out interface{}) error
 	if err != nil {
 		return err
 	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return fmt.Errorf("%q: %s %s: %q", uri, resp.Proto, resp.Status, string(body)[:100])
+	}
+
 	return json.Unmarshal(body, out)
 }
