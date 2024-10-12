@@ -24,7 +24,7 @@ import (
 	"net/url"
 	"os"
 
-	dockertypes "github.com/docker/docker/api/types"
+	tmdsv4 "github.com/aws/amazon-ecs-agent/ecs-agent/tmds/handlers/v4/state"
 )
 
 type Client struct {
@@ -58,14 +58,26 @@ func NewClientFromEnvironment() (*Client, error) {
 	return NewClient(endpoint), nil
 }
 
-func (c *Client) RetrieveTaskStats(ctx context.Context) (map[string]*ContainerStats, error) {
-	out := make(map[string]*ContainerStats)
+func (c *Client) RetrieveTaskStats(ctx context.Context) (map[string]*tmdsv4.StatsResponse, error) {
+	// https://github.com/aws/amazon-ecs-agent/blob/cf8c7a6b65043c550533f330b10aef6d0a342214/agent/handlers/v4/tmdsstate.go#L202
+	out := make(map[string]*tmdsv4.StatsResponse)
 	err := c.request(ctx, c.endpoint+"/task/stats", &out)
 	return out, err
 }
 
-func (c *Client) RetrieveTaskMetadata(ctx context.Context) (*TaskMetadata, error) {
-	var out TaskMetadata
+func (c *Client) RetrieveTaskMetadata(ctx context.Context) (*tmdsv4.TaskResponse, error) {
+	// https://github.com/aws/amazon-ecs-agent/blob/cf8c7a6b65043c550533f330b10aef6d0a342214/agent/handlers/v4/tmdsstate.go#L174
+	//
+	// Note that EC2 and Fargate return slightly different task metadata
+	// responses. At time of writing, as per the documentation, only EC2 has `ServiceName`,
+	// while only Fargate has `EphemeralStorageMetrics`, `ClockDrift`, and
+	// `Containers[].Snapshotter`. Ref:
+	// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metadata-endpoint-v4-fargate-response.html
+	// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metadata-endpoint-v4-response.html
+	//
+	// But `TaskResponse` is the _union_ of these two responses. It has all the
+	// fields.
+	var out tmdsv4.TaskResponse
 	err := c.request(ctx, c.endpoint+"/task", &out)
 	return &out, err
 }
@@ -87,85 +99,4 @@ func (c *Client) request(ctx context.Context, uri string, out interface{}) error
 		return err
 	}
 	return json.Unmarshal(body, out)
-}
-
-type ContainerStats struct {
-	Name     string  `json:"name"`
-	ID       string  `json:"id"`
-	NumProcs float64 `json:"num_procs"`
-	Read     string  `json:"read"`
-	PreRead  string  `json:"preread"`
-
-	CPUStats    dockertypes.CPUStats    `json:"cpu_stats"`
-	PreCPUStats dockertypes.CPUStats    `json:"precpu_stats"`
-	MemoryStats dockertypes.MemoryStats `json:"memory_stats"`
-	BlkioStats  dockertypes.BlkioStats  `json:"blkio_stats"`
-
-	Networks map[string]struct {
-		RxBytes   float64 `json:"rx_bytes"`
-		RxPackets float64 `json:"rx_packets"`
-		RxErrors  float64 `json:"rx_errors"`
-		RxDropped float64 `json:"rx_dropped"`
-		TxBytes   float64 `json:"tx_bytes"`
-		TxPackets float64 `json:"tx_packets"`
-		TxErrors  float64 `json:"tx_errors"`
-		TxDropped float64 `json:"tx_dropped"`
-	} `json:"networks"`
-
-	NetworkRateStats struct {
-		RxBytesPerSec float64 `json:"rx_bytes_per_sec"`
-		TxBytesPerSec float64 `json:"tx_bytes_per_sec"`
-	} `json:"network_rate_stats"`
-}
-
-type TaskMetadataLimits struct {
-	CPU    float64 `json:"CPU"`
-	Memory float64 `json:"Memory"`
-}
-
-type TaskMetadata struct {
-	Cluster          string             `json:"Cluster"`
-	TaskARN          string             `json:"TaskARN"`
-	Family           string             `json:"Family"`
-	Revision         string             `json:"Revision"`
-	DesiredStatus    string             `json:"DesiredStatus"`
-	KnownStatus      string             `json:"KnownStatus"`
-	Limits           TaskMetadataLimits `json:"Limits"`
-	PullStartedAt    string             `json:"PullStartedAt"`
-	PullStoppedAt    string             `json:"PullStoppedAt"`
-	AvailabilityZone string             `json:"AvailabilityZone"`
-	LaunchType       string             `json:"LaunchType"`
-	Containers       []struct {
-		DockerID      string            `json:"DockerId"`
-		Name          string            `json:"Name"`
-		DockerName    string            `json:"DockerName"`
-		Image         string            `json:"Image"`
-		ImageID       string            `json:"ImageID"`
-		Labels        map[string]string `json:"Labels"`
-		DesiredStatus string            `json:"DesiredStatus"`
-		KnownStatus   string            `json:"KnownStatus"`
-		CreatedAt     string            `json:"CreatedAt"`
-		StartedAt     string            `json:"StartedAt"`
-		Type          string            `json:"Type"`
-		Networks      []struct {
-			NetworkMode              string   `json:"NetworkMode"`
-			IPv4Addresses            []string `json:"IPv4Addresses"`
-			IPv6Addresses            []string `json:"IPv6Addresses"`
-			AttachmentIndex          float64  `json:"AttachmentIndex"`
-			MACAddress               string   `json:"MACAddress"`
-			IPv4SubnetCIDRBlock      string   `json:"IPv4SubnetCIDRBlock"`
-			IPv6SubnetCIDRBlock      string   `json:"IPv6SubnetCIDRBlock"`
-			DomainNameServers        []string `json:"DomainNameServers"`
-			DomainNameSearchList     []string `json:"DomainNameSearchList"`
-			PrivateDNSName           string   `json:"PrivateDNSName"`
-			SubnetGatewayIpv4Address string   `json:"SubnetGatewayIpv4Address"`
-		} `json:"Networks"`
-		ClockDrift []struct {
-			ClockErrorBound            float64 `json:"ClockErrorBound"`
-			ReferenceTimestamp         string  `json:"ReferenceTimestamp"`
-			ClockSynchronizationStatus string  `json:"ClockSynchronizationStatus"`
-		} `json:"ClockDrift"`
-		ContainerARN string `json:"ContainerARN"`
-		LogDriver    string `json:"LogDriver"`
-	} `json:"Containers"`
 }
