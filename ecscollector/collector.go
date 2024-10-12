@@ -18,7 +18,7 @@ package ecscollector
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
@@ -35,7 +35,7 @@ var (
 		"ECS service metadata.",
 		metadataLabels, nil)
 
-	svcCpuLimitDesc = prometheus.NewDesc(
+	svcCPULimitDesc = prometheus.NewDesc(
 		"ecs_svc_cpu_limit",
 		"Total CPU Limit.",
 		svcLabels, nil)
@@ -67,22 +67,22 @@ var (
 
 	networkRxBytesDesc = prometheus.NewDesc(
 		"ecs_network_receive_bytes_total",
-		"Network recieved in bytes.",
+		"Network received in bytes.",
 		networkLabels, nil)
 
 	networkRxPacketsDesc = prometheus.NewDesc(
 		"ecs_network_receive_packets_total",
-		"Network packets recieved.",
+		"Network packets received.",
 		networkLabels, nil)
 
 	networkRxDroppedDesc = prometheus.NewDesc(
 		"ecs_network_receive_dropped_total",
-		"Network packets dropped in recieving.",
+		"Network packets dropped in receiving.",
 		networkLabels, nil)
 
 	networkRxErrorsDesc = prometheus.NewDesc(
 		"ecs_network_receive_errors_total",
-		"Network errors in recieving.",
+		"Network errors in receiving.",
 		networkLabels, nil)
 
 	networkTxBytesDesc = prometheus.NewDesc(
@@ -139,12 +139,13 @@ var networkLabels = append(
 
 // NewCollector returns a new Collector that queries ECS metadata server
 // for ECS task and container metrics.
-func NewCollector(client *ecsmetadata.Client) prometheus.Collector {
-	return &collector{client: client}
+func NewCollector(client *ecsmetadata.Client, logger *slog.Logger) prometheus.Collector {
+	return &collector{client: client, logger: logger}
 }
 
 type collector struct {
 	client *ecsmetadata.Client
+	logger *slog.Logger
 }
 
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
@@ -166,7 +167,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ctx := context.Background()
 	metadata, err := c.client.RetrieveTaskMetadata(ctx)
 	if err != nil {
-		log.Printf("Failed to retrieve metadata: %v", err)
+		c.logger.Debug("Failed to retrieve metadata", "error", err)
 		return
 	}
 
@@ -191,7 +192,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	if metadata.Limits != nil {
 		if metadata.Limits.CPU != nil {
 			ch <- prometheus.MustNewConstMetric(
-				svcCpuLimitDesc,
+				svcCPULimitDesc,
 				prometheus.GaugeValue,
 				*metadata.Limits.CPU,
 				metadata.TaskARN,
@@ -209,13 +210,13 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
 	if err != nil {
-		log.Printf("Failed to retrieve container stats: %v", err)
+		c.logger.Debug("Failed to retrieve container stats", "error", err)
 		return
 	}
 	for _, container := range metadata.Containers {
 		s := stats[container.ID]
 		if s == nil {
-			log.Printf("Couldn't find container with ID %q in stats", container.ID)
+			c.logger.Debug("Couldn't find container with ID in stats", "id", container.ID)
 			continue
 		}
 
