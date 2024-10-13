@@ -58,16 +58,16 @@ ecs_memory_limit_bytes{container="ecs-metadata-proxy"} 9.223372036854772e+18
 # HELP ecs_memory_max_bytes Maximum memory usage in bytes.
 # TYPE ecs_memory_max_bytes gauge
 ecs_memory_max_bytes{container="ecs-metadata-proxy"} 9.023488e+06
-# HELP ecs_network_receive_bytes_total Network recieved in bytes.
+# HELP ecs_network_receive_bytes_total Network received in bytes.
 # TYPE ecs_network_receive_bytes_total counter
 ecs_network_receive_bytes_total{container="ecs-metadata-proxy",device="eth1"} 4.2851757e+07
-# HELP ecs_network_receive_dropped_total Network packets dropped in recieving.
+# HELP ecs_network_receive_dropped_total Network packets dropped in receiving.
 # TYPE ecs_network_receive_dropped_total counter
 ecs_network_receive_dropped_total{container="ecs-metadata-proxy",device="eth1"} 0
-# HELP ecs_network_receive_errors_total Network errors in recieving.
+# HELP ecs_network_receive_errors_total Network errors in receiving.
 # TYPE ecs_network_receive_errors_total counter
 ecs_network_receive_errors_total{container="ecs-metadata-proxy",device="eth1"} 0
-# HELP ecs_network_receive_packets_total Network packets recieved.
+# HELP ecs_network_receive_packets_total Network packets received.
 # TYPE ecs_network_receive_packets_total counter
 ecs_network_receive_packets_total{container="ecs-metadata-proxy",device="eth1"} 516239
 # HELP ecs_network_transmit_bytes_total Network transmitted in bytes.

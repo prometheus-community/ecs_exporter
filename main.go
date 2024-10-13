@@ -14,36 +14,78 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"net/http"
+	"os"
+
+	"github.com/alecthomas/kingpin/v2"
+	"github.com/prometheus/client_golang/prometheus"
+	versioncollector "github.com/prometheus/client_golang/prometheus/collectors/version"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/promslog"
+	"github.com/prometheus/common/promslog/flag"
+	"github.com/prometheus/common/version"
+	"github.com/prometheus/exporter-toolkit/web"
+	"github.com/prometheus/exporter-toolkit/web/kingpinflag"
 
 	"github.com/prometheus-community/ecs_exporter/ecscollector"
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var addr string
+const exporter = "ecs_exporter"
 
 func main() {
-	flag.StringVar(&addr, "addr", ":9779", "The address to listen on for HTTP requests.")
-	flag.Parse()
+	promslogConfig := &promslog.Config{}
+	flag.AddFlags(kingpin.CommandLine, promslogConfig)
+
+	metricsPath := kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").String()
+	toolkitFlags := kingpinflag.AddFlags(kingpin.CommandLine, ":9779")
+
+	prometheus.MustRegister(versioncollector.NewCollector(exporter))
+	kingpin.Version(version.Print(exporter))
+
+	kingpin.HelpFlag.Short('h')
+	kingpin.Parse()
+
+	logger := promslog.New(promslogConfig)
 
 	client, err := ecsmetadata.NewClientFromEnvironment()
 	if err != nil {
-		log.Fatalf("Error creating client: %v", err)
+		logger.Error("Error creating client", "error", err)
+		os.Exit(1)
 	}
-	prometheus.MustRegister(ecscollector.NewCollector(client))
+	prometheus.MustRegister(ecscollector.NewCollector(client, logger))
 
-	http.Handle("/", http.RedirectHandler("/metrics", http.StatusMovedPermanently))
-	http.Handle("/metrics", promhttp.Handler())
+	http.Handle(*metricsPath, promhttp.Handler())
+	if *metricsPath != "/" && *metricsPath != "" {
+		landingConfig := web.LandingConfig{
+			Name:        exporter,
+			Description: "Prometheus Exporter for ECS",
+			Version:     version.Info(),
+			Links: []web.LandingLinks{
+				{
+					Address: *metricsPath,
+					Text:    "Metrics",
+				},
+			},
+		}
+		landingPage, err := web.NewLandingPage(landingConfig)
+		if err != nil {
+			logger.Error("Error creating landing page", "err", err)
+			os.Exit(1)
+		}
+		http.Handle("/", landingPage)
+	}
+
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "ok")
 	})
 
-	log.Printf("Starting server at %q", addr)
-	log.Fatal(http.ListenAndServe(addr, nil))
+	srv := &http.Server{}
+	if err := web.ListenAndServe(srv, toolkitFlags, logger); err != nil {
+		logger.Error("Error starting server", "err", err)
+		os.Exit(1)
+	}
+
 }
