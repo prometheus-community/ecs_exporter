@@ -170,6 +170,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		c.logger.Debug("Failed to retrieve metadata", "error", err)
 		return
 	}
+	c.logger.Debug("Got ECS task metadata response", "stats", metadata)
 
 	ch <- prometheus.MustNewConstMetric(
 		metadataDesc,
@@ -213,6 +214,8 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		c.logger.Debug("Failed to retrieve container stats", "error", err)
 		return
 	}
+	c.logger.Debug("Got ECS task stats response", "stats", stats)
+
 	for _, container := range metadata.Containers {
 		s := stats[container.ID]
 		if s == nil {
