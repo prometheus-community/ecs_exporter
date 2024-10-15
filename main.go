@@ -20,6 +20,7 @@ import (
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/prometheus/client_golang/prometheus"
+	promcollectors "github.com/prometheus/client_golang/prometheus/collectors"
 	versioncollector "github.com/prometheus/client_golang/prometheus/collectors/version"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/promslog"
@@ -39,9 +40,14 @@ func main() {
 	flag.AddFlags(kingpin.CommandLine, promslogConfig)
 
 	metricsPath := kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").String()
+	disableExporterMetrics := kingpin.Flag(
+		"web.disable-exporter-metrics",
+		"Exclude metrics about the exporter itself (promhttp_*, process_*, go_*).",
+	).Bool()
 	toolkitFlags := kingpinflag.AddFlags(kingpin.CommandLine, ":9779")
 
-	prometheus.MustRegister(versioncollector.NewCollector(exporter))
+	registry := prometheus.NewRegistry()
+	registry.MustRegister(versioncollector.NewCollector(exporter))
 	kingpin.Version(version.Print(exporter))
 
 	kingpin.HelpFlag.Short('h')
@@ -54,9 +60,18 @@ func main() {
 		logger.Error("Error creating client", "error", err)
 		os.Exit(1)
 	}
-	prometheus.MustRegister(ecscollector.NewCollector(client, logger))
+	registry.MustRegister(ecscollector.NewCollector(client, logger))
 
-	http.Handle(*metricsPath, promhttp.Handler())
+	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
+	if !*disableExporterMetrics {
+		registry.MustRegister(
+			promcollectors.NewProcessCollector(promcollectors.ProcessCollectorOpts{}),
+			promcollectors.NewGoCollector(),
+		)
+		handler = promhttp.InstrumentMetricHandler(registry, handler)
+	}
+
+	http.Handle(*metricsPath, handler)
 	if *metricsPath != "/" && *metricsPath != "" {
 		landingConfig := web.LandingConfig{
 			Name:        exporter,
