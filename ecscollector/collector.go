@@ -17,9 +17,7 @@ package ecscollector
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
@@ -27,114 +25,129 @@ import (
 
 // ECS cpu_stats are from upstream docker/moby. These values are in nanoseconds.
 // https://github.com/moby/moby/blob/49f021ebf00a76d74f5ce158244083e2dfba26fb/api/types/stats.go#L18-L40
-const nanoSeconds = 1.0e9
+const nanoseconds = 1 / 1.0e9
+
+// Task definition memory parameters are defined in MiB, while Prometheus
+// standard metrics use bytes.
+const mebibytes = 1024 * 1024
 
 var (
-	metadataDesc = prometheus.NewDesc(
-		"ecs_metadata_info",
-		"ECS service metadata.",
-		metadataLabels, nil)
+	taskMetadataDesc = prometheus.NewDesc(
+		"ecs_task_metadata_info",
+		"ECS task metadata, sourced from the task metadata endpoint version 4.",
+		taskMetadataLabels, nil)
 
-	svcCPULimitDesc = prometheus.NewDesc(
-		"ecs_svc_cpu_limit",
-		"Total CPU Limit.",
-		svcLabels, nil)
+	taskCpuLimitDesc = prometheus.NewDesc(
+		"ecs_task_cpu_limit_vcpus",
+		"Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2; if no limit is set, this metric has no value.",
+		taskLabels, nil)
 
-	svcMemLimitDesc = prometheus.NewDesc(
-		"ecs_svc_memory_limit_bytes",
-		"Total MEM Limit in bytes.",
-		svcLabels, nil)
+	taskMemLimitDesc = prometheus.NewDesc(
+		"ecs_task_memory_limit_bytes",
+		"Configured task memory limit in bytes. This is optional when running on EC2; if no limit is set, this metric has no value.",
+		taskLabels, nil)
+
+	taskEphemeralStorageUsedDesc = prometheus.NewDesc(
+		"ecs_task_ephemeral_storage_used_bytes",
+		"Current Fargate task ephemeral storage usage in bytes.",
+		taskLabels, nil)
+
+	taskEphemeralStorageAllocatedDesc = prometheus.NewDesc(
+		"ecs_task_ephemeral_storage_allocated_bytes",
+		"Configured Fargate task ephemeral storage allocated size in bytes.",
+		taskLabels, nil)
+
+	taskImagePullStartDesc = prometheus.NewDesc(
+		"ecs_task_image_pull_start_timestamp_seconds",
+		"The time at which the task started pulling docker images for its containers.",
+		taskLabels, nil)
+
+	taskImagePullStopDesc = prometheus.NewDesc(
+		"ecs_task_image_pull_stop_timestamp_seconds",
+		"The time at which the task stopped (i.e. completed) pulling docker images for its containers.",
+		taskLabels, nil)
 
 	cpuTotalDesc = prometheus.NewDesc(
-		"ecs_cpu_seconds_total",
-		"Total CPU usage in seconds.",
-		cpuLabels, nil)
+		"ecs_container_cpu_usage_seconds_total",
+		"Cumulative total container CPU usage in seconds.",
+		containerLabels, nil)
 
 	memUsageDesc = prometheus.NewDesc(
-		"ecs_memory_bytes",
-		"Memory usage in bytes.",
-		labels, nil)
+		"ecs_container_memory_usage_bytes",
+		"Current container memory usage in bytes.",
+		containerLabels, nil)
 
 	memLimitDesc = prometheus.NewDesc(
-		"ecs_memory_limit_bytes",
-		"Memory limit in bytes.",
-		labels, nil)
+		"ecs_container_memory_limit_bytes",
+		"Configured container memory limit in bytes, set from the container-level limit in the task definition if any, otherwise the task-level limit.",
+		containerLabels, nil)
 
-	memCacheUsageDesc = prometheus.NewDesc(
-		"ecs_memory_cache_usage",
-		"Memory cache usage in bytes.",
-		labels, nil)
+	memCacheSizeDesc = prometheus.NewDesc(
+		"ecs_container_memory_page_cache_size_bytes",
+		"Current container memory page cache size in bytes. This is not a subset of used bytes.",
+		containerLabels, nil)
 
 	networkRxBytesDesc = prometheus.NewDesc(
-		"ecs_network_receive_bytes_total",
-		"Network received in bytes.",
-		networkLabels, nil)
+		"ecs_container_network_receive_bytes_total",
+		"Cumulative total size of container network packets received in bytes.",
+		containerNetworkLabels, nil)
 
 	networkRxPacketsDesc = prometheus.NewDesc(
-		"ecs_network_receive_packets_total",
-		"Network packets received.",
-		networkLabels, nil)
+		"ecs_container_network_receive_packets_total",
+		"Cumulative total count of container network packets received.",
+		containerNetworkLabels, nil)
 
 	networkRxDroppedDesc = prometheus.NewDesc(
-		"ecs_network_receive_dropped_total",
-		"Network packets dropped in receiving.",
-		networkLabels, nil)
+		"ecs_container_network_receive_packets_dropped_total",
+		"Cumulative total count of container network packets dropped in receiving.",
+		containerNetworkLabels, nil)
 
 	networkRxErrorsDesc = prometheus.NewDesc(
-		"ecs_network_receive_errors_total",
-		"Network errors in receiving.",
-		networkLabels, nil)
+		"ecs_container_network_receive_errors_total",
+		"Cumulative total count of container network errors in receiving.",
+		containerNetworkLabels, nil)
 
 	networkTxBytesDesc = prometheus.NewDesc(
-		"ecs_network_transmit_bytes_total",
-		"Network transmitted in bytes.",
-		networkLabels, nil)
+		"ecs_container_network_transmit_bytes_total",
+		"Cumulative total size of container network packets transmitted in bytes.",
+		containerNetworkLabels, nil)
 
 	networkTxPacketsDesc = prometheus.NewDesc(
-		"ecs_network_transmit_packets_total",
-		"Network packets transmitted.",
-		networkLabels, nil)
+		"ecs_container_network_transmit_packets_total",
+		"Cumulative total count of container network packets transmitted.",
+		containerNetworkLabels, nil)
 
 	networkTxDroppedDesc = prometheus.NewDesc(
-		"ecs_network_transmit_dropped_total",
-		"Network packets dropped in transmit.",
-		networkLabels, nil)
+		"ecs_container_network_transmit_dropped_total",
+		"Cumulative total count of container network packets dropped in transmit.",
+		containerNetworkLabels, nil)
 
 	networkTxErrorsDesc = prometheus.NewDesc(
-		"ecs_network_transmit_errors_total",
-		"Network errors in transmit.",
-		networkLabels, nil)
+		"ecs_container_network_transmit_errors_total",
+		"Cumulative total count of container network errors in transmit.",
+		containerNetworkLabels, nil)
 )
 
-var labels = []string{
-	"container",
+var containerLabels = []string{
+	"container_name",
 }
 
-var svcLabels = []string{
-	"task_arn",
-}
+var taskLabels = []string{}
 
-var metadataLabels = []string{
+var taskMetadataLabels = []string{
 	"cluster",
 	"task_arn",
 	"family",
 	"revision",
 	"desired_status",
 	"known_status",
-	"pull_started_at",
-	"pull_stopped_at",
 	"availability_zone",
 	"launch_type",
 }
 
-var cpuLabels = append(
-	labels,
-	"cpu",
-)
-
-var networkLabels = append(
-	labels,
-	"device",
+var containerNetworkLabels = append(
+	containerLabels,
+	"interface",
 )
 
 // NewCollector returns a new Collector that queries ECS metadata server
@@ -149,10 +162,17 @@ type collector struct {
 }
 
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
+	ch <- taskMetadataDesc
+	ch <- taskCpuLimitDesc
+	ch <- taskMemLimitDesc
+	ch <- taskEphemeralStorageUsedDesc
+	ch <- taskEphemeralStorageAllocatedDesc
+	ch <- taskImagePullStartDesc
+	ch <- taskImagePullStopDesc
 	ch <- cpuTotalDesc
 	ch <- memUsageDesc
 	ch <- memLimitDesc
-	ch <- memCacheUsageDesc
+	ch <- memCacheSizeDesc
 	ch <- networkRxBytesDesc
 	ch <- networkRxPacketsDesc
 	ch <- networkRxDroppedDesc
@@ -173,7 +193,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	c.logger.Debug("Got ECS task metadata response", "stats", metadata)
 
 	ch <- prometheus.MustNewConstMetric(
-		metadataDesc,
+		taskMetadataDesc,
 		prometheus.GaugeValue,
 		1.0,
 		metadata.Cluster,
@@ -182,8 +202,6 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		metadata.Revision,
 		metadata.DesiredStatus,
 		metadata.KnownStatus,
-		metadata.PullStartedAt.Format(time.RFC3339Nano),
-		metadata.PullStoppedAt.Format(time.RFC3339Nano),
 		metadata.AvailabilityZone,
 		metadata.LaunchType,
 	)
@@ -193,20 +211,46 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	if metadata.Limits != nil {
 		if metadata.Limits.CPU != nil {
 			ch <- prometheus.MustNewConstMetric(
-				svcCPULimitDesc,
+				taskCpuLimitDesc,
 				prometheus.GaugeValue,
 				*metadata.Limits.CPU,
-				metadata.TaskARN,
 			)
 		}
 		if metadata.Limits.Memory != nil {
 			ch <- prometheus.MustNewConstMetric(
-				svcMemLimitDesc,
+				taskMemLimitDesc,
 				prometheus.GaugeValue,
-				float64(*metadata.Limits.Memory),
-				metadata.TaskARN,
+				float64(*metadata.Limits.Memory*mebibytes),
 			)
 		}
+	}
+
+	if metadata.EphemeralStorageMetrics != nil {
+		ch <- prometheus.MustNewConstMetric(
+			taskEphemeralStorageUsedDesc,
+			prometheus.GaugeValue,
+			float64(metadata.EphemeralStorageMetrics.UtilizedMiBs*mebibytes),
+		)
+		ch <- prometheus.MustNewConstMetric(
+			taskEphemeralStorageAllocatedDesc,
+			prometheus.GaugeValue,
+			float64(metadata.EphemeralStorageMetrics.ReservedMiBs*mebibytes),
+		)
+	}
+
+	if metadata.PullStartedAt != nil {
+		ch <- prometheus.MustNewConstMetric(
+			taskImagePullStartDesc,
+			prometheus.GaugeValue,
+			float64(metadata.PullStartedAt.UnixNano())*nanoseconds,
+		)
+	}
+	if metadata.PullStoppedAt != nil {
+		ch <- prometheus.MustNewConstMetric(
+			taskImagePullStopDesc,
+			prometheus.GaugeValue,
+			float64(metadata.PullStoppedAt.UnixNano())*nanoseconds,
+		)
 	}
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
@@ -223,41 +267,49 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 
-		labelVals := []string{
+		containerLabelVals := []string{
 			container.Name,
 		}
 
-		for i, cpuUsage := range s.CPUStats.CPUUsage.PercpuUsage {
-			cpu := fmt.Sprintf("%d", i)
-			ch <- prometheus.MustNewConstMetric(
-				cpuTotalDesc,
-				prometheus.CounterValue,
-				float64(cpuUsage)/nanoSeconds,
-				append(labelVals, cpu)...,
-			)
-		}
+		ch <- prometheus.MustNewConstMetric(
+			cpuTotalDesc,
+			prometheus.CounterValue,
+			float64(s.CPUStats.CPUUsage.TotalUsage)*nanoseconds,
+			containerLabelVals...,
+		)
 
 		cacheValue := 0.0
 		if val, ok := s.MemoryStats.Stats["cache"]; ok {
 			cacheValue = float64(val)
 		}
 
+		// Report the container's memory limit as its own, if any, otherwise the
+		// task's limit. This is correct in that this is the precise logic used
+		// to configure the cgroups limit for the container.
+		var containerMemoryLimitMib int64
+		if container.Limits.Memory != nil {
+			containerMemoryLimitMib = *container.Limits.Memory
+		} else {
+			// This must be set if the container limit is not set, and thus is
+			// safe to dereference.
+			containerMemoryLimitMib = *metadata.Limits.Memory
+		}
 		for desc, value := range map[*prometheus.Desc]float64{
-			memUsageDesc:      float64(s.MemoryStats.Usage),
-			memLimitDesc:      float64(s.MemoryStats.Limit),
-			memCacheUsageDesc: cacheValue,
+			memUsageDesc:     float64(s.MemoryStats.Usage),
+			memLimitDesc:     float64(containerMemoryLimitMib * mebibytes),
+			memCacheSizeDesc: cacheValue,
 		} {
 			ch <- prometheus.MustNewConstMetric(
 				desc,
 				prometheus.GaugeValue,
 				value,
-				labelVals...,
+				containerLabelVals...,
 			)
 		}
 
 		// Network metrics per interface.
 		for iface, netStats := range s.Networks {
-			networkLabelVals := append(labelVals, iface)
+			networkLabelVals := append(containerLabelVals, iface)
 
 			for desc, value := range map[*prometheus.Desc]float64{
 				networkRxBytesDesc:   float64(netStats.RxBytes),
