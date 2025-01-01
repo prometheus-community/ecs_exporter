@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/aws/amazon-ecs-agent/ecs-agent v0.0.0-20240920192628-cf8c7a6b6504
-	github.com/prometheus/client_golang v1.20.4
+	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/common v0.61.0
 	github.com/prometheus/exporter-toolkit v0.13.2
 )
