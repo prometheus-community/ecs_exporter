@@ -67,6 +67,11 @@ var (
 		"The time at which the task stopped (i.e. completed) pulling docker images for its containers.",
 		taskLabels, nil)
 
+	restartTotalDesc = prometheus.NewDesc(
+		"ecs_container_restarts_total",
+		"Cumulative total count of container restarts. Only has a value if the container has been configured to restart on failure.",
+		containerLabels, nil)
+
 	cpuTotalDesc = prometheus.NewDesc(
 		"ecs_container_cpu_usage_seconds_total",
 		"Cumulative total container CPU usage in seconds.",
@@ -169,6 +174,7 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- taskEphemeralStorageAllocatedDesc
 	ch <- taskImagePullStartDesc
 	ch <- taskImagePullStopDesc
+	ch <- restartTotalDesc
 	ch <- cpuTotalDesc
 	ch <- memUsageDesc
 	ch <- memLimitDesc
@@ -269,6 +275,15 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 		containerLabelVals := []string{
 			container.Name,
+		}
+
+		if container.RestartCount != nil {
+			ch <- prometheus.MustNewConstMetric(
+				restartTotalDesc,
+				prometheus.CounterValue,
+				float64(*container.RestartCount),
+				containerLabelVals...,
+			)
 		}
 
 		ch <- prometheus.MustNewConstMetric(
