@@ -88,44 +88,44 @@ var (
 		containerLabels, nil)
 
 	networkRxBytesDesc = prometheus.NewDesc(
-		"ecs_container_network_receive_bytes_total",
-		"Cumulative total size of container network packets received in bytes.",
-		containerNetworkLabels, nil)
+		"ecs_network_receive_bytes_total",
+		"Cumulative total size of network packets received in bytes.",
+		networkLabels, nil)
 
 	networkRxPacketsDesc = prometheus.NewDesc(
-		"ecs_container_network_receive_packets_total",
-		"Cumulative total count of container network packets received.",
-		containerNetworkLabels, nil)
+		"ecs_network_receive_packets_total",
+		"Cumulative total count of network packets received.",
+		networkLabels, nil)
 
 	networkRxDroppedDesc = prometheus.NewDesc(
-		"ecs_container_network_receive_packets_dropped_total",
-		"Cumulative total count of container network packets dropped in receiving.",
-		containerNetworkLabels, nil)
+		"ecs_network_receive_packets_dropped_total",
+		"Cumulative total count of network packets dropped in receiving.",
+		networkLabels, nil)
 
 	networkRxErrorsDesc = prometheus.NewDesc(
-		"ecs_container_network_receive_errors_total",
-		"Cumulative total count of container network errors in receiving.",
-		containerNetworkLabels, nil)
+		"ecs_network_receive_errors_total",
+		"Cumulative total count of network errors in receiving.",
+		networkLabels, nil)
 
 	networkTxBytesDesc = prometheus.NewDesc(
-		"ecs_container_network_transmit_bytes_total",
-		"Cumulative total size of container network packets transmitted in bytes.",
-		containerNetworkLabels, nil)
+		"ecs_network_transmit_bytes_total",
+		"Cumulative total size of network packets transmitted in bytes.",
+		networkLabels, nil)
 
 	networkTxPacketsDesc = prometheus.NewDesc(
-		"ecs_container_network_transmit_packets_total",
-		"Cumulative total count of container network packets transmitted.",
-		containerNetworkLabels, nil)
+		"ecs_network_transmit_packets_total",
+		"Cumulative total count of network packets transmitted.",
+		networkLabels, nil)
 
 	networkTxDroppedDesc = prometheus.NewDesc(
-		"ecs_container_network_transmit_dropped_total",
-		"Cumulative total count of container network packets dropped in transmit.",
-		containerNetworkLabels, nil)
+		"ecs_network_transmit_dropped_total",
+		"Cumulative total count of network packets dropped in transmit.",
+		networkLabels, nil)
 
 	networkTxErrorsDesc = prometheus.NewDesc(
-		"ecs_container_network_transmit_errors_total",
-		"Cumulative total count of container network errors in transmit.",
-		containerNetworkLabels, nil)
+		"ecs_network_transmit_errors_total",
+		"Cumulative total count of network errors in transmit.",
+		networkLabels, nil)
 )
 
 var containerLabels = []string{
@@ -145,10 +145,9 @@ var taskMetadataLabels = []string{
 	"launch_type",
 }
 
-var containerNetworkLabels = append(
-	containerLabels,
+var networkLabels = []string{
 	"interface",
-)
+}
 
 // NewCollector returns a new Collector that queries ECS metadata server
 // for ECS task and container metrics.
@@ -309,7 +308,15 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 		// Network metrics per interface.
 		for iface, netStats := range s.Networks {
-			networkLabelVals := append(containerLabelVals, iface)
+			// While the API response attaches network stats to each container,
+			// the container is in fact not a relevant dimension; only the
+			// interface is. This means that if multiple containers use the same
+			// network (extremely likely), we are redundantly writing this
+			// metric with "last one wins" semantics. This is fine: the values
+			// for an interface are the same across all containers.
+			networkLabelVals := []string{
+				iface,
+			}
 
 			for desc, value := range map[*prometheus.Desc]float64{
 				networkRxBytesDesc:   float64(netStats.RxBytes),
