@@ -53,7 +53,7 @@ None.
 ```
 # HELP ecs_container_cpu_usage_seconds_total Cumulative total container CPU usage in seconds.
 # TYPE ecs_container_cpu_usage_seconds_total counter
-ecs_container_cpu_usage_seconds_total{container_name="ecs-exporter"} 0.027095748000000003
+ecs_container_cpu_usage_seconds_total{container_name="ecs-exporter"} 0.028057878
 # HELP ecs_container_memory_limit_bytes Configured container memory limit in bytes, set from the container-level limit in the task definition if any, otherwise the task-level limit.
 # TYPE ecs_container_memory_limit_bytes gauge
 ecs_container_memory_limit_bytes{container_name="ecs-exporter"} 5.36870912e+08
@@ -62,34 +62,34 @@ ecs_container_memory_limit_bytes{container_name="ecs-exporter"} 5.36870912e+08
 ecs_container_memory_page_cache_size_bytes{container_name="ecs-exporter"} 0
 # HELP ecs_container_memory_usage_bytes Current container memory usage in bytes.
 # TYPE ecs_container_memory_usage_bytes gauge
-ecs_container_memory_usage_bytes{container_name="ecs-exporter"} 4.452352e+06
-# HELP ecs_container_network_receive_bytes_total Cumulative total size of container network packets received in bytes.
-# TYPE ecs_container_network_receive_bytes_total counter
-ecs_container_network_receive_bytes_total{container_name="ecs-exporter",interface="eth1"} 1.1112267e+07
-# HELP ecs_container_network_receive_errors_total Cumulative total count of container network errors in receiving.
-# TYPE ecs_container_network_receive_errors_total counter
-ecs_container_network_receive_errors_total{container_name="ecs-exporter",interface="eth1"} 0
-# HELP ecs_container_network_receive_packets_dropped_total Cumulative total count of container network packets dropped in receiving.
-# TYPE ecs_container_network_receive_packets_dropped_total counter
-ecs_container_network_receive_packets_dropped_total{container_name="ecs-exporter",interface="eth1"} 0
-# HELP ecs_container_network_receive_packets_total Cumulative total count of container network packets received.
-# TYPE ecs_container_network_receive_packets_total counter
-ecs_container_network_receive_packets_total{container_name="ecs-exporter",interface="eth1"} 8039
-# HELP ecs_container_network_transmit_bytes_total Cumulative total size of container network packets transmitted in bytes.
-# TYPE ecs_container_network_transmit_bytes_total counter
-ecs_container_network_transmit_bytes_total{container_name="ecs-exporter",interface="eth1"} 165338
-# HELP ecs_container_network_transmit_dropped_total Cumulative total count of container network packets dropped in transmit.
-# TYPE ecs_container_network_transmit_dropped_total counter
-ecs_container_network_transmit_dropped_total{container_name="ecs-exporter",interface="eth1"} 0
-# HELP ecs_container_network_transmit_errors_total Cumulative total count of container network errors in transmit.
-# TYPE ecs_container_network_transmit_errors_total counter
-ecs_container_network_transmit_errors_total{container_name="ecs-exporter",interface="eth1"} 0
-# HELP ecs_container_network_transmit_packets_total Cumulative total count of container network packets transmitted.
-# TYPE ecs_container_network_transmit_packets_total counter
-ecs_container_network_transmit_packets_total{container_name="ecs-exporter",interface="eth1"} 713
+ecs_container_memory_usage_bytes{container_name="ecs-exporter"} 4.243456e+06
 # HELP ecs_exporter_build_info A metric with a constant '1' value labeled by version, revision, branch, goversion from which ecs_exporter was built, and the goos and goarch for the build.
 # TYPE ecs_exporter_build_info gauge
 ecs_exporter_build_info{branch="",goarch="arm64",goos="linux",goversion="go1.23.2",revision="unknown",tags="unknown",version=""} 1
+# HELP ecs_network_receive_bytes_total Cumulative total size of network packets received in bytes.
+# TYPE ecs_network_receive_bytes_total counter
+ecs_network_receive_bytes_total{interface="eth1"} 1.1172419e+07
+# HELP ecs_network_receive_errors_total Cumulative total count of network errors in receiving.
+# TYPE ecs_network_receive_errors_total counter
+ecs_network_receive_errors_total{interface="eth1"} 0
+# HELP ecs_network_receive_packets_dropped_total Cumulative total count of network packets dropped in receiving.
+# TYPE ecs_network_receive_packets_dropped_total counter
+ecs_network_receive_packets_dropped_total{interface="eth1"} 0
+# HELP ecs_network_receive_packets_total Cumulative total count of network packets received.
+# TYPE ecs_network_receive_packets_total counter
+ecs_network_receive_packets_total{interface="eth1"} 8084
+# HELP ecs_network_transmit_bytes_total Cumulative total size of network packets transmitted in bytes.
+# TYPE ecs_network_transmit_bytes_total counter
+ecs_network_transmit_bytes_total{interface="eth1"} 178817
+# HELP ecs_network_transmit_dropped_total Cumulative total count of network packets dropped in transmit.
+# TYPE ecs_network_transmit_dropped_total counter
+ecs_network_transmit_dropped_total{interface="eth1"} 0
+# HELP ecs_network_transmit_errors_total Cumulative total count of network errors in transmit.
+# TYPE ecs_network_transmit_errors_total counter
+ecs_network_transmit_errors_total{interface="eth1"} 0
+# HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
+# TYPE ecs_network_transmit_packets_total counter
+ecs_network_transmit_packets_total{interface="eth1"} 897
 # HELP ecs_task_cpu_limit_vcpus Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2; if no limit is set, this metric has no value.
 # TYPE ecs_task_cpu_limit_vcpus gauge
 ecs_task_cpu_limit_vcpus 0.25
@@ -101,16 +101,16 @@ ecs_task_ephemeral_storage_allocated_bytes 2.1491613696e+10
 ecs_task_ephemeral_storage_used_bytes 3.7748736e+07
 # HELP ecs_task_image_pull_start_timestamp_seconds The time at which the task started pulling docker images for its containers.
 # TYPE ecs_task_image_pull_start_timestamp_seconds gauge
-ecs_task_image_pull_start_timestamp_seconds 1.7291179014941156e+09
+ecs_task_image_pull_start_timestamp_seconds 1.737156015124145e+09
 # HELP ecs_task_image_pull_stop_timestamp_seconds The time at which the task stopped (i.e. completed) pulling docker images for its containers.
 # TYPE ecs_task_image_pull_stop_timestamp_seconds gauge
-ecs_task_image_pull_stop_timestamp_seconds 1.7291179144469e+09
+ecs_task_image_pull_stop_timestamp_seconds 1.7371560172684324e+09
 # HELP ecs_task_memory_limit_bytes Configured task memory limit in bytes. This is optional when running on EC2; if no limit is set, this metric has no value.
 # TYPE ecs_task_memory_limit_bytes gauge
 ecs_task_memory_limit_bytes 5.36870912e+08
 # HELP ecs_task_metadata_info ECS task metadata, sourced from the task metadata endpoint version 4.
 # TYPE ecs_task_metadata_info gauge
-ecs_task_metadata_info{availability_zone="us-east-1a",cluster="arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",desired_status="RUNNING",family="prom-ecs-exporter-sandbox-isker-fargate",known_status="RUNNING",launch_type="FARGATE",revision="11",task_arn="arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/0c7f6b0414dc47d0a15019a099cd919b"} 1
+ecs_task_metadata_info{availability_zone="us-east-1a",cluster="arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",desired_status="RUNNING",family="prom-ecs-exporter-sandbox-isker-fix-network-metrics-fargate",known_status="RUNNING",launch_type="FARGATE",revision="1",task_arn="arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/c8387acdc4884a0fa13dae78e68a989f"} 1
 ```
 
 ## Example task definition
