@@ -19,6 +19,7 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/docker/docker/api/types/container"
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -265,9 +266,12 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	}
 	c.logger.Debug("Got ECS task stats response", "stats", stats)
 
+	networks := make(map[string]*container.NetworkStats)
 	for _, container := range metadata.Containers {
 		s := stats[container.ID]
 		if s == nil {
+			// This can happen if the container is stopped; if it's
+			// nonessential, the task goes on.
 			c.logger.Debug("Couldn't find container with ID in stats", "id", container.ID)
 			continue
 		}
@@ -329,27 +333,36 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			// network (extremely likely), we are redundantly writing this
 			// metric with "last one wins" semantics. This is fine: the values
 			// for an interface are the same across all containers.
-			networkLabelVals := []string{
-				iface,
-			}
+			//
+			// The collection process will error if you report the same metric
+			// multiple times, however, so we have to stash this data in the
+			// `netStats` map to ensure that we only send one metric per
+			// interface.
+			networks[iface] = &netStats
+		}
+	}
 
-			for desc, value := range map[*prometheus.Desc]float64{
-				networkRxBytesDesc:   float64(netStats.RxBytes),
-				networkRxPacketsDesc: float64(netStats.RxPackets),
-				networkRxDroppedDesc: float64(netStats.RxDropped),
-				networkRxErrorsDesc:  float64(netStats.RxErrors),
-				networkTxBytesDesc:   float64(netStats.TxBytes),
-				networkTxPacketsDesc: float64(netStats.TxPackets),
-				networkTxDroppedDesc: float64(netStats.TxDropped),
-				networkTxErrorsDesc:  float64(netStats.TxErrors),
-			} {
-				ch <- prometheus.MustNewConstMetric(
-					desc,
-					prometheus.CounterValue,
-					value,
-					networkLabelVals...,
-				)
-			}
+	for iface, netStats := range networks {
+		networkLabelVals := []string{
+			iface,
+		}
+
+		for desc, value := range map[*prometheus.Desc]float64{
+			networkRxBytesDesc:   float64(netStats.RxBytes),
+			networkRxPacketsDesc: float64(netStats.RxPackets),
+			networkRxDroppedDesc: float64(netStats.RxDropped),
+			networkRxErrorsDesc:  float64(netStats.RxErrors),
+			networkTxBytesDesc:   float64(netStats.TxBytes),
+			networkTxPacketsDesc: float64(netStats.TxPackets),
+			networkTxDroppedDesc: float64(netStats.TxDropped),
+			networkTxErrorsDesc:  float64(netStats.TxErrors),
+		} {
+			ch <- prometheus.MustNewConstMetric(
+				desc,
+				prometheus.CounterValue,
+				value,
+				networkLabelVals...,
+			)
 		}
 	}
 }

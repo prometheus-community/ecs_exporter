@@ -100,7 +100,7 @@ func (c *Client) request(ctx context.Context, uri string, out interface{}) error
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("%q: %s %s: %q", uri, resp.Proto, resp.Status, string(body)[:100])
+		return fmt.Errorf("%q: %s %s: %q", uri, resp.Proto, resp.Status, string(body))
 	}
 
 	return json.Unmarshal(body, out)
