@@ -29,12 +29,12 @@ ecs_network_receive_packets_total{interface="eth0"} 300
 # HELP ecs_network_transmit_bytes_total Cumulative total size of network packets transmitted in bytes.
 # TYPE ecs_network_transmit_bytes_total counter
 ecs_network_transmit_bytes_total{interface="eth0"} 51598
-# HELP ecs_network_transmit_dropped_total Cumulative total count of network packets dropped in transmit.
-# TYPE ecs_network_transmit_dropped_total counter
-ecs_network_transmit_dropped_total{interface="eth0"} 0
 # HELP ecs_network_transmit_errors_total Cumulative total count of network errors in transmit.
 # TYPE ecs_network_transmit_errors_total counter
 ecs_network_transmit_errors_total{interface="eth0"} 0
+# HELP ecs_network_transmit_packets_dropped_total Cumulative total count of network packets dropped in transmit.
+# TYPE ecs_network_transmit_packets_dropped_total counter
+ecs_network_transmit_packets_dropped_total{interface="eth0"} 0
 # HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
 # TYPE ecs_network_transmit_packets_total counter
 ecs_network_transmit_packets_total{interface="eth0"} 297

@@ -124,7 +124,7 @@ var (
 		networkLabels, nil)
 
 	networkTxDroppedDesc = prometheus.NewDesc(
-		"ecs_network_transmit_dropped_total",
+		"ecs_network_transmit_packets_dropped_total",
 		"Cumulative total count of network packets dropped in transmit.",
 		networkLabels, nil)
 
