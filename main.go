@@ -14,9 +14,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/prometheus/client_golang/prometheus"
@@ -55,11 +58,15 @@ func main() {
 
 	logger := promslog.New(promslogConfig)
 
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT)
+
 	client, err := ecsmetadata.NewClientFromEnvironment()
 	if err != nil {
 		logger.Error("Error creating client", "error", err)
 		os.Exit(1)
 	}
+
 	registry.MustRegister(ecscollector.NewCollector(client, logger))
 
 	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
@@ -72,6 +79,7 @@ func main() {
 	}
 
 	http.Handle(*metricsPath, handler)
+
 	if *metricsPath != "/" && *metricsPath != "" {
 		landingConfig := web.LandingConfig{
 			Name:        exporter,
@@ -98,9 +106,21 @@ func main() {
 	})
 
 	srv := &http.Server{}
-	if err := web.ListenAndServe(srv, toolkitFlags, logger); err != nil {
-		logger.Error("Error starting server", "err", err)
+
+	go func() {
+		if err := web.ListenAndServe(srv, toolkitFlags, logger); err != nil && err != http.ErrServerClosed {
+			logger.Error("Error starting server", "err", err)
+			os.Exit(1)
+		}
+	}()
+
+	<-sigChan
+	logger.Info("Received shutdown signal, starting graceful shutdown")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logger.Error("Error during server shutdown", "err", err)
 		os.Exit(1)
 	}
 
+	logger.Info("Server shutdown completed successfully")
 }
