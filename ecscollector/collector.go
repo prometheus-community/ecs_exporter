@@ -196,7 +196,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		c.logger.Debug("Failed to retrieve metadata", "error", err)
 		return
 	}
-	c.logger.Debug("Got ECS task metadata response", "stats", metadata)
+	c.logger.Debug("Got ECS task metadata response", "metadata", metadata)
 
 	ch <- prometheus.MustNewConstMetric(
 		taskMetadataDesc,
@@ -269,10 +269,10 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	networks := make(map[string]*container.NetworkStats)
 	for _, container := range metadata.Containers {
 		s := stats[container.ID]
-		if s == nil {
+		if s == nil || s.StatsJSON == nil {
 			// This can happen if the container is stopped; if it's
 			// nonessential, the task goes on.
-			c.logger.Debug("Couldn't find container with ID in stats", "id", container.ID)
+			c.logger.Debug("Couldn't find stats for container", "id", container.ID)
 			continue
 		}
 

@@ -1,21 +1,70 @@
 {
   "Cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",
-  "TaskARN": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/a1e2a3c1c3ee46c6ae3c91342c5c2b30",
+  "TaskARN": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d",
   "Family": "prom-ecs-exporter-sandbox-main-fargate",
-  "Revision": "8",
+  "Revision": "9",
   "DesiredStatus": "RUNNING",
   "KnownStatus": "RUNNING",
   "Limits": {
     "CPU": 0.25,
     "Memory": 512
   },
-  "PullStartedAt": "2025-02-03T02:02:05.596413871Z",
-  "PullStoppedAt": "2025-02-03T02:02:10.585684518Z",
+  "PullStartedAt": "2025-02-27T05:06:03.714437592Z",
+  "PullStoppedAt": "2025-02-27T05:06:18.599126545Z",
   "AvailabilityZone": "us-east-1a",
   "LaunchType": "FARGATE",
   "Containers": [
     {
-      "DockerId": "a1e2a3c1c3ee46c6ae3c91342c5c2b30-1819985369",
+      "DockerId": "bae32def0ab64f06818e8862e58f8d6d-1585788040",
+      "Name": "nonessential",
+      "DockerName": "nonessential",
+      "Image": "alpine",
+      "ImageID": "sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c",
+      "Labels": {
+        "com.amazonaws.ecs.cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",
+        "com.amazonaws.ecs.container-name": "nonessential",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d",
+        "com.amazonaws.ecs.task-definition-family": "prom-ecs-exporter-sandbox-main-fargate",
+        "com.amazonaws.ecs.task-definition-version": "9"
+      },
+      "DesiredStatus": "RUNNING",
+      "KnownStatus": "STOPPED",
+      "ExitCode": 0,
+      "Limits": {
+        "CPU": 2
+      },
+      "CreatedAt": "2025-02-27T05:06:19.200809191Z",
+      "StartedAt": "2025-02-27T05:06:19.200809191Z",
+      "FinishedAt": "2025-02-27T05:06:19.219711004Z",
+      "Type": "NORMAL",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d/cafd106c-dc95-4396-a466-a894961efa50",
+      "Networks": [
+        {
+          "NetworkMode": "awsvpc",
+          "IPv4Addresses": [
+            "10.0.117.145"
+          ],
+          "IPv6Addresses": [
+            "2600:1f18:4ae8:400:7ca9:f2:a4c:8285"
+          ],
+          "AttachmentIndex": 0,
+          "MACAddress": "0a:ff:e5:34:fa:c9",
+          "IPv4SubnetCIDRBlock": "10.0.0.0/17",
+          "IPv6SubnetCIDRBlock": "2600:1f18:4ae8:400::/64",
+          "DomainNameServers": [
+            "10.0.0.2"
+          ],
+          "DomainNameSearchList": [
+            "ec2.internal"
+          ],
+          "PrivateDNSName": "ip-10-0-117-145.ec2.internal",
+          "SubnetGatewayIpv4Address": "10.0.0.1/17"
+        }
+      ],
+      "Snapshotter": "overlayfs"
+    },
+    {
+      "DockerId": "bae32def0ab64f06818e8862e58f8d6d-1819985369",
       "Name": "prometheus",
       "DockerName": "prometheus",
       "Image": "prom/prometheus:v3.1.0",
@@ -23,92 +72,92 @@
       "Labels": {
         "com.amazonaws.ecs.cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",
         "com.amazonaws.ecs.container-name": "prometheus",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/a1e2a3c1c3ee46c6ae3c91342c5c2b30",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d",
         "com.amazonaws.ecs.task-definition-family": "prom-ecs-exporter-sandbox-main-fargate",
-        "com.amazonaws.ecs.task-definition-version": "8"
+        "com.amazonaws.ecs.task-definition-version": "9"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "RUNNING",
       "Limits": {
         "CPU": 2
       },
-      "CreatedAt": "2025-02-03T02:02:11.086299188Z",
-      "StartedAt": "2025-02-03T02:02:11.086299188Z",
+      "CreatedAt": "2025-02-27T05:06:19.179996393Z",
+      "StartedAt": "2025-02-27T05:06:19.179996393Z",
       "Type": "NORMAL",
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-sandbox/a1e2a3c1c3ee46c6ae3c91342c5c2b30/2fa3de2f-5611-4d32-9faf-8b0ffb5d724c",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d/50e269e1-4232-4aed-8bf4-29c4909858f9",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.80.144"
+            "10.0.117.145"
           ],
           "IPv6Addresses": [
-            "2600:1f10:4ce7:aa00:1983:1262:1989:4bb0"
+            "2600:1f18:4ae8:400:7ca9:f2:a4c:8285"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:ef:e3:33:6b",
+          "MACAddress": "0a:ff:e5:34:fa:c9",
           "IPv4SubnetCIDRBlock": "10.0.0.0/17",
-          "IPv6SubnetCIDRBlock": "2600:1f10:4ce7:aa00::/64",
+          "IPv6SubnetCIDRBlock": "2600:1f18:4ae8:400::/64",
           "DomainNameServers": [
             "10.0.0.2"
           ],
           "DomainNameSearchList": [
             "ec2.internal"
           ],
-          "PrivateDNSName": "ip-10-0-80-144.ec2.internal",
+          "PrivateDNSName": "ip-10-0-117-145.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.0.1/17"
         }
       ],
       "Snapshotter": "overlayfs"
     },
     {
-      "DockerId": "a1e2a3c1c3ee46c6ae3c91342c5c2b30-4159844948",
+      "DockerId": "bae32def0ab64f06818e8862e58f8d6d-4159844948",
       "Name": "ecs-exporter",
       "DockerName": "ecs-exporter",
       "Image": "quay.io/prometheuscommunity/ecs-exporter:main",
-      "ImageID": "sha256:b82f5ca529f596781ea1ac41929a38ab902d8cd4c8c0a8c428a7ff42765d0dc6",
+      "ImageID": "sha256:d1802fb18cb208eda88d4b23aeff903e72c091c20fcdf02596d6bec4679f676d",
       "Labels": {
         "com.amazonaws.ecs.cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",
         "com.amazonaws.ecs.container-name": "ecs-exporter",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/a1e2a3c1c3ee46c6ae3c91342c5c2b30",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d",
         "com.amazonaws.ecs.task-definition-family": "prom-ecs-exporter-sandbox-main-fargate",
-        "com.amazonaws.ecs.task-definition-version": "8"
+        "com.amazonaws.ecs.task-definition-version": "9"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "RUNNING",
       "Limits": {
         "CPU": 2
       },
-      "CreatedAt": "2025-02-03T02:02:11.265551243Z",
-      "StartedAt": "2025-02-03T02:02:11.265551243Z",
+      "CreatedAt": "2025-02-27T05:06:19.394790335Z",
+      "StartedAt": "2025-02-27T05:06:19.394790335Z",
       "Type": "NORMAL",
       "LogDriver": "awslogs",
       "LogOptions": {
-        "awslogs-group": "EcsExporterCdkStack-promecsexportersandboxmainfargatetaskdefinitionpromecsexportersandboxmainfargateecsexporterLogGroup44D32D35-wTtn7FBKp3ES",
+        "awslogs-group": "EcsExporterCdkStack-promecsexportersandboxmainfargatetaskdefinitionpromecsexportersandboxmainfargateecsexporterLogGroup44D32D35-DcG8HDbOu1Sl",
         "awslogs-region": "us-east-1",
-        "awslogs-stream": "ecs-exporter/ecs-exporter/a1e2a3c1c3ee46c6ae3c91342c5c2b30"
+        "awslogs-stream": "ecs-exporter/ecs-exporter/bae32def0ab64f06818e8862e58f8d6d"
       },
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-sandbox/a1e2a3c1c3ee46c6ae3c91342c5c2b30/1ec37f37-b9c9-430c-9beb-bdeee7963291",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d/a9b9d903-4ca1-4ce2-8138-93094e438c6b",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.80.144"
+            "10.0.117.145"
           ],
           "IPv6Addresses": [
-            "2600:1f10:4ce7:aa00:1983:1262:1989:4bb0"
+            "2600:1f18:4ae8:400:7ca9:f2:a4c:8285"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:ef:e3:33:6b",
+          "MACAddress": "0a:ff:e5:34:fa:c9",
           "IPv4SubnetCIDRBlock": "10.0.0.0/17",
-          "IPv6SubnetCIDRBlock": "2600:1f10:4ce7:aa00::/64",
+          "IPv6SubnetCIDRBlock": "2600:1f18:4ae8:400::/64",
           "DomainNameServers": [
             "10.0.0.2"
           ],
           "DomainNameSearchList": [
             "ec2.internal"
           ],
-          "PrivateDNSName": "ip-10-0-80-144.ec2.internal",
+          "PrivateDNSName": "ip-10-0-117-145.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.0.1/17"
         }
       ],
@@ -116,12 +165,12 @@
     }
   ],
   "ClockDrift": {
-    "ClockErrorBound": 0.483456,
-    "ReferenceTimestamp": "2025-02-03T02:13:06Z",
+    "ClockErrorBound": 0.33292849999999996,
+    "ReferenceTimestamp": "2025-02-27T05:22:43Z",
     "ClockSynchronizationStatus": "SYNCHRONIZED"
   },
   "EphemeralStorageMetrics": {
-    "Utilized": 415,
+    "Utilized": 427,
     "Reserved": 20496
   }
 }
