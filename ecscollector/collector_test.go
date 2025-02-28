@@ -15,7 +15,6 @@ package ecscollector
 
 import (
 	"bytes"
-	_ "embed"
 	"flag"
 	"fmt"
 	"io"
@@ -33,7 +32,16 @@ import (
 
 // Create a metadata client that will always receive the given fixture API
 // responses.
-func fixtureClient(taskMetadata, taskStats []byte) (*ecsmetadata.Client, *httptest.Server) {
+func fixtureClient(taskMetadataPath, taskStatsPath string) (*ecsmetadata.Client, *httptest.Server, error) {
+	taskMetadata, err := os.ReadFile(taskMetadataPath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to read task metadata fixture: %w", err)
+	}
+	taskStats, err := os.ReadFile(taskStatsPath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to read task stats fixture: %w", err)
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /task", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("content-type", "application/json")
@@ -45,7 +53,7 @@ func fixtureClient(taskMetadata, taskStats []byte) (*ecsmetadata.Client, *httpte
 	})
 
 	server := httptest.NewServer(mux)
-	return ecsmetadata.NewClient(server.URL), server
+	return ecsmetadata.NewClient(server.URL), server, nil
 }
 
 // Renders ecs_exporter metrics from the given metadata client to the prometheus
@@ -89,20 +97,14 @@ func assertSnapshot(t *testing.T, path string, actual []byte) {
 	}
 }
 
-//go:embed testdata/fixtures/fargate_task_metadata.json
-var fargateTaskMetadata []byte
-
-//go:embed testdata/fixtures/fargate_task_stats.json
-var fargateTaskStats []byte
-
-//go:embed testdata/fixtures/ec2_task_metadata.json
-var ec2TaskMetadata []byte
-
-//go:embed testdata/fixtures/ec2_task_stats.json
-var ec2TaskStats []byte
-
 func TestFargateMetrics(t *testing.T) {
-	metadataClient, metadataServer := fixtureClient(fargateTaskMetadata, fargateTaskStats)
+	metadataClient, metadataServer, err := fixtureClient(
+		"testdata/fixtures/fargate_task_metadata.json",
+		"testdata/fixtures/fargate_task_stats.json",
+	)
+	if err != nil {
+		t.Fatalf("failed to load test fixtures: %v", err)
+	}
 	defer metadataServer.Close()
 	metrics, err := renderMetrics(metadataClient)
 	if err != nil {
@@ -112,7 +114,13 @@ func TestFargateMetrics(t *testing.T) {
 }
 
 func TestEc2Metrics(t *testing.T) {
-	metadataClient, metadataServer := fixtureClient(ec2TaskMetadata, ec2TaskStats)
+	metadataClient, metadataServer, err := fixtureClient(
+		"testdata/fixtures/ec2_task_metadata.json",
+		"testdata/fixtures/ec2_task_stats.json",
+	)
+	if err != nil {
+		t.Fatalf("failed to load test fixtures: %v", err)
+	}
 	defer metadataServer.Close()
 	metrics, err := renderMetrics(metadataClient)
 	if err != nil {
