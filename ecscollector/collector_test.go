@@ -14,7 +14,7 @@
 package ecscollector
 
 import (
-	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -28,6 +28,7 @@ import (
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
 // Create a metadata client that will always receive the given fixture API
@@ -56,14 +57,16 @@ func fixtureClient(taskMetadataPath, taskStatsPath string) (*ecsmetadata.Client,
 	return ecsmetadata.NewClient(server.URL), server, nil
 }
 
-// Renders ecs_exporter metrics from the given metadata client to the prometheus
-// text exposition format.
-func renderMetrics(client *ecsmetadata.Client) ([]byte, error) {
+// Renders metrics from the given collector to the prometheus text exposition
+// format.
+func renderMetrics(collector prometheus.Collector) ([]byte, error) {
 	registry := prometheus.NewRegistry()
-	registry.MustRegister(NewCollector(client, slog.Default()))
+	registry.MustRegister(collector)
 
 	// It seems that the only way to really get full /metrics output is with
-	// promhttp.
+	// promhttp. There is testutil.CollectAndFormat but it requires you to
+	// specify every metric name you want in the output, which seems to be not
+	// worth it compared to this.
 	promServer := httptest.NewServer(promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	defer promServer.Close()
 	resp, err := http.Get(promServer.URL)
@@ -84,16 +87,29 @@ func renderMetrics(client *ecsmetadata.Client) ([]byte, error) {
 
 var updateSnapshots = flag.Bool("update-snapshots", false, "update snapshot files")
 
-func assertSnapshot(t *testing.T, path string, actual []byte) {
-	snapshot, _ := os.ReadFile(path)
-	if !bytes.Equal(actual, snapshot) {
-		if *updateSnapshots {
-			os.MkdirAll(filepath.Dir(path), 0750)
-			os.WriteFile(path, actual, 0666)
-			t.Logf("updated snapshot: %s", path)
-		} else {
-			t.Fatalf("snapshot outdated, set the -update-snapshots flag to update: %s", path)
+func assertSnapshot(t *testing.T, collector prometheus.Collector, path string) {
+	if *updateSnapshots {
+		metrics, err := renderMetrics(collector)
+		if err != nil {
+			t.Fatalf("failed to render new snapshot %s: %v", path, err)
 		}
+		dir := filepath.Dir(path)
+		if err := os.MkdirAll(dir, 0750); err != nil {
+			t.Fatalf("failed to create snapshot output directory %s: %v", dir, err)
+		} else if err := os.WriteFile(path, metrics, 0666); err != nil {
+			t.Fatalf("failed to write snapshot file %s: %v", path, err)
+		} else {
+			t.Logf("updated snapshot: %s", path)
+		}
+	}
+
+	file, err := os.Open(path)
+	if errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("snapshot file does not exist, set the -update-snapshots flag to update: %v", err)
+	} else if err != nil {
+		t.Fatalf("failed to open snapshot file: %v", err)
+	} else if err := testutil.CollectAndCompare(collector, file); err != nil {
+		t.Fatalf("snapshot outdated, set the -update-snapshots flag to update\n%v", err)
 	}
 }
 
@@ -106,11 +122,8 @@ func TestFargateMetrics(t *testing.T) {
 		t.Fatalf("failed to load test fixtures: %v", err)
 	}
 	defer metadataServer.Close()
-	metrics, err := renderMetrics(metadataClient)
-	if err != nil {
-		t.Fatalf("failed to render metrics: %v", err)
-	}
-	assertSnapshot(t, "testdata/snapshots/fargate_metrics.txt", metrics)
+	collector := NewCollector(metadataClient, slog.Default())
+	assertSnapshot(t, collector, "testdata/snapshots/fargate_metrics.txt")
 }
 
 func TestEc2Metrics(t *testing.T) {
@@ -122,9 +135,6 @@ func TestEc2Metrics(t *testing.T) {
 		t.Fatalf("failed to load test fixtures: %v", err)
 	}
 	defer metadataServer.Close()
-	metrics, err := renderMetrics(metadataClient)
-	if err != nil {
-		t.Fatalf("failed to render metrics: %v", err)
-	}
-	assertSnapshot(t, "testdata/snapshots/ec2_metrics.txt", metrics)
+	collector := NewCollector(metadataClient, slog.Default())
+	assertSnapshot(t, collector, "testdata/snapshots/ec2_metrics.txt")
 }
