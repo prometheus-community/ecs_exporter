@@ -1,0 +1,61 @@
+# HELP ecs_container_cpu_usage_seconds_total Cumulative total container CPU usage in seconds.
+# TYPE ecs_container_cpu_usage_seconds_total counter
+ecs_container_cpu_usage_seconds_total{container_name="ecs-exporter"} 0.322633383
+ecs_container_cpu_usage_seconds_total{container_name="prometheus"} 0.9324394920000001
+# HELP ecs_container_memory_limit_bytes Configured container memory limit in bytes, set from the container-level limit in the task definition if any, otherwise the task-level limit.
+# TYPE ecs_container_memory_limit_bytes gauge
+ecs_container_memory_limit_bytes{container_name="ecs-exporter"} 5.36870912e+08
+ecs_container_memory_limit_bytes{container_name="prometheus"} 5.36870912e+08
+# HELP ecs_container_memory_page_cache_size_bytes Current container memory page cache size in bytes. This is not a subset of used bytes.
+# TYPE ecs_container_memory_page_cache_size_bytes gauge
+ecs_container_memory_page_cache_size_bytes{container_name="ecs-exporter"} 4.2442752e+07
+ecs_container_memory_page_cache_size_bytes{container_name="prometheus"} 8.5426176e+07
+# HELP ecs_container_memory_usage_bytes Current container memory usage in bytes.
+# TYPE ecs_container_memory_usage_bytes gauge
+ecs_container_memory_usage_bytes{container_name="ecs-exporter"} 8.411136e+07
+ecs_container_memory_usage_bytes{container_name="prometheus"} 1.27934464e+08
+# HELP ecs_network_receive_bytes_total Cumulative total size of network packets received in bytes.
+# TYPE ecs_network_receive_bytes_total counter
+ecs_network_receive_bytes_total{interface="eth1"} 1.29046293e+08
+# HELP ecs_network_receive_errors_total Cumulative total count of network errors in receiving.
+# TYPE ecs_network_receive_errors_total counter
+ecs_network_receive_errors_total{interface="eth1"} 0
+# HELP ecs_network_receive_packets_dropped_total Cumulative total count of network packets dropped in receiving.
+# TYPE ecs_network_receive_packets_dropped_total counter
+ecs_network_receive_packets_dropped_total{interface="eth1"} 0
+# HELP ecs_network_receive_packets_total Cumulative total count of network packets received.
+# TYPE ecs_network_receive_packets_total counter
+ecs_network_receive_packets_total{interface="eth1"} 88938
+# HELP ecs_network_transmit_bytes_total Cumulative total size of network packets transmitted in bytes.
+# TYPE ecs_network_transmit_bytes_total counter
+ecs_network_transmit_bytes_total{interface="eth1"} 348223
+# HELP ecs_network_transmit_errors_total Cumulative total count of network errors in transmit.
+# TYPE ecs_network_transmit_errors_total counter
+ecs_network_transmit_errors_total{interface="eth1"} 0
+# HELP ecs_network_transmit_packets_dropped_total Cumulative total count of network packets dropped in transmit.
+# TYPE ecs_network_transmit_packets_dropped_total counter
+ecs_network_transmit_packets_dropped_total{interface="eth1"} 0
+# HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
+# TYPE ecs_network_transmit_packets_total counter
+ecs_network_transmit_packets_total{interface="eth1"} 3507
+# HELP ecs_task_cpu_limit_vcpus Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2; if no limit is set, this metric has no value.
+# TYPE ecs_task_cpu_limit_vcpus gauge
+ecs_task_cpu_limit_vcpus 0.25
+# HELP ecs_task_ephemeral_storage_allocated_bytes Configured Fargate task ephemeral storage allocated size in bytes.
+# TYPE ecs_task_ephemeral_storage_allocated_bytes gauge
+ecs_task_ephemeral_storage_allocated_bytes 2.1491613696e+10
+# HELP ecs_task_ephemeral_storage_used_bytes Current Fargate task ephemeral storage usage in bytes.
+# TYPE ecs_task_ephemeral_storage_used_bytes gauge
+ecs_task_ephemeral_storage_used_bytes 4.47741952e+08
+# HELP ecs_task_image_pull_start_timestamp_seconds The time at which the task started pulling docker images for its containers.
+# TYPE ecs_task_image_pull_start_timestamp_seconds gauge
+ecs_task_image_pull_start_timestamp_seconds 1.7406327637144377e+09
+# HELP ecs_task_image_pull_stop_timestamp_seconds The time at which the task stopped (i.e. completed) pulling docker images for its containers.
+# TYPE ecs_task_image_pull_stop_timestamp_seconds gauge
+ecs_task_image_pull_stop_timestamp_seconds 1.7406327785991266e+09
+# HELP ecs_task_memory_limit_bytes Configured task memory limit in bytes. This is optional when running on EC2; if no limit is set, this metric has no value.
+# TYPE ecs_task_memory_limit_bytes gauge
+ecs_task_memory_limit_bytes 5.36870912e+08
+# HELP ecs_task_metadata_info ECS task metadata, sourced from the task metadata endpoint version 4.
+# TYPE ecs_task_metadata_info gauge
+ecs_task_metadata_info{availability_zone="us-east-1a",cluster="arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-sandbox",desired_status="RUNNING",family="prom-ecs-exporter-sandbox-main-fargate",known_status="RUNNING",launch_type="FARGATE",revision="9",task_arn="arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-sandbox/bae32def0ab64f06818e8862e58f8d6d"} 1

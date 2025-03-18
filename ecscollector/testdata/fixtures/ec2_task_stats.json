@@ -1,0 +1,235 @@
+{
+  "01cf1f3208005cda71d5ac936ded65d2ecc0a8cc8ff8a82d2e00410bf4fbbd6d": {
+    "read": "2025-02-27T05:18:07.856950259Z",
+    "preread": "2025-02-27T05:18:06.853724878Z",
+    "pids_stats": {
+      "current": 33,
+      "limit": 404
+    },
+    "blkio_stats": {
+      "io_service_bytes_recursive": [
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "read",
+          "value": 60960768
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "write",
+          "value": 57344
+        }
+      ],
+      "io_serviced_recursive": null,
+      "io_queue_recursive": null,
+      "io_service_time_recursive": null,
+      "io_wait_time_recursive": null,
+      "io_merged_recursive": null,
+      "io_time_recursive": null,
+      "sectors_recursive": null
+    },
+    "num_procs": 0,
+    "storage_stats": {},
+    "cpu_stats": {
+      "cpu_usage": {
+        "total_usage": 331125000,
+        "usage_in_kernelmode": 66278000,
+        "usage_in_usermode": 264846000
+      },
+      "system_cpu_usage": 1045600000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "precpu_stats": {
+      "cpu_usage": {
+        "total_usage": 325963000,
+        "usage_in_kernelmode": 65245000,
+        "usage_in_usermode": 260717000
+      },
+      "system_cpu_usage": 1043620000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "memory_stats": {
+      "usage": 65249280,
+      "stats": {
+        "active_anon": 9170944,
+        "active_file": 7655424,
+        "anon": 37691392,
+        "anon_thp": 0,
+        "file": 25296896,
+        "file_dirty": 4096,
+        "file_mapped": 19968000,
+        "file_writeback": 0,
+        "inactive_anon": 28520448,
+        "inactive_file": 17641472,
+        "kernel_stack": 524288,
+        "pgactivate": 6895,
+        "pgdeactivate": 4638,
+        "pgfault": 17631,
+        "pglazyfree": 0,
+        "pglazyfreed": 0,
+        "pgmajfault": 1120,
+        "pgrefill": 6128,
+        "pgscan": 24707,
+        "pgsteal": 10033,
+        "shmem": 0,
+        "slab": 908520,
+        "slab_reclaimable": 383648,
+        "slab_unreclaimable": 524872,
+        "sock": 0,
+        "thp_collapse_alloc": 0,
+        "thp_fault_alloc": 0,
+        "unevictable": 0,
+        "workingset_activate": 0,
+        "workingset_nodereclaim": 0,
+        "workingset_refault": 0
+      },
+      "limit": 268435456
+    },
+    "name": "/ecs-prom-ecs-exporter-sandbox-main-ec2-13-ecs-exporter-e2aeb1e6be8998c72300",
+    "id": "01cf1f3208005cda71d5ac936ded65d2ecc0a8cc8ff8a82d2e00410bf4fbbd6d",
+    "networks": {
+      "eth0": {
+        "rx_bytes": 101869,
+        "rx_packets": 284,
+        "rx_errors": 0,
+        "rx_dropped": 0,
+        "tx_bytes": 43958,
+        "tx_packets": 278,
+        "tx_errors": 0,
+        "tx_dropped": 0
+      }
+    },
+    "network_rate_stats": {
+      "rx_bytes_per_sec": 2764.084716796875,
+      "tx_bytes_per_sec": 3390.065673828125
+    }
+  },
+  "213e1203f4bb72af185724d937e698d2724acf35b57ec2dd5f3c963adbd2d38c": {},
+  "6b80adab0733f579594eccae31e5b0056b9544b805450ad6e278fed7f5e1c5ba": {
+    "read": "2025-02-27T05:18:07.855390957Z",
+    "preread": "2025-02-27T05:18:06.852213453Z",
+    "pids_stats": {
+      "current": 25,
+      "limit": 404
+    },
+    "blkio_stats": {
+      "io_service_bytes_recursive": [
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "read",
+          "value": 99926016
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "write",
+          "value": 274432
+        }
+      ],
+      "io_serviced_recursive": null,
+      "io_queue_recursive": null,
+      "io_service_time_recursive": null,
+      "io_wait_time_recursive": null,
+      "io_merged_recursive": null,
+      "io_time_recursive": null,
+      "sectors_recursive": null
+    },
+    "num_procs": 0,
+    "storage_stats": {},
+    "cpu_stats": {
+      "cpu_usage": {
+        "total_usage": 566060000,
+        "usage_in_kernelmode": 164664000,
+        "usage_in_usermode": 401395000
+      },
+      "system_cpu_usage": 1045600000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "precpu_stats": {
+      "cpu_usage": {
+        "total_usage": 566060000,
+        "usage_in_kernelmode": 164664000,
+        "usage_in_usermode": 401395000
+      },
+      "system_cpu_usage": 1043620000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "memory_stats": {
+      "usage": 60981248,
+      "stats": {
+        "active_anon": 14704640,
+        "active_file": 8572928,
+        "anon": 39268352,
+        "anon_thp": 0,
+        "file": 19619840,
+        "file_dirty": 0,
+        "file_mapped": 17047552,
+        "file_writeback": 0,
+        "inactive_anon": 24563712,
+        "inactive_file": 11046912,
+        "kernel_stack": 393216,
+        "pgactivate": 13496,
+        "pgdeactivate": 11069,
+        "pgfault": 18768,
+        "pglazyfree": 0,
+        "pglazyfreed": 0,
+        "pgmajfault": 1133,
+        "pgrefill": 13249,
+        "pgscan": 48430,
+        "pgsteal": 20303,
+        "shmem": 0,
+        "slab": 929280,
+        "slab_reclaimable": 519208,
+        "slab_unreclaimable": 410072,
+        "sock": 0,
+        "thp_collapse_alloc": 0,
+        "thp_fault_alloc": 0,
+        "unevictable": 0,
+        "workingset_activate": 0,
+        "workingset_nodereclaim": 0,
+        "workingset_refault": 0
+      },
+      "limit": 268435456
+    },
+    "name": "/ecs-prom-ecs-exporter-sandbox-main-ec2-13-prometheus-86f1e9bab7a8e9a65400",
+    "id": "6b80adab0733f579594eccae31e5b0056b9544b805450ad6e278fed7f5e1c5ba",
+    "networks": {
+      "eth0": {
+        "rx_bytes": 45368,
+        "rx_packets": 132,
+        "rx_errors": 0,
+        "rx_dropped": 0,
+        "tx_bytes": 13532,
+        "tx_packets": 118,
+        "tx_errors": 0,
+        "tx_dropped": 0
+      }
+    },
+    "network_rate_stats": {
+      "rx_bytes_per_sec": 41.86697006225586,
+      "tx_bytes_per_sec": 41.86697006225586
+    }
+  }
+}

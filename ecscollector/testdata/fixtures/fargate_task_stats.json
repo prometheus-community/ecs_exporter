@@ -1,0 +1,515 @@
+{
+  "bae32def0ab64f06818e8862e58f8d6d-1585788040": null,
+  "bae32def0ab64f06818e8862e58f8d6d-1819985369": {
+    "read": "2025-02-27T05:22:49.186680233Z",
+    "preread": "2025-02-27T05:22:39.185738849Z",
+    "pids_stats": {},
+    "blkio_stats": {
+      "io_service_bytes_recursive": [
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Read",
+          "value": 23793664
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Write",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Sync",
+          "value": 23793664
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Async",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Total",
+          "value": 23793664
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Read",
+          "value": 65409024
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Write",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Sync",
+          "value": 65409024
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Async",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Total",
+          "value": 65409024
+        }
+      ],
+      "io_serviced_recursive": [
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Read",
+          "value": 295
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Write",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Sync",
+          "value": 295
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Async",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Total",
+          "value": 295
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Read",
+          "value": 682
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Write",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Sync",
+          "value": 682
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Async",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Total",
+          "value": 682
+        }
+      ],
+      "io_queue_recursive": [],
+      "io_service_time_recursive": [],
+      "io_wait_time_recursive": [],
+      "io_merged_recursive": [],
+      "io_time_recursive": [],
+      "sectors_recursive": []
+    },
+    "num_procs": 0,
+    "storage_stats": {},
+    "cpu_stats": {
+      "cpu_usage": {
+        "total_usage": 932439492,
+        "percpu_usage": [
+          484165457,
+          448274035
+        ],
+        "usage_in_kernelmode": 120000000,
+        "usage_in_usermode": 880000000
+      },
+      "system_cpu_usage": 2121200000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "precpu_stats": {
+      "cpu_usage": {
+        "total_usage": 925246189,
+        "percpu_usage": [
+          479268399,
+          445977790
+        ],
+        "usage_in_kernelmode": 120000000,
+        "usage_in_usermode": 870000000
+      },
+      "system_cpu_usage": 2101320000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "memory_stats": {
+      "usage": 127934464,
+      "max_usage": 128557056,
+      "stats": {
+        "active_anon": 0,
+        "active_file": 32952320,
+        "cache": 85426176,
+        "dirty": 0,
+        "hierarchical_memory_limit": 536870912,
+        "hierarchical_memsw_limit": 9223372036854771712,
+        "inactive_anon": 40820736,
+        "inactive_file": 52383744,
+        "mapped_file": 72179712,
+        "pgfault": 18975,
+        "pgmajfault": 693,
+        "pgpgin": 34749,
+        "pgpgout": 3936,
+        "rss": 40820736,
+        "rss_huge": 0,
+        "total_active_anon": 0,
+        "total_active_file": 32952320,
+        "total_cache": 85426176,
+        "total_dirty": 0,
+        "total_inactive_anon": 40820736,
+        "total_inactive_file": 52383744,
+        "total_mapped_file": 72179712,
+        "total_pgfault": 18975,
+        "total_pgmajfault": 693,
+        "total_pgpgin": 34749,
+        "total_pgpgout": 3936,
+        "total_rss": 40820736,
+        "total_rss_huge": 0,
+        "total_unevictable": 0,
+        "total_writeback": 0,
+        "unevictable": 0,
+        "writeback": 0
+      },
+      "limit": 9223372036854771712
+    },
+    "name": "prometheus",
+    "id": "bae32def0ab64f06818e8862e58f8d6d-1819985369",
+    "networks": {
+      "eth1": {
+        "rx_bytes": 129045374,
+        "rx_packets": 88933,
+        "rx_errors": 0,
+        "rx_dropped": 0,
+        "tx_bytes": 347839,
+        "tx_packets": 3501,
+        "tx_errors": 0,
+        "tx_dropped": 0
+      }
+    },
+    "network_rate_stats": {
+      "rx_bytes_per_sec": 2464.6679803462657,
+      "tx_bytes_per_sec": 1173.289548516495
+    }
+  },
+  "bae32def0ab64f06818e8862e58f8d6d-4159844948": {
+    "read": "2025-02-27T05:22:49.406170373Z",
+    "preread": "2025-02-27T05:22:39.406479661Z",
+    "pids_stats": {},
+    "blkio_stats": {
+      "io_service_bytes_recursive": [
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Read",
+          "value": 28639232
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Write",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Sync",
+          "value": 28639232
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Async",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Total",
+          "value": 28639232
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Read",
+          "value": 14655488
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Write",
+          "value": 4096
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Sync",
+          "value": 14655488
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Async",
+          "value": 4096
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Total",
+          "value": 14659584
+        }
+      ],
+      "io_serviced_recursive": [
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Read",
+          "value": 327
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Write",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Sync",
+          "value": 327
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Async",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 1,
+          "op": "Total",
+          "value": 327
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Read",
+          "value": 157
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Write",
+          "value": 1
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Sync",
+          "value": 157
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Async",
+          "value": 1
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Discard",
+          "value": 0
+        },
+        {
+          "major": 259,
+          "minor": 0,
+          "op": "Total",
+          "value": 158
+        }
+      ],
+      "io_queue_recursive": [],
+      "io_service_time_recursive": [],
+      "io_wait_time_recursive": [],
+      "io_merged_recursive": [],
+      "io_time_recursive": [],
+      "sectors_recursive": []
+    },
+    "num_procs": 0,
+    "storage_stats": {},
+    "cpu_stats": {
+      "cpu_usage": {
+        "total_usage": 322633383,
+        "percpu_usage": [
+          138347736,
+          184285647
+        ],
+        "usage_in_kernelmode": 50000000,
+        "usage_in_usermode": 180000000
+      },
+      "system_cpu_usage": 2121630000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "precpu_stats": {
+      "cpu_usage": {
+        "total_usage": 242770940,
+        "percpu_usage": [
+          104627034,
+          138143906
+        ],
+        "usage_in_kernelmode": 30000000,
+        "usage_in_usermode": 140000000
+      },
+      "system_cpu_usage": 2101780000000,
+      "online_cpus": 2,
+      "throttling_data": {
+        "periods": 0,
+        "throttled_periods": 0,
+        "throttled_time": 0
+      }
+    },
+    "memory_stats": {
+      "usage": 84111360,
+      "max_usage": 84238336,
+      "stats": {
+        "active_anon": 0,
+        "active_file": 3379200,
+        "cache": 42442752,
+        "dirty": 0,
+        "hierarchical_memory_limit": 536870912,
+        "hierarchical_memsw_limit": 9223372036854771712,
+        "inactive_anon": 39469056,
+        "inactive_file": 39100416,
+        "mapped_file": 33927168,
+        "pgfault": 17358,
+        "pgmajfault": 297,
+        "pgpgin": 23430,
+        "pgpgout": 3367,
+        "rss": 39469056,
+        "rss_huge": 0,
+        "total_active_anon": 0,
+        "total_active_file": 3379200,
+        "total_cache": 42442752,
+        "total_dirty": 0,
+        "total_inactive_anon": 39469056,
+        "total_inactive_file": 39100416,
+        "total_mapped_file": 33927168,
+        "total_pgfault": 17358,
+        "total_pgmajfault": 297,
+        "total_pgpgin": 23430,
+        "total_pgpgout": 3367,
+        "total_rss": 39469056,
+        "total_rss_huge": 0,
+        "total_unevictable": 0,
+        "total_writeback": 0,
+        "unevictable": 0,
+        "writeback": 0
+      },
+      "limit": 9223372036854771712
+    },
+    "name": "ecs-exporter",
+    "id": "bae32def0ab64f06818e8862e58f8d6d-4159844948",
+    "networks": {
+      "eth1": {
+        "rx_bytes": 129046293,
+        "rx_packets": 88938,
+        "rx_errors": 0,
+        "rx_dropped": 0,
+        "tx_bytes": 348223,
+        "tx_packets": 3507,
+        "tx_errors": 0,
+        "tx_dropped": 0
+      }
+    },
+    "network_rate_stats": {
+      "rx_bytes_per_sec": 2556.879064581499,
+      "tx_bytes_per_sec": 1211.8374728018853
+    }
+  }
+}
