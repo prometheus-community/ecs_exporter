@@ -1,11 +1,14 @@
 ## 0.4.0 / 2025-02-XY
 
+Breaking Changes:
+
+Many metric names, labels, and semantics have changed to improve correctness.
+See the [README](./README.md#example-output) for current /metrics output.
+
+* [CHANGE] Overhaul all metrics. #81
 * [ENHANCEMENT] Add a counter for container restarts #87
 * [ENHANCEMENT] Add a flag to disable standard client_golang exporter metrics
   #82
-* [CHANGE] Overhaul all metrics. Many metric names, labels, and semantics have
-  changed to improve correctness. See the [README](./README.md#example-output)
-  for current /metrics output. #81
 
 ## 0.3.0 / 2024-10-13
 
