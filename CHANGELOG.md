@@ -1,3 +1,15 @@
+## 0.4.0 / 2025-03-19
+
+Breaking Changes:
+
+Many metric names, labels, and semantics have changed to improve correctness.
+See the [README](./README.md#example-output) for current /metrics output.
+
+* [CHANGE] Overhaul all metrics. #81
+* [ENHANCEMENT] Add a counter for container restarts #87
+* [ENHANCEMENT] Add a flag to disable standard client_golang exporter metrics
+  #82
+
 ## 0.3.0 / 2024-10-13
 
 * [CHANGE] Use upstream ecs-agent types for deserializing API responses #75
