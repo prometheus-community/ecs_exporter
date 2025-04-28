@@ -29,3 +29,5 @@ dependencies-stamp
 *.tar.gz
 /vendor
 .idea
+
+cdk.out
