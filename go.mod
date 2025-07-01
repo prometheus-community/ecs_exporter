@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/aws/amazon-ecs-agent/ecs-agent v0.0.0-20250311191058-43b89f06b96f
-	github.com/docker/docker v27.3.1+incompatible
+	github.com/docker/docker v28.3.0+incompatible
 	github.com/prometheus/client_golang v1.22.0
 	github.com/prometheus/common v0.63.0
 	github.com/prometheus/exporter-toolkit v0.13.2
