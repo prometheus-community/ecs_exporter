@@ -138,3 +138,24 @@ func TestEc2Metrics(t *testing.T) {
 	collector := NewCollector(metadataClient, slog.Default())
 	assertSnapshot(t, collector, "testdata/snapshots/ec2_metrics.txt")
 }
+
+func TestApiErrors(t *testing.T) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /task", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(500)
+		w.Write([]byte("Internal Server Error"))
+	})
+	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(500)
+		w.Write([]byte("Internal Server Error"))
+	})
+	metadataServer := httptest.NewServer(mux)
+	defer metadataServer.Close()
+	metadataClient := ecsmetadata.NewClient(metadataServer.URL)
+	collector := NewCollector(metadataClient, slog.Default())
+
+	_, err := renderMetrics(collector)
+	if err == nil || err.Error() != "non-200 metrics response: 500" {
+		t.Fatalf("expected 500 error but got err: %v", err)
+	}
+}
