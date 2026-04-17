@@ -1,6 +1,6 @@
 # ecs_exporter
 
-[![Build Status](https://github.com/prometheus/ecs_exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/prometheus/ecs_exporter/actions/workflows/ci.yml)
+[![Build Status](https://github.com/prometheus-community/ecs_exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/prometheus-community/ecs_exporter/actions/workflows/ci.yml)
 [![Go package](https://pkg.go.dev/badge/github.com/prometheus-community/ecs_exporter?status.svg)](https://pkg.go.dev/github.com/prometheus-community/ecs_exporter)
 
 This repo contains a Prometheus exporter for Amazon Elastic Container Service
