@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/aws/amazon-ecs-agent/ecs-agent v0.0.0-20250311191058-43b89f06b96f
-	github.com/docker/docker v27.3.1+incompatible
+	github.com/docker/docker v28.5.2+incompatible
 	github.com/prometheus/client_golang v1.23.2
 	github.com/prometheus/common v0.67.5
 	github.com/prometheus/exporter-toolkit v0.16.0
@@ -20,7 +20,6 @@ require (
 	github.com/coreos/go-systemd/v22 v22.7.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
