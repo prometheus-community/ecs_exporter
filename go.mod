@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
-	github.com/aws/amazon-ecs-agent/ecs-agent v0.0.0-20250311191058-43b89f06b96f
-	github.com/docker/docker v27.3.1+incompatible
+	github.com/aws/amazon-ecs-agent/ecs-agent v0.0.0-20260421173302-3def019fc9fa
+	github.com/docker/docker v27.5.1+incompatible
 	github.com/prometheus/client_golang v1.23.2
 	github.com/prometheus/common v0.67.5
 	github.com/prometheus/exporter-toolkit v0.16.0
@@ -13,7 +13,9 @@ require (
 
 require (
 	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b // indirect
-	github.com/aws/aws-sdk-go v1.51.3 // indirect
+	github.com/aws/aws-sdk-go v1.55.7 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.36.6 // indirect
+	github.com/aws/smithy-go v1.24.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575 // indirect
@@ -42,7 +44,6 @@ require (
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/net v0.51.0 // indirect
 	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
