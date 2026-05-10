@@ -17,6 +17,7 @@ package ecscollector
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/docker/docker/api/types/container"
@@ -193,7 +194,15 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ctx := context.Background()
 	metadata, err := c.client.RetrieveTaskMetadata(ctx)
 	if err != nil {
-		c.logger.Debug("Failed to retrieve metadata", "error", err)
+		c.logger.Debug("Failed to retrieve task metadata", "error", err)
+		// Signal that this Collect has failed. This ultimately results in an
+		// HTTP 500 being served for the /metrics response.
+		//
+		// While it would be most technically correct to do `NewInvalidMetric`
+		// for all of the Descs here, it just results in N identical error
+		// messages being printed in the /metrics response, so it seems a bit
+		// absurd to do that.
+		ch <- prometheus.NewInvalidMetric(taskMetadataDesc, fmt.Errorf("failed to retrieve task metadata: %w", err))
 		return
 	}
 	c.logger.Debug("Got ECS task metadata response", "metadata", metadata)
@@ -261,7 +270,15 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 	stats, err := c.client.RetrieveTaskStats(ctx)
 	if err != nil {
-		c.logger.Debug("Failed to retrieve container stats", "error", err)
+		c.logger.Debug("Failed to retrieve task stats", "error", err)
+		// Signal that this Collect has failed. This ultimately results in an
+		// HTTP 500 being served for the /metrics response.
+		//
+		// While it would be most technically correct to do `NewInvalidMetric`
+		// for all of the Descs here, it just results in N identical error
+		// messages being printed in the /metrics response, so it seems a bit
+		// absurd to do that.
+		ch <- prometheus.NewInvalidMetric(memUsageDesc, fmt.Errorf("failed to retrieve task stats: %w", err))
 		return
 	}
 	c.logger.Debug("Got ECS task stats response", "stats", stats)
