@@ -1,1 +1,1 @@
-* Ian Kerins prometheus@isk.hau @isker
+* Ian Kerins prometheus@isk.haus @isker
