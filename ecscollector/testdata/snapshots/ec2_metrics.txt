@@ -1,28 +1,28 @@
 # HELP ecs_container_cpu_usage_seconds_total Cumulative total container CPU usage in seconds.
 # TYPE ecs_container_cpu_usage_seconds_total counter
-ecs_container_cpu_usage_seconds_total{container_name="ecs-exporter"} 0.28758990900000003
-ecs_container_cpu_usage_seconds_total{container_name="main"} 0.182885545
-ecs_container_cpu_usage_seconds_total{container_name="~internal~ecs~pause"} 0.030394669000000003
+ecs_container_cpu_usage_seconds_total{container_name="ecs-exporter"} 2.0177620000000003
+ecs_container_cpu_usage_seconds_total{container_name="main"} 1.4981030000000002
+ecs_container_cpu_usage_seconds_total{container_name="~internal~ecs~pause"} 0.023876
 # HELP ecs_container_memory_active_file_bytes Current memory on the container cgroup's active file LRU list in bytes.
 # TYPE ecs_container_memory_active_file_bytes gauge
-ecs_container_memory_active_file_bytes{container_name="ecs-exporter"} 3.334144e+06
-ecs_container_memory_active_file_bytes{container_name="main"} 1.0276864e+07
-ecs_container_memory_active_file_bytes{container_name="~internal~ecs~pause"} 180224
+ecs_container_memory_active_file_bytes{container_name="ecs-exporter"} 5.943296e+06
+ecs_container_memory_active_file_bytes{container_name="main"} 5.943296e+06
+ecs_container_memory_active_file_bytes{container_name="~internal~ecs~pause"} 106496
 # HELP ecs_container_memory_anonymous_bytes Current anonymous memory charged to the container cgroup in bytes, excluding file-backed memory.
 # TYPE ecs_container_memory_anonymous_bytes gauge
-ecs_container_memory_anonymous_bytes{container_name="ecs-exporter"} 3.8227968e+07
-ecs_container_memory_anonymous_bytes{container_name="main"} 1.9877888e+07
-ecs_container_memory_anonymous_bytes{container_name="~internal~ecs~pause"} 0
+ecs_container_memory_anonymous_bytes{container_name="ecs-exporter"} 3.5438592e+07
+ecs_container_memory_anonymous_bytes{container_name="main"} 1.5716352e+07
+ecs_container_memory_anonymous_bytes{container_name="~internal~ecs~pause"} 32768
 # HELP ecs_container_memory_dirty_bytes Current dirty memory accounted to the container awaiting writeback in bytes.
 # TYPE ecs_container_memory_dirty_bytes gauge
-ecs_container_memory_dirty_bytes{container_name="ecs-exporter"} 0
+ecs_container_memory_dirty_bytes{container_name="ecs-exporter"} 16384
 ecs_container_memory_dirty_bytes{container_name="main"} 0
 ecs_container_memory_dirty_bytes{container_name="~internal~ecs~pause"} 0
 # HELP ecs_container_memory_inactive_file_bytes Current memory on the container cgroup's inactive file LRU list in bytes.
 # TYPE ecs_container_memory_inactive_file_bytes gauge
-ecs_container_memory_inactive_file_bytes{container_name="ecs-exporter"} 1.8497536e+07
-ecs_container_memory_inactive_file_bytes{container_name="main"} 1.046528e+07
-ecs_container_memory_inactive_file_bytes{container_name="~internal~ecs~pause"} 184320
+ecs_container_memory_inactive_file_bytes{container_name="ecs-exporter"} 1.875968e+07
+ecs_container_memory_inactive_file_bytes{container_name="main"} 3.076096e+06
+ecs_container_memory_inactive_file_bytes{container_name="~internal~ecs~pause"} 53248
 # HELP ecs_container_memory_limit_bytes Configured memory limit applicable to the container in bytes, using the positive container setting when present, otherwise the task setting shared by the task's containers.
 # TYPE ecs_container_memory_limit_bytes gauge
 ecs_container_memory_limit_bytes{container_name="ecs-exporter"} 1.34217728e+08
@@ -30,34 +30,29 @@ ecs_container_memory_limit_bytes{container_name="main"} 2.68435456e+08
 ecs_container_memory_limit_bytes{container_name="~internal~ecs~pause"} 2.68435456e+08
 # HELP ecs_container_memory_major_page_faults_total Cumulative number of container cgroup major page faults.
 # TYPE ecs_container_memory_major_page_faults_total counter
-ecs_container_memory_major_page_faults_total{container_name="ecs-exporter"} 132
-ecs_container_memory_major_page_faults_total{container_name="main"} 231
-ecs_container_memory_major_page_faults_total{container_name="~internal~ecs~pause"} 0
+ecs_container_memory_major_page_faults_total{container_name="ecs-exporter"} 1880
+ecs_container_memory_major_page_faults_total{container_name="main"} 1660
+ecs_container_memory_major_page_faults_total{container_name="~internal~ecs~pause"} 9
 # HELP ecs_container_memory_mapped_file_bytes Current mapped file memory accounted to the container in bytes, including mapped tmpfs and shared memory.
 # TYPE ecs_container_memory_mapped_file_bytes gauge
-ecs_container_memory_mapped_file_bytes{container_name="ecs-exporter"} 1.5409152e+07
-ecs_container_memory_mapped_file_bytes{container_name="main"} 1.9193856e+07
-ecs_container_memory_mapped_file_bytes{container_name="~internal~ecs~pause"} 405504
-# HELP ecs_container_memory_max_usage_bytes Maximum container memory usage recorded by the runtime in bytes.
-# TYPE ecs_container_memory_max_usage_bytes gauge
-ecs_container_memory_max_usage_bytes{container_name="ecs-exporter"} 6.305792e+07
-ecs_container_memory_max_usage_bytes{container_name="main"} 5.5803904e+07
-ecs_container_memory_max_usage_bytes{container_name="~internal~ecs~pause"} 7.24992e+06
+ecs_container_memory_mapped_file_bytes{container_name="ecs-exporter"} 1.8702336e+07
+ecs_container_memory_mapped_file_bytes{container_name="main"} 7.831552e+06
+ecs_container_memory_mapped_file_bytes{container_name="~internal~ecs~pause"} 155648
 # HELP ecs_container_memory_page_cache_size_bytes Current page cache memory accounted to the container in bytes, including tmpfs and shared memory.
 # TYPE ecs_container_memory_page_cache_size_bytes gauge
-ecs_container_memory_page_cache_size_bytes{container_name="ecs-exporter"} 2.1823488e+07
-ecs_container_memory_page_cache_size_bytes{container_name="main"} 2.0742144e+07
-ecs_container_memory_page_cache_size_bytes{container_name="~internal~ecs~pause"} 540672
+ecs_container_memory_page_cache_size_bytes{container_name="ecs-exporter"} 2.4702976e+07
+ecs_container_memory_page_cache_size_bytes{container_name="main"} 9.019392e+06
+ecs_container_memory_page_cache_size_bytes{container_name="~internal~ecs~pause"} 159744
 # HELP ecs_container_memory_page_faults_total Cumulative number of container cgroup page faults, including major faults.
 # TYPE ecs_container_memory_page_faults_total counter
-ecs_container_memory_page_faults_total{container_name="ecs-exporter"} 17193
-ecs_container_memory_page_faults_total{container_name="main"} 10857
-ecs_container_memory_page_faults_total{container_name="~internal~ecs~pause"} 2013
+ecs_container_memory_page_faults_total{container_name="ecs-exporter"} 32851
+ecs_container_memory_page_faults_total{container_name="main"} 17904
+ecs_container_memory_page_faults_total{container_name="~internal~ecs~pause"} 1095
 # HELP ecs_container_memory_usage_bytes Current container memory usage reported by the runtime in bytes, including page cache and accounted kernel memory.
 # TYPE ecs_container_memory_usage_bytes gauge
-ecs_container_memory_usage_bytes{container_name="ecs-exporter"} 6.150144e+07
-ecs_container_memory_usage_bytes{container_name="main"} 4.16768e+07
-ecs_container_memory_usage_bytes{container_name="~internal~ecs~pause"} 872448
+ecs_container_memory_usage_bytes{container_name="ecs-exporter"} 6.2255104e+07
+ecs_container_memory_usage_bytes{container_name="main"} 2.6165248e+07
+ecs_container_memory_usage_bytes{container_name="~internal~ecs~pause"} 446464
 # HELP ecs_container_memory_writeback_bytes Current memory accounted to the container under writeback in bytes.
 # TYPE ecs_container_memory_writeback_bytes gauge
 ecs_container_memory_writeback_bytes{container_name="ecs-exporter"} 0
@@ -65,7 +60,7 @@ ecs_container_memory_writeback_bytes{container_name="main"} 0
 ecs_container_memory_writeback_bytes{container_name="~internal~ecs~pause"} 0
 # HELP ecs_network_receive_bytes_total Cumulative total size of network packets received in bytes.
 # TYPE ecs_network_receive_bytes_total counter
-ecs_network_receive_bytes_total{interface="eth0"} 58101
+ecs_network_receive_bytes_total{interface="eth0"} 310989
 # HELP ecs_network_receive_errors_total Cumulative total count of network errors in receiving.
 # TYPE ecs_network_receive_errors_total counter
 ecs_network_receive_errors_total{interface="eth0"} 0
@@ -74,10 +69,10 @@ ecs_network_receive_errors_total{interface="eth0"} 0
 ecs_network_receive_packets_dropped_total{interface="eth0"} 0
 # HELP ecs_network_receive_packets_total Cumulative total count of network packets received.
 # TYPE ecs_network_receive_packets_total counter
-ecs_network_receive_packets_total{interface="eth0"} 181
+ecs_network_receive_packets_total{interface="eth0"} 2685
 # HELP ecs_network_transmit_bytes_total Cumulative total size of network packets transmitted in bytes.
 # TYPE ecs_network_transmit_bytes_total counter
-ecs_network_transmit_bytes_total{interface="eth0"} 50374
+ecs_network_transmit_bytes_total{interface="eth0"} 309424
 # HELP ecs_network_transmit_errors_total Cumulative total count of network errors in transmit.
 # TYPE ecs_network_transmit_errors_total counter
 ecs_network_transmit_errors_total{interface="eth0"} 0
@@ -86,16 +81,16 @@ ecs_network_transmit_errors_total{interface="eth0"} 0
 ecs_network_transmit_packets_dropped_total{interface="eth0"} 0
 # HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
 # TYPE ecs_network_transmit_packets_total counter
-ecs_network_transmit_packets_total{interface="eth0"} 207
+ecs_network_transmit_packets_total{interface="eth0"} 3198
 # HELP ecs_task_image_pull_start_timestamp_seconds The time at which the task started pulling docker images for its containers.
 # TYPE ecs_task_image_pull_start_timestamp_seconds gauge
-ecs_task_image_pull_start_timestamp_seconds 1.7892468682863865e+09
+ecs_task_image_pull_start_timestamp_seconds 1.7893347877021334e+09
 # HELP ecs_task_image_pull_stop_timestamp_seconds The time at which the task stopped (i.e. completed) pulling docker images for its containers.
 # TYPE ecs_task_image_pull_stop_timestamp_seconds gauge
-ecs_task_image_pull_stop_timestamp_seconds 1.7892468698239183e+09
+ecs_task_image_pull_stop_timestamp_seconds 1.7893347889876807e+09
 # HELP ecs_task_memory_limit_bytes Configured task memory limit in bytes. This is optional when running on EC2; if no limit is set, this metric has no value.
 # TYPE ecs_task_memory_limit_bytes gauge
 ecs_task_memory_limit_bytes 2.68435456e+08
 # HELP ecs_task_metadata_info ECS task metadata, sourced from the task metadata endpoint version 4.
 # TYPE ecs_task_metadata_info gauge
-ecs_task_metadata_info{availability_zone="us-east-1a",cluster="prom-ecs-exporter-fixtures",desired_status="RUNNING",family="ecs-exporter-fixtures-ec2",known_status="RUNNING",launch_type="EC2",revision="9",task_arn="arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/6b6103a324424642ab8e5479afc0527e"} 1
+ecs_task_metadata_info{availability_zone="us-east-1a",cluster="prom-ecs-exporter-fixtures",desired_status="RUNNING",family="ecs-exporter-fixtures-ec2",known_status="RUNNING",launch_type="EC2",revision="10",task_arn="arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9"} 1

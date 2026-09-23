@@ -56,7 +56,7 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 		Vpc:                  vpc,
 		AutoScalingGroupName: &resourceName,
 		InstanceType:         awsec2.NewInstanceType(jsii.String("t4g.nano")),
-		MachineImage:         awsecs.EcsOptimizedImage_AmazonLinux2(awsecs.AmiHardwareType_ARM, nil),
+		MachineImage:         awsecs.EcsOptimizedImage_AmazonLinux2023(awsecs.AmiHardwareType_ARM, nil),
 		MinCapacity:          jsii.Number(0),
 		MaxCapacity:          jsii.Number(2),
 		BlockDevices: &[]*awsautoscaling.BlockDevice{
