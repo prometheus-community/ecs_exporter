@@ -81,17 +81,62 @@ var (
 
 	memUsageDesc = prometheus.NewDesc(
 		"ecs_container_memory_usage_bytes",
-		"Current container memory usage in bytes.",
+		"Current container memory usage reported by the runtime in bytes, including page cache and accounted kernel memory.",
 		containerLabels, nil)
 
 	memLimitDesc = prometheus.NewDesc(
 		"ecs_container_memory_limit_bytes",
-		"Configured container memory limit in bytes, set from the container-level limit in the task definition if any, otherwise the task-level limit.",
+		"Configured memory limit applicable to the container in bytes, using the positive container setting when present, otherwise the task setting shared by the task's containers.",
 		containerLabels, nil)
 
 	memCacheSizeDesc = prometheus.NewDesc(
 		"ecs_container_memory_page_cache_size_bytes",
-		"Current container memory page cache size in bytes. This is not a subset of used bytes.",
+		"Current page cache memory accounted to the container in bytes, including tmpfs and shared memory.",
+		containerLabels, nil)
+
+	memAnonymousDesc = prometheus.NewDesc(
+		"ecs_container_memory_anonymous_bytes",
+		"Current anonymous memory charged to the container cgroup in bytes, excluding file-backed memory.",
+		containerLabels, nil)
+
+	memMappedFileDesc = prometheus.NewDesc(
+		"ecs_container_memory_mapped_file_bytes",
+		"Current mapped file memory accounted to the container in bytes, including mapped tmpfs and shared memory.",
+		containerLabels, nil)
+
+	memActiveFileDesc = prometheus.NewDesc(
+		"ecs_container_memory_active_file_bytes",
+		"Current memory on the container cgroup's active file LRU list in bytes.",
+		containerLabels, nil)
+
+	memInactiveFileDesc = prometheus.NewDesc(
+		"ecs_container_memory_inactive_file_bytes",
+		"Current memory on the container cgroup's inactive file LRU list in bytes.",
+		containerLabels, nil)
+
+	memDirtyDesc = prometheus.NewDesc(
+		"ecs_container_memory_dirty_bytes",
+		"Current dirty memory accounted to the container awaiting writeback in bytes.",
+		containerLabels, nil)
+
+	memWritebackDesc = prometheus.NewDesc(
+		"ecs_container_memory_writeback_bytes",
+		"Current memory accounted to the container under writeback in bytes.",
+		containerLabels, nil)
+
+	memMaxUsageDesc = prometheus.NewDesc(
+		"ecs_container_memory_max_usage_bytes",
+		"Maximum container memory usage recorded by the runtime in bytes.",
+		containerLabels, nil)
+
+	memPageFaultsDesc = prometheus.NewDesc(
+		"ecs_container_memory_page_faults_total",
+		"Cumulative number of container cgroup page faults, including major faults.",
+		containerLabels, nil)
+
+	memMajorPageFaultsDesc = prometheus.NewDesc(
+		"ecs_container_memory_major_page_faults_total",
+		"Cumulative number of container cgroup major page faults.",
 		containerLabels, nil)
 
 	networkRxBytesDesc = prometheus.NewDesc(
@@ -180,6 +225,15 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- memUsageDesc
 	ch <- memLimitDesc
 	ch <- memCacheSizeDesc
+	ch <- memAnonymousDesc
+	ch <- memMappedFileDesc
+	ch <- memActiveFileDesc
+	ch <- memInactiveFileDesc
+	ch <- memDirtyDesc
+	ch <- memWritebackDesc
+	ch <- memMaxUsageDesc
+	ch <- memPageFaultsDesc
+	ch <- memMajorPageFaultsDesc
 	ch <- networkRxBytesDesc
 	ch <- networkRxPacketsDesc
 	ch <- networkRxDroppedDesc
@@ -313,33 +367,62 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			containerLabelVals...,
 		)
 
-		cacheValue := 0.0
-		if val, ok := s.MemoryStats.Stats["cache"]; ok {
-			cacheValue = float64(val)
-		}
-
-		// Report the container's memory limit as its own, if any, otherwise the
-		// task's limit. This is correct in that this is the precise logic used
-		// to configure the cgroups limit for the container.
-		var containerMemoryLimitMib int64
-		if container.Limits.Memory != nil {
-			containerMemoryLimitMib = *container.Limits.Memory
-		} else {
-			// This must be set if the container limit is not set, and thus is
-			// safe to dereference.
-			containerMemoryLimitMib = *metadata.Limits.Memory
-		}
-		for desc, value := range map[*prometheus.Desc]float64{
-			memUsageDesc:     float64(s.MemoryStats.Usage),
-			memLimitDesc:     float64(containerMemoryLimitMib * mebibytes),
-			memCacheSizeDesc: cacheValue,
-		} {
+		ch <- prometheus.MustNewConstMetric(
+			memUsageDesc,
+			prometheus.GaugeValue,
+			float64(s.MemoryStats.Usage),
+			containerLabelVals...,
+		)
+		if s.MemoryStats.MaxUsage > 0 {
 			ch <- prometheus.MustNewConstMetric(
-				desc,
+				memMaxUsageDesc,
 				prometheus.GaugeValue,
-				value,
+				float64(s.MemoryStats.MaxUsage),
 				containerLabelVals...,
 			)
+		}
+
+		// A positive container memory setting is a dedicated hard limit. Zero
+		// means that no container-level setting was configured, so the shared
+		// task setting is the best configuration-level upper bound available.
+		var taskMemoryLimit *int64
+		if metadata.Limits != nil {
+			taskMemoryLimit = metadata.Limits.Memory
+		}
+		if configuredLimitMib, ok := configuredMemoryLimitMib(container.Limits.Memory, taskMemoryLimit); ok {
+			ch <- prometheus.MustNewConstMetric(
+				memLimitDesc,
+				prometheus.GaugeValue,
+				float64(configuredLimitMib)*mebibytes,
+				containerLabelVals...,
+			)
+		}
+
+		memoryStats := s.MemoryStats.Stats
+		// Moby's cgroup v2 response always has anon; its v1 response has
+		// active_anon and inactive_anon, but no unqualified anon key.
+		_, cgroupV2 := memoryStats["anon"]
+		for _, metric := range []struct {
+			desc      *prometheus.Desc
+			valueType prometheus.ValueType
+			v1Key     string
+			v2Key     string
+		}{
+			{memCacheSizeDesc, prometheus.GaugeValue, "cache", "file"},
+			{memAnonymousDesc, prometheus.GaugeValue, "rss", "anon"},
+			{memMappedFileDesc, prometheus.GaugeValue, "mapped_file", "file_mapped"},
+			{memActiveFileDesc, prometheus.GaugeValue, "active_file", "active_file"},
+			{memInactiveFileDesc, prometheus.GaugeValue, "inactive_file", "inactive_file"},
+			{memDirtyDesc, prometheus.GaugeValue, "dirty", "file_dirty"},
+			{memWritebackDesc, prometheus.GaugeValue, "writeback", "file_writeback"},
+			{memPageFaultsDesc, prometheus.CounterValue, "pgfault", "pgfault"},
+			{memMajorPageFaultsDesc, prometheus.CounterValue, "pgmajfault", "pgmajfault"},
+		} {
+			value, ok := normalizedMemoryStat(memoryStats, cgroupV2, metric.v1Key, metric.v2Key)
+			if !ok {
+				continue
+			}
+			ch <- prometheus.MustNewConstMetric(metric.desc, metric.valueType, float64(value), containerLabelVals...)
 		}
 
 		// Network metrics per interface.
@@ -382,4 +465,27 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			)
 		}
 	}
+}
+
+func normalizedMemoryStat(stats map[string]uint64, cgroupV2 bool, v1Key, v2Key string) (uint64, bool) {
+	if cgroupV2 {
+		value, ok := stats[v2Key]
+		return value, ok
+	}
+
+	if value, ok := stats["total_"+v1Key]; ok {
+		return value, true
+	}
+	value, ok := stats[v1Key]
+	return value, ok
+}
+
+func configuredMemoryLimitMib(containerLimit, taskLimit *int64) (int64, bool) {
+	if containerLimit != nil && *containerLimit > 0 {
+		return *containerLimit, true
+	}
+	if taskLimit == nil || *taskLimit <= 0 {
+		return 0, false
+	}
+	return *taskLimit, true
 }

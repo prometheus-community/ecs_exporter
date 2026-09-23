@@ -42,7 +42,11 @@ func fixtureClient(taskMetadataPath, taskStatsPath string) (*ecsmetadata.Client,
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to read task stats fixture: %w", err)
 	}
+	client, server := fixtureClientFromResponses(taskMetadata, taskStats)
+	return client, server, nil
+}
 
+func fixtureClientFromResponses(taskMetadata, taskStats []byte) (*ecsmetadata.Client, *httptest.Server) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /task", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("content-type", "application/json")
@@ -54,7 +58,7 @@ func fixtureClient(taskMetadataPath, taskStatsPath string) (*ecsmetadata.Client,
 	})
 
 	server := httptest.NewServer(mux)
-	return ecsmetadata.NewClient(server.URL), server, nil
+	return ecsmetadata.NewClient(server.URL), server
 }
 
 // Renders metrics from the given collector to the prometheus text exposition
@@ -137,6 +141,53 @@ func TestEc2Metrics(t *testing.T) {
 	defer metadataServer.Close()
 	collector := NewCollector(metadataClient, slog.Default())
 	assertSnapshot(t, collector, "testdata/snapshots/ec2_metrics.txt")
+}
+
+func TestNormalizedMemoryStat(t *testing.T) {
+	tests := []struct {
+		name     string
+		stats    map[string]uint64
+		cgroupV2 bool
+		want     uint64
+		wantOK   bool
+	}{
+		{name: "v1 hierarchy", stats: map[string]uint64{"rss": 10, "total_rss": 20}, want: 20, wantOK: true},
+		{name: "v1 local fallback", stats: map[string]uint64{"rss": 10}, want: 10, wantOK: true},
+		{name: "v2 alias", stats: map[string]uint64{"anon": 30}, cgroupV2: true, want: 30, wantOK: true},
+		{name: "missing", stats: map[string]uint64{}, wantOK: false},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, ok := normalizedMemoryStat(test.stats, test.cgroupV2, "rss", "anon")
+			if got != test.want || ok != test.wantOK {
+				t.Fatalf("normalizedMemoryStat() = (%d, %t), want (%d, %t)", got, ok, test.want, test.wantOK)
+			}
+		})
+	}
+}
+
+func TestConfiguredMemoryLimitMib(t *testing.T) {
+	ptr := func(value int64) *int64 { return &value }
+	tests := []struct {
+		name           string
+		containerLimit *int64
+		taskLimit      *int64
+		want           int64
+		wantOK         bool
+	}{
+		{name: "container limit", containerLimit: ptr(128), taskLimit: ptr(512), want: 128, wantOK: true},
+		{name: "zero container falls back to task", containerLimit: ptr(0), taskLimit: ptr(512), want: 512, wantOK: true},
+		{name: "missing container falls back to task", taskLimit: ptr(512), want: 512, wantOK: true},
+		{name: "no configured limit", wantOK: false},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, ok := configuredMemoryLimitMib(test.containerLimit, test.taskLimit)
+			if got != test.want || ok != test.wantOK {
+				t.Fatalf("configuredMemoryLimitMib() = (%d, %t), want (%d, %t)", got, ok, test.want, test.wantOK)
+			}
+		})
+	}
 }
 
 func TestApiErrors(t *testing.T) {

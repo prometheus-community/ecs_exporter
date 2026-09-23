@@ -65,6 +65,26 @@ task-level or any other metrics emitted by ecs_exporter.
 
 * **interface**: Network interface device associated with the metric.
 
+## Container memory metrics
+
+The ECS task stats endpoint exposes Docker-compatible Linux cgroup memory
+accounting. See the kernel documentation for the underlying [cgroup v1 memory
+statistics](https://docs.kernel.org/admin-guide/cgroup-v1/memory.html#stat-file)
+and [cgroup v2 memory
+interface](https://docs.kernel.org/admin-guide/cgroup-v2.html#memory-interface-files),
+and Docker's explanation of the difference between [raw API usage and the
+working-set-like value displayed by `docker
+stats`](https://docs.docker.com/reference/cli/docker/container/stats/#description).
+
+Some notes on the metrics:
+* Exact metric names and definitions are in the [example output](#example-output).
+* The raw "usage" metric includes page cache and accounted kernel memory.
+* Memory breakdown metrics overlap and do not sum to a meaningful number.
+* The container limit metric is sourced from ECS configuration. If none is set,
+the task-level limit is used instead. That fallback value is shared capacity and
+must not be summed across containers as if it were independently reserved for
+each one.
+
 ## Example output
 
 Check out the [metrics snapshots](./ecscollector/testdata/snapshots) which
