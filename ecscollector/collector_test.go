@@ -148,17 +148,21 @@ func TestNormalizedMemoryStat(t *testing.T) {
 		name     string
 		stats    map[string]uint64
 		cgroupV2 bool
+		v1Key    string
+		v2Key    string
 		want     uint64
 		wantOK   bool
 	}{
-		{name: "v1 hierarchy", stats: map[string]uint64{"rss": 10, "total_rss": 20}, want: 20, wantOK: true},
-		{name: "v1 local fallback", stats: map[string]uint64{"rss": 10}, want: 10, wantOK: true},
-		{name: "v2 alias", stats: map[string]uint64{"anon": 30}, cgroupV2: true, want: 30, wantOK: true},
-		{name: "missing", stats: map[string]uint64{}, wantOK: false},
+		{name: "v1 hierarchy", stats: map[string]uint64{"rss": 10, "total_rss": 20}, v1Key: "rss", v2Key: "anon", want: 20, wantOK: true},
+		{name: "v1 local fallback", stats: map[string]uint64{"rss": 10}, v1Key: "rss", v2Key: "anon", want: 10, wantOK: true},
+		{name: "v2 alias", stats: map[string]uint64{"anon": 30}, cgroupV2: true, v1Key: "rss", v2Key: "anon", want: 30, wantOK: true},
+		{name: "missing", stats: map[string]uint64{}, v1Key: "rss", v2Key: "anon", wantOK: false},
+		{name: "unsupported on v1", stats: map[string]uint64{"shmem": 40}, v2Key: "shmem", wantOK: false},
+		{name: "unsupported on v2", stats: map[string]uint64{"rss": 50}, cgroupV2: true, v1Key: "rss", wantOK: false},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got, ok := normalizedMemoryStat(test.stats, test.cgroupV2, "rss", "anon")
+			got, ok := normalizedMemoryStat(test.stats, test.cgroupV2, test.v1Key, test.v2Key)
 			if got != test.want || ok != test.wantOK {
 				t.Fatalf("normalizedMemoryStat() = (%d, %t), want (%d, %t)", got, ok, test.want, test.wantOK)
 			}
