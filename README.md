@@ -82,8 +82,9 @@ Some notes on the metrics:
 * Memory breakdown metrics overlap and do not sum to a meaningful number.
 * Some breakdown metrics are only available with one cgroup version. Unsupported
 metrics are absent rather than reported as zero. (Currently, Fargate is always
-on cgroup v1, while EC2 depends on the instance's configuration. AmazonLinux 2
-used v1, while AmazonLinux 2023 uses v2, for example.)
+on cgroup v1, Managed Instances uses cgroup v2, and EC2 depends on the
+instance's configuration. AmazonLinux 2 used v1, while AmazonLinux 2023 uses v2,
+for example.)
 * The cgroup v1 memory limit failures metric counts memory charges that encounter
 the limit, not OOM kills. Its rate indicates limit pressure, but a nonzero value
 does not mean that an allocation or container failed.

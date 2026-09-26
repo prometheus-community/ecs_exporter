@@ -143,6 +143,19 @@ func TestEc2Metrics(t *testing.T) {
 	assertSnapshot(t, collector, "testdata/snapshots/ec2_metrics.txt")
 }
 
+func TestManagedInstancesMetrics(t *testing.T) {
+	metadataClient, metadataServer, err := fixtureClient(
+		"testdata/fixtures/managed_instances_task_metadata.json",
+		"testdata/fixtures/managed_instances_task_stats.json",
+	)
+	if err != nil {
+		t.Fatalf("failed to load test fixtures: %v", err)
+	}
+	defer metadataServer.Close()
+	collector := NewCollector(metadataClient, slog.Default())
+	assertSnapshot(t, collector, "testdata/snapshots/managed_instances_metrics.txt")
+}
+
 func TestNormalizedMemoryStat(t *testing.T) {
 	tests := []struct {
 		name     string

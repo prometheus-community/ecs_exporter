@@ -86,7 +86,7 @@ ecs_network_transmit_packets_dropped_total{interface="eth1"} 0
 # HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
 # TYPE ecs_network_transmit_packets_total counter
 ecs_network_transmit_packets_total{interface="eth1"} 1674
-# HELP ecs_task_cpu_limit_vcpus Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2; if no limit is set, this metric has no value.
+# HELP ecs_task_cpu_limit_vcpus Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2 or Managed Instances; if no limit is set, this metric has no value.
 # TYPE ecs_task_cpu_limit_vcpus gauge
 ecs_task_cpu_limit_vcpus 0.25
 # HELP ecs_task_ephemeral_storage_allocated_bytes Configured Fargate task ephemeral storage allocated size in bytes.
@@ -101,7 +101,7 @@ ecs_task_image_pull_start_timestamp_seconds 1.7904445962765114e+09
 # HELP ecs_task_image_pull_stop_timestamp_seconds The time at which the task stopped (i.e. completed) pulling docker images for its containers.
 # TYPE ecs_task_image_pull_stop_timestamp_seconds gauge
 ecs_task_image_pull_stop_timestamp_seconds 1.7904448189905496e+09
-# HELP ecs_task_memory_limit_bytes Configured task memory limit in bytes. This is optional when running on EC2; if no limit is set, this metric has no value.
+# HELP ecs_task_memory_limit_bytes Configured task memory limit in bytes. This is optional when running on EC2 or Managed Instances; if no limit is set, this metric has no value.
 # TYPE ecs_task_memory_limit_bytes gauge
 ecs_task_memory_limit_bytes 5.36870912e+08
 # HELP ecs_task_metadata_info ECS task metadata, sourced from the task metadata endpoint version 4.

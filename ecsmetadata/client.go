@@ -68,14 +68,13 @@ func (c *Client) RetrieveTaskStats(ctx context.Context) (map[string]*tmdsv4.Stat
 func (c *Client) RetrieveTaskMetadata(ctx context.Context) (*tmdsv4.TaskResponse, error) {
 	// https://github.com/aws/amazon-ecs-agent/blob/cf8c7a6b65043c550533f330b10aef6d0a342214/agent/handlers/v4/tmdsstate.go#L174
 	//
-	// Note that EC2 and Fargate return slightly different task metadata
-	// responses. At time of writing, as per the documentation, only EC2 has `ServiceName`,
-	// while only Fargate has `EphemeralStorageMetrics`, `ClockDrift`, and
-	// `Containers[].Snapshotter`. Ref:
+	// Note that EC2, Fargate, and Managed Instances return slightly different
+	// task metadata responses. Ref:
+	// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metadata-endpoint-v4-managed-instances-response.html
 	// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metadata-endpoint-v4-fargate-response.html
 	// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metadata-endpoint-v4-response.html
 	//
-	// But `TaskResponse` is the _union_ of these two responses. It has all the
+	// But `TaskResponse` is the _union_ of these responses. It has all the
 	// fields.
 	var out tmdsv4.TaskResponse
 	err := c.request(ctx, c.endpoint+"/task", &out)
