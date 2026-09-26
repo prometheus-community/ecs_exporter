@@ -99,6 +99,11 @@ var (
 		"Current anonymous memory charged to the container cgroup in bytes, excluding file-backed memory.",
 		containerLabels, nil)
 
+	memAnonymousTHPDesc = prometheus.NewDesc(
+		"ecs_container_memory_anonymous_thp_bytes",
+		"Current anonymous memory backed by transparent huge pages in bytes.",
+		containerLabels, nil)
+
 	memMappedFileDesc = prometheus.NewDesc(
 		"ecs_container_memory_mapped_file_bytes",
 		"Current mapped file memory accounted to the container in bytes, including mapped tmpfs and shared memory.",
@@ -124,6 +129,36 @@ var (
 		"Current memory accounted to the container under writeback in bytes.",
 		containerLabels, nil)
 
+	memUnevictableDesc = prometheus.NewDesc(
+		"ecs_container_memory_unevictable_bytes",
+		"Current memory on the container cgroup's unevictable LRU list in bytes.",
+		containerLabels, nil)
+
+	memSharedDesc = prometheus.NewDesc(
+		"ecs_container_memory_shared_bytes",
+		"Current tmpfs, shared memory, and shared anonymous memory accounted to the container in bytes. Only available with cgroup v2.",
+		containerLabels, nil)
+
+	memKernelStackDesc = prometheus.NewDesc(
+		"ecs_container_memory_kernel_stack_bytes",
+		"Current memory allocated to the container's kernel stacks in bytes. Only available with cgroup v2.",
+		containerLabels, nil)
+
+	memSocketDesc = prometheus.NewDesc(
+		"ecs_container_memory_socket_bytes",
+		"Current network transmission buffer memory accounted to the container in bytes. Only available with cgroup v2.",
+		containerLabels, nil)
+
+	memSlabReclaimableDesc = prometheus.NewDesc(
+		"ecs_container_memory_slab_reclaimable_bytes",
+		"Current reclaimable kernel slab memory accounted to the container in bytes. Only available with cgroup v2.",
+		containerLabels, nil)
+
+	memSlabUnreclaimableDesc = prometheus.NewDesc(
+		"ecs_container_memory_slab_unreclaimable_bytes",
+		"Current unreclaimable kernel slab memory accounted to the container in bytes. Only available with cgroup v2.",
+		containerLabels, nil)
+
 	memMaxUsageDesc = prometheus.NewDesc(
 		"ecs_container_memory_max_usage_bytes",
 		"Maximum container memory usage recorded by the runtime in bytes.",
@@ -137,6 +172,21 @@ var (
 	memMajorPageFaultsDesc = prometheus.NewDesc(
 		"ecs_container_memory_major_page_faults_total",
 		"Cumulative number of container cgroup major page faults.",
+		containerLabels, nil)
+
+	memPagesScannedDesc = prometheus.NewDesc(
+		"ecs_container_memory_pages_scanned_total",
+		"Cumulative number of container cgroup pages scanned from the inactive LRU list. Only available with cgroup v2.",
+		containerLabels, nil)
+
+	memPagesReclaimedDesc = prometheus.NewDesc(
+		"ecs_container_memory_pages_reclaimed_total",
+		"Cumulative number of container cgroup pages reclaimed. Only available with cgroup v2.",
+		containerLabels, nil)
+
+	memLimitFailuresDesc = prometheus.NewDesc(
+		"ecs_container_memory_limit_failures_total",
+		"Cumulative number of times a container cgroup memory charge encountered its limit. This is not an OOM kill count and is only available with cgroup v1.",
 		containerLabels, nil)
 
 	networkRxBytesDesc = prometheus.NewDesc(
@@ -226,14 +276,24 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- memLimitDesc
 	ch <- memCacheSizeDesc
 	ch <- memAnonymousDesc
+	ch <- memAnonymousTHPDesc
 	ch <- memMappedFileDesc
 	ch <- memActiveFileDesc
 	ch <- memInactiveFileDesc
 	ch <- memDirtyDesc
 	ch <- memWritebackDesc
+	ch <- memUnevictableDesc
+	ch <- memSharedDesc
+	ch <- memKernelStackDesc
+	ch <- memSocketDesc
+	ch <- memSlabReclaimableDesc
+	ch <- memSlabUnreclaimableDesc
 	ch <- memMaxUsageDesc
 	ch <- memPageFaultsDesc
 	ch <- memMajorPageFaultsDesc
+	ch <- memPagesScannedDesc
+	ch <- memPagesReclaimedDesc
+	ch <- memLimitFailuresDesc
 	ch <- networkRxBytesDesc
 	ch <- networkRxPacketsDesc
 	ch <- networkRxDroppedDesc
@@ -402,6 +462,14 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		// Moby's cgroup v2 response always has anon; its v1 response has
 		// active_anon and inactive_anon, but no unqualified anon key.
 		_, cgroupV2 := memoryStats["anon"]
+		if !cgroupV2 {
+			ch <- prometheus.MustNewConstMetric(
+				memLimitFailuresDesc,
+				prometheus.CounterValue,
+				float64(s.MemoryStats.Failcnt),
+				containerLabelVals...,
+			)
+		}
 		for _, metric := range []struct {
 			desc      *prometheus.Desc
 			valueType prometheus.ValueType
@@ -410,13 +478,22 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		}{
 			{memCacheSizeDesc, prometheus.GaugeValue, "cache", "file"},
 			{memAnonymousDesc, prometheus.GaugeValue, "rss", "anon"},
+			{memAnonymousTHPDesc, prometheus.GaugeValue, "rss_huge", "anon_thp"},
 			{memMappedFileDesc, prometheus.GaugeValue, "mapped_file", "file_mapped"},
 			{memActiveFileDesc, prometheus.GaugeValue, "active_file", "active_file"},
 			{memInactiveFileDesc, prometheus.GaugeValue, "inactive_file", "inactive_file"},
 			{memDirtyDesc, prometheus.GaugeValue, "dirty", "file_dirty"},
 			{memWritebackDesc, prometheus.GaugeValue, "writeback", "file_writeback"},
+			{memUnevictableDesc, prometheus.GaugeValue, "unevictable", "unevictable"},
+			{memSharedDesc, prometheus.GaugeValue, "", "shmem"},
+			{memKernelStackDesc, prometheus.GaugeValue, "", "kernel_stack"},
+			{memSocketDesc, prometheus.GaugeValue, "", "sock"},
+			{memSlabReclaimableDesc, prometheus.GaugeValue, "", "slab_reclaimable"},
+			{memSlabUnreclaimableDesc, prometheus.GaugeValue, "", "slab_unreclaimable"},
 			{memPageFaultsDesc, prometheus.CounterValue, "pgfault", "pgfault"},
 			{memMajorPageFaultsDesc, prometheus.CounterValue, "pgmajfault", "pgmajfault"},
+			{memPagesScannedDesc, prometheus.CounterValue, "", "pgscan"},
+			{memPagesReclaimedDesc, prometheus.CounterValue, "", "pgsteal"},
 		} {
 			value, ok := normalizedMemoryStat(memoryStats, cgroupV2, metric.v1Key, metric.v2Key)
 			if !ok {
@@ -469,10 +546,16 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 func normalizedMemoryStat(stats map[string]uint64, cgroupV2 bool, v1Key, v2Key string) (uint64, bool) {
 	if cgroupV2 {
+		if v2Key == "" {
+			return 0, false
+		}
 		value, ok := stats[v2Key]
 		return value, ok
 	}
 
+	if v1Key == "" {
+		return 0, false
+	}
 	if value, ok := stats["total_"+v1Key]; ok {
 		return value, true
 	}
