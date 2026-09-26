@@ -1,96 +1,44 @@
 {
-  "096080d2e06c9cf0a107642d0bb514eacf41697e1828af607ae83774e3b18cf1": {},
-  "341c1445f483e23d0dade7d2d14e1b0f0ca05c8ddd02d28710f519fa40801fd4": {
-    "read": "2026-09-12T21:05:57.44633183Z",
-    "preread": "2026-09-12T21:05:56.439445096Z",
+  "4ffbc8c681bff2c721b777169aee004c874a3c8a83d3d47d71da7edb0ee383f6": {},
+  "ecc9309e44393f6323efd016c9cfc2922b49a946cc591c67faf5f18d69deff93": {
+    "read": "2026-09-14T00:59:08.752138624Z",
+    "preread": "2026-09-14T00:59:07.746549915Z",
     "pids_stats": {
-      "current": 33
+      "current": 34,
+      "limit": 403
     },
     "blkio_stats": {
       "io_service_bytes_recursive": [
         {
           "major": 259,
           "minor": 0,
-          "op": "Read",
-          "value": 25520640
+          "op": "read",
+          "value": 77971456
         },
         {
           "major": 259,
           "minor": 0,
-          "op": "Write",
-          "value": 12288
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Sync",
-          "value": 25524736
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Async",
-          "value": 8192
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Total",
-          "value": 25532928
+          "op": "write",
+          "value": 245760
         }
       ],
-      "io_serviced_recursive": [
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Read",
-          "value": 405
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Write",
-          "value": 3
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Sync",
-          "value": 406
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Async",
-          "value": 2
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Total",
-          "value": 408
-        }
-      ],
-      "io_queue_recursive": [],
-      "io_service_time_recursive": [],
-      "io_wait_time_recursive": [],
-      "io_merged_recursive": [],
-      "io_time_recursive": [],
-      "sectors_recursive": []
+      "io_serviced_recursive": null,
+      "io_queue_recursive": null,
+      "io_service_time_recursive": null,
+      "io_wait_time_recursive": null,
+      "io_merged_recursive": null,
+      "io_time_recursive": null,
+      "sectors_recursive": null
     },
     "num_procs": 0,
     "storage_stats": {},
     "cpu_stats": {
       "cpu_usage": {
-        "total_usage": 287589909,
-        "percpu_usage": [
-          158552987,
-          129036922
-        ],
-        "usage_in_kernelmode": 90000000,
-        "usage_in_usermode": 160000000
+        "total_usage": 2017762000,
+        "usage_in_kernelmode": 602711000,
+        "usage_in_usermode": 1415050000
       },
-      "system_cpu_usage": 688650000000,
+      "system_cpu_usage": 25587440000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -100,15 +48,11 @@
     },
     "precpu_stats": {
       "cpu_usage": {
-        "total_usage": 284455281,
-        "percpu_usage": [
-          156954522,
-          127500759
-        ],
-        "usage_in_kernelmode": 90000000,
-        "usage_in_usermode": 160000000
+        "total_usage": 2014612000,
+        "usage_in_kernelmode": 601771000,
+        "usage_in_usermode": 1412841000
       },
-      "system_cpu_usage": 686630000000,
+      "system_cpu_usage": 25585450000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -117,154 +61,100 @@
       }
     },
     "memory_stats": {
-      "usage": 61501440,
-      "max_usage": 63057920,
+      "usage": 62255104,
       "stats": {
-        "active_anon": 38207488,
-        "active_file": 3334144,
-        "cache": 21823488,
-        "dirty": 0,
-        "hierarchical_memory_limit": 134217728,
-        "hierarchical_memsw_limit": 268435456,
-        "inactive_anon": 0,
-        "inactive_file": 18497536,
-        "mapped_file": 15409152,
-        "pgfault": 17193,
-        "pgmajfault": 132,
-        "pgpgin": 19305,
-        "pgpgout": 4656,
-        "rss": 38227968,
-        "rss_huge": 0,
-        "total_active_anon": 38207488,
-        "total_active_file": 3334144,
-        "total_cache": 21823488,
-        "total_dirty": 0,
-        "total_inactive_anon": 0,
-        "total_inactive_file": 18497536,
-        "total_mapped_file": 15409152,
-        "total_pgfault": 17193,
-        "total_pgmajfault": 132,
-        "total_pgpgin": 19305,
-        "total_pgpgout": 4656,
-        "total_rss": 38227968,
-        "total_rss_huge": 0,
-        "total_unevictable": 0,
-        "total_writeback": 0,
+        "active_anon": 13541376,
+        "active_file": 5943296,
+        "anon": 35438592,
+        "anon_thp": 0,
+        "file": 24702976,
+        "file_dirty": 16384,
+        "file_mapped": 18702336,
+        "file_writeback": 0,
+        "inactive_anon": 21897216,
+        "inactive_file": 18759680,
+        "kernel_stack": 540672,
+        "pgactivate": 10328,
+        "pgdeactivate": 13464,
+        "pgfault": 32851,
+        "pglazyfree": 0,
+        "pglazyfreed": 0,
+        "pgmajfault": 1880,
+        "pgrefill": 15814,
+        "pgscan": 35059,
+        "pgsteal": 15514,
+        "shmem": 0,
+        "slab": 778144,
+        "slab_reclaimable": 341856,
+        "slab_unreclaimable": 436288,
+        "sock": 0,
+        "thp_collapse_alloc": 0,
+        "thp_fault_alloc": 0,
         "unevictable": 0,
-        "writeback": 0
+        "workingset_activate": 0,
+        "workingset_nodereclaim": 0,
+        "workingset_refault": 0
       },
       "limit": 134217728
     },
-    "name": "/ecs-ecs-exporter-fixtures-ec2-9-ecs-exporter-e2c983ddf382ca8ff401",
-    "id": "341c1445f483e23d0dade7d2d14e1b0f0ca05c8ddd02d28710f519fa40801fd4",
+    "name": "/ecs-ecs-exporter-fixtures-ec2-10-ecs-exporter-9e83a1d28f90bcd38f01",
+    "id": "ecc9309e44393f6323efd016c9cfc2922b49a946cc591c67faf5f18d69deff93",
     "networks": {
       "eth0": {
-        "rx_bytes": 58101,
-        "rx_packets": 181,
+        "rx_bytes": 310989,
+        "rx_packets": 2685,
         "rx_errors": 0,
         "rx_dropped": 0,
-        "tx_bytes": 50374,
-        "tx_packets": 207,
+        "tx_bytes": 309424,
+        "tx_packets": 3198,
         "tx_errors": 0,
         "tx_dropped": 0
       }
     },
     "network_rate_stats": {
-      "rx_bytes_per_sec": 2273.382080078125,
-      "tx_bytes_per_sec": 2431.48779296875
+      "rx_bytes_per_sec": 1807.1822509765625,
+      "tx_bytes_per_sec": 1094.189208984375
     }
   },
-  "94d3db058aec222074ee4eab6728caed820c6ac3ed5c70551a420f6548403dda": {
-    "read": "2026-09-12T21:05:57.44504061Z",
-    "preread": "2026-09-12T21:05:56.438017808Z",
+  "5cdcae00c54d008f540c3888b51a16b707e2c0f9880a8e2645aeb11a3a6c1e94": {
+    "read": "2026-09-14T00:59:08.748256139Z",
+    "preread": "2026-09-14T00:59:07.74360464Z",
     "pids_stats": {
-      "current": 1
+      "current": 1,
+      "limit": 403
     },
     "blkio_stats": {
       "io_service_bytes_recursive": [
         {
           "major": 259,
           "minor": 0,
-          "op": "Read",
-          "value": 593920
+          "op": "read",
+          "value": 966656
         },
         {
           "major": 259,
           "minor": 0,
-          "op": "Write",
+          "op": "write",
           "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Sync",
-          "value": 593920
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Async",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Total",
-          "value": 593920
         }
       ],
-      "io_serviced_recursive": [
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Read",
-          "value": 7
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Write",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Sync",
-          "value": 7
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Async",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Total",
-          "value": 7
-        }
-      ],
-      "io_queue_recursive": [],
-      "io_service_time_recursive": [],
-      "io_wait_time_recursive": [],
-      "io_merged_recursive": [],
-      "io_time_recursive": [],
-      "sectors_recursive": []
+      "io_serviced_recursive": null,
+      "io_queue_recursive": null,
+      "io_service_time_recursive": null,
+      "io_wait_time_recursive": null,
+      "io_merged_recursive": null,
+      "io_time_recursive": null,
+      "sectors_recursive": null
     },
     "num_procs": 0,
     "storage_stats": {},
     "cpu_stats": {
       "cpu_usage": {
-        "total_usage": 30394669,
-        "percpu_usage": [
-          20650645,
-          9744024
-        ],
-        "usage_in_kernelmode": 20000000,
-        "usage_in_usermode": 0
+        "total_usage": 23876000,
+        "usage_in_kernelmode": 7958000,
+        "usage_in_usermode": 15917000
       },
-      "system_cpu_usage": 688650000000,
+      "system_cpu_usage": 25587440000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -274,15 +164,11 @@
     },
     "precpu_stats": {
       "cpu_usage": {
-        "total_usage": 30394669,
-        "percpu_usage": [
-          20650645,
-          9744024
-        ],
-        "usage_in_kernelmode": 20000000,
-        "usage_in_usermode": 0
+        "total_usage": 23876000,
+        "usage_in_kernelmode": 7958000,
+        "usage_in_usermode": 15917000
       },
-      "system_cpu_usage": 686630000000,
+      "system_cpu_usage": 25585420000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -291,154 +177,100 @@
       }
     },
     "memory_stats": {
-      "usage": 872448,
-      "max_usage": 7249920,
+      "usage": 446464,
       "stats": {
-        "active_anon": 32768,
-        "active_file": 180224,
-        "cache": 540672,
-        "dirty": 0,
-        "hierarchical_memory_limit": 268435456,
-        "hierarchical_memsw_limit": 9223372036854771712,
-        "inactive_anon": 0,
-        "inactive_file": 184320,
-        "mapped_file": 405504,
-        "pgfault": 2013,
-        "pgmajfault": 0,
-        "pgpgin": 1749,
-        "pgpgout": 1660,
-        "rss": 0,
-        "rss_huge": 0,
-        "total_active_anon": 32768,
-        "total_active_file": 180224,
-        "total_cache": 540672,
-        "total_dirty": 0,
-        "total_inactive_anon": 0,
-        "total_inactive_file": 184320,
-        "total_mapped_file": 405504,
-        "total_pgfault": 2013,
-        "total_pgmajfault": 0,
-        "total_pgpgin": 1749,
-        "total_pgpgout": 1660,
-        "total_rss": 0,
-        "total_rss_huge": 0,
-        "total_unevictable": 0,
-        "total_writeback": 0,
+        "active_anon": 0,
+        "active_file": 106496,
+        "anon": 32768,
+        "anon_thp": 0,
+        "file": 159744,
+        "file_dirty": 0,
+        "file_mapped": 155648,
+        "file_writeback": 0,
+        "inactive_anon": 32768,
+        "inactive_file": 53248,
+        "kernel_stack": 16384,
+        "pgactivate": 92,
+        "pgdeactivate": 149,
+        "pgfault": 1095,
+        "pglazyfree": 0,
+        "pglazyfreed": 0,
+        "pgmajfault": 9,
+        "pgrefill": 165,
+        "pgscan": 290,
+        "pgsteal": 197,
+        "shmem": 0,
+        "slab": 185184,
+        "slab_reclaimable": 56296,
+        "slab_unreclaimable": 128888,
+        "sock": 0,
+        "thp_collapse_alloc": 0,
+        "thp_fault_alloc": 0,
         "unevictable": 0,
-        "writeback": 0
+        "workingset_activate": 0,
+        "workingset_nodereclaim": 0,
+        "workingset_refault": 0
       },
-      "limit": 449421312
+      "limit": 438865920
     },
-    "name": "/ecs-ecs-exporter-fixtures-ec2-9-internalecspause-a2d7c3cfd5cdd68c4800",
-    "id": "94d3db058aec222074ee4eab6728caed820c6ac3ed5c70551a420f6548403dda",
+    "name": "/ecs-ecs-exporter-fixtures-ec2-10-internalecspause-aaeaf1f6b6aa95c3f101",
+    "id": "5cdcae00c54d008f540c3888b51a16b707e2c0f9880a8e2645aeb11a3a6c1e94",
     "networks": {
       "eth0": {
-        "rx_bytes": 58101,
-        "rx_packets": 181,
+        "rx_bytes": 310989,
+        "rx_packets": 2685,
         "rx_errors": 0,
         "rx_dropped": 0,
-        "tx_bytes": 50374,
-        "tx_packets": 207,
+        "tx_bytes": 309424,
+        "tx_packets": 3198,
         "tx_errors": 0,
         "tx_dropped": 0
       }
     },
     "network_rate_stats": {
-      "rx_bytes_per_sec": 2273.382080078125,
-      "tx_bytes_per_sec": 2431.48779296875
+      "rx_bytes_per_sec": 1807.1822509765625,
+      "tx_bytes_per_sec": 1094.189208984375
     }
   },
-  "934f82fd9fcebd080cc42ee8515fa020c66f6040dbf0887cc7a744686ac514ee": {
-    "read": "2026-09-12T21:05:57.447480886Z",
-    "preread": "2026-09-12T21:05:56.441941906Z",
+  "7c0a114cb338f9923ce85b3690f4e97b2dbf2a8c7532c4b78db72ba6a76a4db5": {
+    "read": "2026-09-14T00:59:08.750822716Z",
+    "preread": "2026-09-14T00:59:07.745105299Z",
     "pids_stats": {
-      "current": 18
+      "current": 20,
+      "limit": 403
     },
     "blkio_stats": {
       "io_service_bytes_recursive": [
         {
           "major": 259,
           "minor": 0,
-          "op": "Read",
-          "value": 39828992
+          "op": "read",
+          "value": 47558656
         },
         {
           "major": 259,
           "minor": 0,
-          "op": "Write",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Sync",
-          "value": 39828992
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Async",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Total",
-          "value": 39828992
+          "op": "write",
+          "value": 139264
         }
       ],
-      "io_serviced_recursive": [
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Read",
-          "value": 533
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Write",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Sync",
-          "value": 533
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Async",
-          "value": 0
-        },
-        {
-          "major": 259,
-          "minor": 0,
-          "op": "Total",
-          "value": 533
-        }
-      ],
-      "io_queue_recursive": [],
-      "io_service_time_recursive": [],
-      "io_wait_time_recursive": [],
-      "io_merged_recursive": [],
-      "io_time_recursive": [],
-      "sectors_recursive": []
+      "io_serviced_recursive": null,
+      "io_queue_recursive": null,
+      "io_service_time_recursive": null,
+      "io_wait_time_recursive": null,
+      "io_merged_recursive": null,
+      "io_time_recursive": null,
+      "sectors_recursive": null
     },
     "num_procs": 0,
     "storage_stats": {},
     "cpu_stats": {
       "cpu_usage": {
-        "total_usage": 182885545,
-        "percpu_usage": [
-          85286728,
-          97598817
-        ],
-        "usage_in_kernelmode": 50000000,
-        "usage_in_usermode": 100000000
+        "total_usage": 1498103000,
+        "usage_in_kernelmode": 559264000,
+        "usage_in_usermode": 938838000
       },
-      "system_cpu_usage": 688650000000,
+      "system_cpu_usage": 25587440000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -448,15 +280,11 @@
     },
     "precpu_stats": {
       "cpu_usage": {
-        "total_usage": 182885545,
-        "percpu_usage": [
-          85286728,
-          97598817
-        ],
-        "usage_in_kernelmode": 50000000,
-        "usage_in_usermode": 100000000
+        "total_usage": 1498103000,
+        "usage_in_kernelmode": 559264000,
+        "usage_in_usermode": 938838000
       },
-      "system_cpu_usage": 686650000000,
+      "system_cpu_usage": 25585430000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -465,61 +293,59 @@
       }
     },
     "memory_stats": {
-      "usage": 41676800,
-      "max_usage": 55803904,
+      "usage": 26165248,
       "stats": {
-        "active_anon": 19787776,
-        "active_file": 10276864,
-        "cache": 20742144,
-        "dirty": 0,
-        "hierarchical_memory_limit": 268435456,
-        "hierarchical_memsw_limit": 9223372036854771712,
-        "inactive_anon": 0,
-        "inactive_file": 10465280,
-        "mapped_file": 19193856,
-        "pgfault": 10857,
-        "pgmajfault": 231,
-        "pgpgin": 17589,
-        "pgpgout": 7736,
-        "rss": 19877888,
-        "rss_huge": 0,
-        "total_active_anon": 19787776,
-        "total_active_file": 10276864,
-        "total_cache": 20742144,
-        "total_dirty": 0,
-        "total_inactive_anon": 0,
-        "total_inactive_file": 10465280,
-        "total_mapped_file": 19193856,
-        "total_pgfault": 10857,
-        "total_pgmajfault": 231,
-        "total_pgpgin": 17589,
-        "total_pgpgout": 7736,
-        "total_rss": 19877888,
-        "total_rss_huge": 0,
-        "total_unevictable": 0,
-        "total_writeback": 0,
+        "active_anon": 7479296,
+        "active_file": 5943296,
+        "anon": 15716352,
+        "anon_thp": 0,
+        "file": 9019392,
+        "file_dirty": 0,
+        "file_mapped": 7831552,
+        "file_writeback": 0,
+        "inactive_anon": 8237056,
+        "inactive_file": 3076096,
+        "kernel_stack": 311296,
+        "pgactivate": 10496,
+        "pgdeactivate": 10109,
+        "pgfault": 17904,
+        "pglazyfree": 0,
+        "pglazyfreed": 0,
+        "pgmajfault": 1660,
+        "pgrefill": 18150,
+        "pgscan": 28202,
+        "pgsteal": 11906,
+        "shmem": 0,
+        "slab": 616176,
+        "slab_reclaimable": 339952,
+        "slab_unreclaimable": 276224,
+        "sock": 0,
+        "thp_collapse_alloc": 0,
+        "thp_fault_alloc": 0,
         "unevictable": 0,
-        "writeback": 0
+        "workingset_activate": 0,
+        "workingset_nodereclaim": 0,
+        "workingset_refault": 0
       },
-      "limit": 449421312
+      "limit": 438865920
     },
-    "name": "/ecs-ecs-exporter-fixtures-ec2-9-main-84cbfda0a993f0e3e801",
-    "id": "934f82fd9fcebd080cc42ee8515fa020c66f6040dbf0887cc7a744686ac514ee",
+    "name": "/ecs-ecs-exporter-fixtures-ec2-10-main-c4b981d298b2bddf9601",
+    "id": "7c0a114cb338f9923ce85b3690f4e97b2dbf2a8c7532c4b78db72ba6a76a4db5",
     "networks": {
       "eth0": {
-        "rx_bytes": 58101,
-        "rx_packets": 181,
+        "rx_bytes": 310989,
+        "rx_packets": 2685,
         "rx_errors": 0,
         "rx_dropped": 0,
-        "tx_bytes": 50374,
-        "tx_packets": 207,
+        "tx_bytes": 309424,
+        "tx_packets": 3198,
         "tx_errors": 0,
         "tx_dropped": 0
       }
     },
     "network_rate_stats": {
-      "rx_bytes_per_sec": 2273.382080078125,
-      "tx_bytes_per_sec": 2431.48779296875
+      "rx_bytes_per_sec": 1807.1822509765625,
+      "tx_bytes_per_sec": 1094.189208984375
     }
   }
 }
