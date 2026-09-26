@@ -1,10 +1,10 @@
 {
-  "4ffbc8c681bff2c721b777169aee004c874a3c8a83d3d47d71da7edb0ee383f6": {},
-  "ecc9309e44393f6323efd016c9cfc2922b49a946cc591c67faf5f18d69deff93": {
-    "read": "2026-09-14T00:59:08.752138624Z",
-    "preread": "2026-09-14T00:59:07.746549915Z",
+  "ddb305f3f0f84f7920898487d1dbae2810c49c9dd8f6e5a1217819bbadeaad86": {},
+  "c9b59a1d63881dec66ad466b58ab4e7bde037f68d61a8bfce4ada0d107384c7e": {
+    "read": "2026-09-26T17:50:18.92335842Z",
+    "preread": "2026-09-26T17:50:17.917233651Z",
     "pids_stats": {
-      "current": 34,
+      "current": 35,
       "limit": 403
     },
     "blkio_stats": {
@@ -13,13 +13,13 @@
           "major": 259,
           "minor": 0,
           "op": "read",
-          "value": 77971456
+          "value": 87158784
         },
         {
           "major": 259,
           "minor": 0,
           "op": "write",
-          "value": 245760
+          "value": 77824
         }
       ],
       "io_serviced_recursive": null,
@@ -34,11 +34,11 @@
     "storage_stats": {},
     "cpu_stats": {
       "cpu_usage": {
-        "total_usage": 2017762000,
-        "usage_in_kernelmode": 602711000,
-        "usage_in_usermode": 1415050000
+        "total_usage": 387241000,
+        "usage_in_kernelmode": 169060000,
+        "usage_in_usermode": 218181000
       },
-      "system_cpu_usage": 25587440000000,
+      "system_cpu_usage": 325760000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -48,11 +48,11 @@
     },
     "precpu_stats": {
       "cpu_usage": {
-        "total_usage": 2014612000,
-        "usage_in_kernelmode": 601771000,
-        "usage_in_usermode": 1412841000
+        "total_usage": 369834000,
+        "usage_in_kernelmode": 169060000,
+        "usage_in_usermode": 200774000
       },
-      "system_cpu_usage": 25585450000000,
+      "system_cpu_usage": 323730000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -61,32 +61,32 @@
       }
     },
     "memory_stats": {
-      "usage": 62255104,
+      "usage": 48664576,
       "stats": {
-        "active_anon": 13541376,
-        "active_file": 5943296,
-        "anon": 35438592,
+        "active_anon": 9027584,
+        "active_file": 13508608,
+        "anon": 25726976,
         "anon_thp": 0,
-        "file": 24702976,
+        "file": 20873216,
         "file_dirty": 16384,
-        "file_mapped": 18702336,
+        "file_mapped": 15323136,
         "file_writeback": 0,
-        "inactive_anon": 21897216,
-        "inactive_file": 18759680,
-        "kernel_stack": 540672,
-        "pgactivate": 10328,
-        "pgdeactivate": 13464,
-        "pgfault": 32851,
+        "inactive_anon": 16699392,
+        "inactive_file": 7364608,
+        "kernel_stack": 557056,
+        "pgactivate": 10465,
+        "pgdeactivate": 9622,
+        "pgfault": 20417,
         "pglazyfree": 0,
         "pglazyfreed": 0,
-        "pgmajfault": 1880,
-        "pgrefill": 15814,
-        "pgscan": 35059,
-        "pgsteal": 15514,
+        "pgmajfault": 868,
+        "pgrefill": 13461,
+        "pgscan": 37985,
+        "pgsteal": 19883,
         "shmem": 0,
-        "slab": 778144,
-        "slab_reclaimable": 341856,
-        "slab_unreclaimable": 436288,
+        "slab": 702088,
+        "slab_reclaimable": 258264,
+        "slab_unreclaimable": 443824,
         "sock": 0,
         "thp_collapse_alloc": 0,
         "thp_fault_alloc": 0,
@@ -97,28 +97,28 @@
       },
       "limit": 134217728
     },
-    "name": "/ecs-ecs-exporter-fixtures-ec2-10-ecs-exporter-9e83a1d28f90bcd38f01",
-    "id": "ecc9309e44393f6323efd016c9cfc2922b49a946cc591c67faf5f18d69deff93",
+    "name": "/ecs-ecs-exporter-fixtures-ec2-20-ecs-exporter-b09cc7c1b2b2ade24700",
+    "id": "c9b59a1d63881dec66ad466b58ab4e7bde037f68d61a8bfce4ada0d107384c7e",
     "networks": {
       "eth0": {
-        "rx_bytes": 310989,
-        "rx_packets": 2685,
+        "rx_bytes": 54916,
+        "rx_packets": 148,
         "rx_errors": 0,
         "rx_dropped": 0,
-        "tx_bytes": 309424,
-        "tx_packets": 3198,
+        "tx_bytes": 43992,
+        "tx_packets": 163,
         "tx_errors": 0,
         "tx_dropped": 0
       }
     },
     "network_rate_stats": {
-      "rx_bytes_per_sec": 1807.1822509765625,
-      "tx_bytes_per_sec": 1094.189208984375
+      "rx_bytes_per_sec": 13.200778007507324,
+      "tx_bytes_per_sec": 13.200778007507324
     }
   },
-  "5cdcae00c54d008f540c3888b51a16b707e2c0f9880a8e2645aeb11a3a6c1e94": {
-    "read": "2026-09-14T00:59:08.748256139Z",
-    "preread": "2026-09-14T00:59:07.74360464Z",
+  "3f640ff04386c7b5fa5d54f4ffa4c295d4ddbb1aa890170ed85f9780ed718b21": {
+    "read": "2026-09-26T17:50:18.919793325Z",
+    "preread": "2026-09-26T17:50:17.913210374Z",
     "pids_stats": {
       "current": 1,
       "limit": 403
@@ -129,7 +129,7 @@
           "major": 259,
           "minor": 0,
           "op": "read",
-          "value": 966656
+          "value": 1044480
         },
         {
           "major": 259,
@@ -150,11 +150,11 @@
     "storage_stats": {},
     "cpu_stats": {
       "cpu_usage": {
-        "total_usage": 23876000,
-        "usage_in_kernelmode": 7958000,
-        "usage_in_usermode": 15917000
+        "total_usage": 23398000,
+        "usage_in_kernelmode": 23398000,
+        "usage_in_usermode": 0
       },
-      "system_cpu_usage": 25587440000000,
+      "system_cpu_usage": 325760000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -164,11 +164,11 @@
     },
     "precpu_stats": {
       "cpu_usage": {
-        "total_usage": 23876000,
-        "usage_in_kernelmode": 7958000,
-        "usage_in_usermode": 15917000
+        "total_usage": 23398000,
+        "usage_in_kernelmode": 23398000,
+        "usage_in_usermode": 0
       },
-      "system_cpu_usage": 25585420000000,
+      "system_cpu_usage": 323730000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -177,32 +177,32 @@
       }
     },
     "memory_stats": {
-      "usage": 446464,
+      "usage": 389120,
       "stats": {
-        "active_anon": 0,
-        "active_file": 106496,
-        "anon": 32768,
+        "active_anon": 4096,
+        "active_file": 53248,
+        "anon": 36864,
         "anon_thp": 0,
-        "file": 159744,
+        "file": 94208,
         "file_dirty": 0,
-        "file_mapped": 155648,
+        "file_mapped": 69632,
         "file_writeback": 0,
         "inactive_anon": 32768,
-        "inactive_file": 53248,
+        "inactive_file": 40960,
         "kernel_stack": 16384,
-        "pgactivate": 92,
-        "pgdeactivate": 149,
-        "pgfault": 1095,
+        "pgactivate": 118,
+        "pgdeactivate": 201,
+        "pgfault": 1223,
         "pglazyfree": 0,
         "pglazyfreed": 0,
-        "pgmajfault": 9,
-        "pgrefill": 165,
-        "pgscan": 290,
-        "pgsteal": 197,
+        "pgmajfault": 11,
+        "pgrefill": 201,
+        "pgscan": 449,
+        "pgsteal": 232,
         "shmem": 0,
-        "slab": 185184,
-        "slab_reclaimable": 56296,
-        "slab_unreclaimable": 128888,
+        "slab": 187280,
+        "slab_reclaimable": 59176,
+        "slab_unreclaimable": 128104,
         "sock": 0,
         "thp_collapse_alloc": 0,
         "thp_fault_alloc": 0,
@@ -213,45 +213,57 @@
       },
       "limit": 438865920
     },
-    "name": "/ecs-ecs-exporter-fixtures-ec2-10-internalecspause-aaeaf1f6b6aa95c3f101",
-    "id": "5cdcae00c54d008f540c3888b51a16b707e2c0f9880a8e2645aeb11a3a6c1e94",
+    "name": "/ecs-ecs-exporter-fixtures-ec2-20-internalecspause-a4a7d1cbe0d3ceb36b00",
+    "id": "3f640ff04386c7b5fa5d54f4ffa4c295d4ddbb1aa890170ed85f9780ed718b21",
     "networks": {
       "eth0": {
-        "rx_bytes": 310989,
-        "rx_packets": 2685,
+        "rx_bytes": 54916,
+        "rx_packets": 148,
         "rx_errors": 0,
         "rx_dropped": 0,
-        "tx_bytes": 309424,
-        "tx_packets": 3198,
+        "tx_bytes": 43992,
+        "tx_packets": 163,
         "tx_errors": 0,
         "tx_dropped": 0
       }
     },
     "network_rate_stats": {
-      "rx_bytes_per_sec": 1807.1822509765625,
-      "tx_bytes_per_sec": 1094.189208984375
+      "rx_bytes_per_sec": 13.200778007507324,
+      "tx_bytes_per_sec": 13.200778007507324
     }
   },
-  "7c0a114cb338f9923ce85b3690f4e97b2dbf2a8c7532c4b78db72ba6a76a4db5": {
-    "read": "2026-09-14T00:59:08.750822716Z",
-    "preread": "2026-09-14T00:59:07.745105299Z",
+  "14b8880e766feef288ac7efce120acd4eaa16bc9ef34dd5d49ad191e50f7bf81": {
+    "read": "2026-09-26T17:50:18.921882681Z",
+    "preread": "2026-09-26T17:50:17.915804377Z",
     "pids_stats": {
-      "current": 20,
+      "current": 56,
       "limit": 403
     },
     "blkio_stats": {
       "io_service_bytes_recursive": [
         {
+          "major": 253,
+          "minor": 0,
+          "op": "read",
+          "value": 0
+        },
+        {
+          "major": 253,
+          "minor": 0,
+          "op": "write",
+          "value": 2097152
+        },
+        {
           "major": 259,
           "minor": 0,
           "op": "read",
-          "value": 47558656
+          "value": 864182272
         },
         {
           "major": 259,
           "minor": 0,
           "op": "write",
-          "value": 139264
+          "value": 268488704
         }
       ],
       "io_serviced_recursive": null,
@@ -266,11 +278,11 @@
     "storage_stats": {},
     "cpu_stats": {
       "cpu_usage": {
-        "total_usage": 1498103000,
-        "usage_in_kernelmode": 559264000,
-        "usage_in_usermode": 938838000
+        "total_usage": 1222908000,
+        "usage_in_kernelmode": 738015000,
+        "usage_in_usermode": 484893000
       },
-      "system_cpu_usage": 25587440000000,
+      "system_cpu_usage": 325760000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -280,11 +292,11 @@
     },
     "precpu_stats": {
       "cpu_usage": {
-        "total_usage": 1498103000,
-        "usage_in_kernelmode": 559264000,
-        "usage_in_usermode": 938838000
+        "total_usage": 1221891000,
+        "usage_in_kernelmode": 737401000,
+        "usage_in_usermode": 484490000
       },
-      "system_cpu_usage": 25585430000000,
+      "system_cpu_usage": 323730000000,
       "online_cpus": 2,
       "throttling_data": {
         "periods": 0,
@@ -293,59 +305,59 @@
       }
     },
     "memory_stats": {
-      "usage": 26165248,
+      "usage": 24035328,
       "stats": {
-        "active_anon": 7479296,
-        "active_file": 5943296,
-        "anon": 15716352,
-        "anon_thp": 0,
-        "file": 9019392,
+        "active_anon": 1642496,
+        "active_file": 3293184,
+        "anon": 10735616,
+        "anon_thp": 2097152,
+        "file": 9773056,
         "file_dirty": 0,
-        "file_mapped": 7831552,
+        "file_mapped": 9347072,
         "file_writeback": 0,
-        "inactive_anon": 8237056,
-        "inactive_file": 3076096,
-        "kernel_stack": 311296,
-        "pgactivate": 10496,
-        "pgdeactivate": 10109,
-        "pgfault": 17904,
-        "pglazyfree": 0,
-        "pglazyfreed": 0,
-        "pgmajfault": 1660,
-        "pgrefill": 18150,
-        "pgscan": 28202,
-        "pgsteal": 11906,
-        "shmem": 0,
-        "slab": 616176,
-        "slab_reclaimable": 339952,
-        "slab_unreclaimable": 276224,
-        "sock": 0,
-        "thp_collapse_alloc": 0,
-        "thp_fault_alloc": 0,
-        "unevictable": 0,
+        "inactive_anon": 13848576,
+        "inactive_file": 1720320,
+        "kernel_stack": 901120,
+        "pgactivate": 7902,
+        "pgdeactivate": 9106,
+        "pgfault": 34035,
+        "pglazyfree": 2048,
+        "pglazyfreed": 2048,
+        "pgmajfault": 842,
+        "pgrefill": 17005,
+        "pgscan": 301777,
+        "pgsteal": 283656,
+        "shmem": 4759552,
+        "slab": 1320576,
+        "slab_reclaimable": 713016,
+        "slab_unreclaimable": 607560,
+        "sock": 712704,
+        "thp_collapse_alloc": 1,
+        "thp_fault_alloc": 1,
+        "unevictable": 4096,
         "workingset_activate": 0,
-        "workingset_nodereclaim": 0,
+        "workingset_nodereclaim": 384,
         "workingset_refault": 0
       },
-      "limit": 438865920
+      "limit": 100663296
     },
-    "name": "/ecs-ecs-exporter-fixtures-ec2-10-main-c4b981d298b2bddf9601",
-    "id": "7c0a114cb338f9923ce85b3690f4e97b2dbf2a8c7532c4b78db72ba6a76a4db5",
+    "name": "/ecs-ecs-exporter-fixtures-ec2-20-main-f6d896aeb6dbdbba1800",
+    "id": "14b8880e766feef288ac7efce120acd4eaa16bc9ef34dd5d49ad191e50f7bf81",
     "networks": {
       "eth0": {
-        "rx_bytes": 310989,
-        "rx_packets": 2685,
+        "rx_bytes": 54916,
+        "rx_packets": 148,
         "rx_errors": 0,
         "rx_dropped": 0,
-        "tx_bytes": 309424,
-        "tx_packets": 3198,
+        "tx_bytes": 43992,
+        "tx_packets": 163,
         "tx_errors": 0,
         "tx_dropped": 0
       }
     },
     "network_rate_stats": {
-      "rx_bytes_per_sec": 1807.1822509765625,
-      "tx_bytes_per_sec": 1094.189208984375
+      "rx_bytes_per_sec": 13.200778007507324,
+      "tx_bytes_per_sec": 13.200778007507324
     }
   }
 }

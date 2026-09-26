@@ -14,6 +14,14 @@ with respect to task configuration. So, for example, we know that ECS on EC2 and
 on Fargate use completely different implementations of the API, so we should
 deploy all tasks to both in order to collect fixtures from both.
 
+The `main` container uses a standard-library-only Go workload built from
+[`fixture-workload`](./fixture-workload). It creates file-cache pressure and
+retains shared, transparent-huge-page, locked, socket-buffer, and kernel-stack
+memory so the task stats fixtures exercise obscure aspects of cgroup memory
+accounting rather than only describing an idle container. EC2 instances enable
+the kernel's `madvise` transparent huge-page policy, and the workload verifies
+and maintains its advised huge-page mapping after inducing memory pressure.
+
 ## How to update fixtures
 
 ### Prerequisites
@@ -25,6 +33,9 @@ details are there, but in short, you will need:
   written in Node. Even though our CDK app is written in Go, any non-NodeJS CDK
   app is ultimately doing RPC to a NodeJS process using code generated from the
   CDK NodeJS codebase.
+- Docker with BuildKit support, used to cross-compile (if necessary) and publish
+  the fixture workload image. The build itself runs on the host architecture
+  and does not require emulation.
 - An AWS account,
   [bootstrapped](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html)
   to receive CDK deployments.
@@ -49,22 +60,61 @@ In other words:
 
 ```sh
 # Prerequisite: you are authenticated to your AWS account. This can be done in
-# multiple ways; one common way involves having an AWS_ACCESS_KEY_ID and
-# AWS_SECRET_ACCESS_KEY set in the environment.
+# multiple ways; one common way involves using `aws login` from the AWS CLI.
 
 # Deploy the stack.
 cdk deploy -y
 
-# Update fixtures. We have to use `tail`/`head` to chop off non-JSON output
-# printed by `aws ecs execute-command` to stdout. See:
+# Update fixtures. We select the JSON line from the additional output printed
+# by `aws ecs execute-command`. See:
 # https://github.com/aws/session-manager-plugin/issues/85
 #
 # We also use `jq` to sort parts of the output data to keep fixture diffs more
 # readable - some things are not consistently ordered.
-aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-fargate | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task"' | tail -n4 | head -n1 | jq '.Containers |= sort_by(.Name)' > ../../ecscollector/testdata/fixtures/fargate_task_metadata.json
-aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-fargate | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats"' | tail -n4 | head -n1 | jq 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/fargate_task_stats.json
-aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-ec2 | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task"' | tail -n4 | head -n1 | jq '.Containers |= sort_by(.Name)' > ../../ecscollector/testdata/fixtures/ec2_task_metadata.json
-aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-ec2 | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats"' | tail -n4 | head -n1 | jq 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/ec2_task_stats.json
+set -o pipefail
+aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-fargate | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e '.Containers |= sort_by(.Name)' > ../../ecscollector/testdata/fixtures/fargate_task_metadata.json.tmp && mv ../../ecscollector/testdata/fixtures/fargate_task_metadata.json.tmp ../../ecscollector/testdata/fixtures/fargate_task_metadata.json
+aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-fargate | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/fargate_task_stats.json.tmp && mv ../../ecscollector/testdata/fixtures/fargate_task_stats.json.tmp ../../ecscollector/testdata/fixtures/fargate_task_stats.json
+aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-ec2 | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e '.Containers |= sort_by(.Name)' > ../../ecscollector/testdata/fixtures/ec2_task_metadata.json.tmp && mv ../../ecscollector/testdata/fixtures/ec2_task_metadata.json.tmp ../../ecscollector/testdata/fixtures/ec2_task_metadata.json
+aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-ec2 | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/ec2_task_stats.json.tmp && mv ../../ecscollector/testdata/fixtures/ec2_task_stats.json.tmp ../../ecscollector/testdata/fixtures/ec2_task_stats.json
+
+# Verify that the bounded startup workload completed and exercised the memory
+# accounting that the fixtures are intended to cover.
+jq -e '
+  .Containers[] | select(.Name == "main") |
+  .KnownStatus == "RUNNING" and .Health.status == "HEALTHY"
+' ../../ecscollector/testdata/fixtures/ec2_task_metadata.json
+jq -e --arg id "$(jq -r '.Containers[] | select(.Name == "main") | .DockerId' ../../ecscollector/testdata/fixtures/ec2_task_metadata.json)" '
+  .[$id].memory_stats as $memory |
+  $memory.limit == 100663296 and
+  (($memory.failcnt // 0) == 0) and
+  $memory.stats.anon_thp > 0 and
+  $memory.stats.kernel_stack > 0 and
+  $memory.stats.sock > 0 and
+  $memory.stats.shmem > 0 and
+  $memory.stats.unevictable > 0 and
+  $memory.stats.slab_reclaimable > 0 and
+  $memory.stats.slab_unreclaimable > 0 and
+  $memory.stats.pglazyfree > 0 and
+  $memory.stats.pglazyfreed > 0 and
+  $memory.stats.pgscan > 0 and
+  $memory.stats.pgsteal > 0
+' ../../ecscollector/testdata/fixtures/ec2_task_stats.json
+
+jq -e '
+  .Containers[] | select(.Name == "main") |
+  .KnownStatus == "RUNNING" and .Health.status == "HEALTHY"
+' ../../ecscollector/testdata/fixtures/fargate_task_metadata.json
+jq -e --arg id "$(jq -r '.Containers[] | select(.Name == "main") | .DockerId' ../../ecscollector/testdata/fixtures/fargate_task_metadata.json)" '
+  .[$id].memory_stats as $memory |
+  $memory.limit == 100663296 and
+  $memory.failcnt > 0 and
+  $memory.max_usage > 0 and
+  $memory.stats.total_rss_huge > 0 and
+  $memory.stats.total_unevictable > 0 and
+  $memory.stats.total_cache > 0 and
+  $memory.stats.total_pgpgin > 0 and
+  $memory.stats.total_pgpgout > 0
+' ../../ecscollector/testdata/fixtures/fargate_task_stats.json
 
 # Destroy the stack.
 cdk destroy -y

@@ -1,21 +1,21 @@
 {
   "Cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-fixtures",
-  "TaskARN": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9",
+  "TaskARN": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45",
   "Family": "ecs-exporter-fixtures-fargate",
-  "Revision": "8",
+  "Revision": "18",
   "DesiredStatus": "RUNNING",
   "KnownStatus": "RUNNING",
   "Limits": {
     "CPU": 0.25,
     "Memory": 512
   },
-  "PullStartedAt": "2026-09-13T21:21:55.356021401Z",
-  "PullStoppedAt": "2026-09-13T21:25:23.945800382Z",
+  "PullStartedAt": "2026-09-26T17:43:16.276511351Z",
+  "PullStoppedAt": "2026-09-26T17:46:58.990549491Z",
   "AvailabilityZone": "us-east-1a",
   "LaunchType": "FARGATE",
   "Containers": [
     {
-      "DockerId": "0a0ee1bbd8b247a0be539327eab000d9-4159844948",
+      "DockerId": "8204edb71692468dba0dcaedf9445d45-4159844948",
       "Name": "ecs-exporter",
       "DockerName": "ecs-exporter",
       "Image": "quay.io/prometheuscommunity/ecs-exporter:v0.4.0",
@@ -23,9 +23,9 @@
       "Labels": {
         "com.amazonaws.ecs.cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "ecs-exporter",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-fargate",
-        "com.amazonaws.ecs.task-definition-version": "8"
+        "com.amazonaws.ecs.task-definition-version": "18"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "RUNNING",
@@ -33,18 +33,18 @@
         "CPU": 128,
         "Memory": 128
       },
-      "CreatedAt": "2026-09-13T21:25:24.569883798Z",
-      "StartedAt": "2026-09-13T21:25:24.569883798Z",
+      "CreatedAt": "2026-09-26T17:46:59.661462288Z",
+      "StartedAt": "2026-09-26T17:46:59.661462288Z",
       "Type": "NORMAL",
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9/ce0c5e43-945b-4420-83fd-671b865a1f66",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45/35fd9d77-75a7-4a12-8f66-6f9e9f255438",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.194.218"
+            "10.0.186.183"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:de:09:e9:01",
+          "MACAddress": "0a:ff:f1:c7:57:49",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
           "DomainNameServers": [
             "10.0.0.2"
@@ -52,42 +52,54 @@
           "DomainNameSearchList": [
             "ec2.internal"
           ],
-          "PrivateDNSName": "ip-10-0-194-218.ec2.internal",
+          "PrivateDNSName": "ip-10-0-186-183.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ],
       "Snapshotter": "overlayfs"
     },
     {
-      "DockerId": "0a0ee1bbd8b247a0be539327eab000d9-3935363592",
+      "DockerId": "8204edb71692468dba0dcaedf9445d45-3935363592",
       "Name": "main",
       "DockerName": "main",
-      "Image": "alpine",
-      "ImageID": "sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b",
+      "Image": "829490980523.dkr.ecr.us-east-1.amazonaws.com/cdk-hnb659fds-container-assets-829490980523-us-east-1:6eccf2083ee645d7a5cb08837ab520e7d27332421eaec8918f684043f0fc6265",
+      "ImageID": "sha256:1aa35fb918b826f29d9df8dbbc8bb83c9d7f88eb608a7997be559bf7a4339a43",
       "Labels": {
         "com.amazonaws.ecs.cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "main",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-fargate",
-        "com.amazonaws.ecs.task-definition-version": "8"
+        "com.amazonaws.ecs.task-definition-version": "18"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "RUNNING",
       "Limits": {
-        "CPU": 2
+        "CPU": 2,
+        "Memory": 96
       },
-      "CreatedAt": "2026-09-13T21:25:24.768222964Z",
-      "StartedAt": "2026-09-13T21:25:24.768222964Z",
+      "CreatedAt": "2026-09-26T17:46:59.759557633Z",
+      "StartedAt": "2026-09-26T17:46:59.759557633Z",
       "Type": "NORMAL",
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9/c247cfed-17cc-44a0-a3f4-af8ef30e8bf5",
+      "Health": {
+        "status": "HEALTHY",
+        "statusSince": "2026-09-26T17:47:10.3473815Z"
+      },
+      "LogDriver": "awslogs",
+      "LogOptions": {
+        "awslogs-group": "FixtureCollectorStack-FixtureWorkloadLogGroup35F584B7-mgfY86xPluSb",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream": "fixture-workload/main/8204edb71692468dba0dcaedf9445d45",
+        "mode": "non-blocking"
+      },
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45/679ebd39-0f29-4b00-b013-b63d88cebaea",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.194.218"
+            "10.0.186.183"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:de:09:e9:01",
+          "MACAddress": "0a:ff:f1:c7:57:49",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
           "DomainNameServers": [
             "10.0.0.2"
@@ -95,24 +107,24 @@
           "DomainNameSearchList": [
             "ec2.internal"
           ],
-          "PrivateDNSName": "ip-10-0-194-218.ec2.internal",
+          "PrivateDNSName": "ip-10-0-186-183.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ],
       "Snapshotter": "overlayfs"
     },
     {
-      "DockerId": "0a0ee1bbd8b247a0be539327eab000d9-1585788040",
+      "DockerId": "8204edb71692468dba0dcaedf9445d45-1585788040",
       "Name": "nonessential",
       "DockerName": "nonessential",
       "Image": "alpine",
-      "ImageID": "sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b",
+      "ImageID": "sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6",
       "Labels": {
         "com.amazonaws.ecs.cluster": "arn:aws:ecs:us-east-1:829490980523:cluster/prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "nonessential",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-fargate",
-        "com.amazonaws.ecs.task-definition-version": "8"
+        "com.amazonaws.ecs.task-definition-version": "18"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "STOPPED",
@@ -121,19 +133,19 @@
         "CPU": 128,
         "Memory": 128
       },
-      "CreatedAt": "2026-09-13T21:25:24.708873319Z",
-      "StartedAt": "2026-09-13T21:25:24.708873319Z",
-      "FinishedAt": "2026-09-13T21:25:24.871601456Z",
+      "CreatedAt": "2026-09-26T17:46:59.751812463Z",
+      "StartedAt": "2026-09-26T17:46:59.751812463Z",
+      "FinishedAt": "2026-09-26T17:46:59.7607695Z",
       "Type": "NORMAL",
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/0a0ee1bbd8b247a0be539327eab000d9/2bc1950b-cfdb-4056-b3fd-d300075da4b7",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/8204edb71692468dba0dcaedf9445d45/28280c9d-84a0-4e51-ac23-437dbfb02b21",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.194.218"
+            "10.0.186.183"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:de:09:e9:01",
+          "MACAddress": "0a:ff:f1:c7:57:49",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
           "DomainNameServers": [
             "10.0.0.2"
@@ -141,7 +153,7 @@
           "DomainNameSearchList": [
             "ec2.internal"
           ],
-          "PrivateDNSName": "ip-10-0-194-218.ec2.internal",
+          "PrivateDNSName": "ip-10-0-186-183.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ],
@@ -151,12 +163,12 @@
   "ServiceName": "prom-ecs-exporter-fixtures-fargate",
   "Group": "service:prom-ecs-exporter-fixtures-fargate",
   "ClockDrift": {
-    "ClockErrorBound": 0.7370964999999999,
-    "ReferenceTimestamp": "2026-09-14T00:55:54Z",
+    "ClockErrorBound": 0.5515185,
+    "ReferenceTimestamp": "2026-09-26T17:49:31Z",
     "ClockSynchronizationStatus": "SYNCHRONIZED"
   },
   "EphemeralStorageMetrics": {
-    "Utilized": 39,
+    "Utilized": 311,
     "Reserved": 20496
   },
   "FaultInjectionEnabled": false,
