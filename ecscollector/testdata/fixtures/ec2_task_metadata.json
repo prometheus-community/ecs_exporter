@@ -1,30 +1,30 @@
 {
   "Cluster": "prom-ecs-exporter-fixtures",
-  "TaskARN": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9",
+  "TaskARN": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba",
   "Family": "ecs-exporter-fixtures-ec2",
-  "Revision": "10",
+  "Revision": "20",
   "DesiredStatus": "RUNNING",
   "KnownStatus": "RUNNING",
   "Limits": {
     "Memory": 256
   },
-  "PullStartedAt": "2026-09-13T21:26:27.702133212Z",
-  "PullStoppedAt": "2026-09-13T21:26:28.987680595Z",
+  "PullStartedAt": "2026-09-26T17:48:25.585328273Z",
+  "PullStoppedAt": "2026-09-26T17:48:27.711270214Z",
   "AvailabilityZone": "us-east-1a",
   "LaunchType": "EC2",
   "Containers": [
     {
-      "DockerId": "ecc9309e44393f6323efd016c9cfc2922b49a946cc591c67faf5f18d69deff93",
+      "DockerId": "c9b59a1d63881dec66ad466b58ab4e7bde037f68d61a8bfce4ada0d107384c7e",
       "Name": "ecs-exporter",
-      "DockerName": "ecs-ecs-exporter-fixtures-ec2-10-ecs-exporter-9e83a1d28f90bcd38f01",
+      "DockerName": "ecs-ecs-exporter-fixtures-ec2-20-ecs-exporter-b09cc7c1b2b2ade24700",
       "Image": "quay.io/prometheuscommunity/ecs-exporter:v0.4.0",
       "ImageID": "sha256:bedb26ec39cf3d7fac4602a633a275df7227c84b3e4b320712b60a510416420f",
       "Labels": {
         "com.amazonaws.ecs.cluster": "prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "ecs-exporter",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-ec2",
-        "com.amazonaws.ecs.task-definition-version": "10"
+        "com.amazonaws.ecs.task-definition-version": "20"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "RUNNING",
@@ -32,133 +32,144 @@
         "CPU": 128,
         "Memory": 128
       },
-      "CreatedAt": "2026-09-13T21:26:29.005623019Z",
-      "StartedAt": "2026-09-13T21:26:29.253342666Z",
+      "CreatedAt": "2026-09-26T17:48:28.04951306Z",
+      "StartedAt": "2026-09-26T17:48:29.370872071Z",
       "Type": "NORMAL",
       "Volumes": [
         {
-          "Source": "/var/log/ecs/exec/cd9675674c9b47d6b16f5941e6e361d9/ecs-exporter",
+          "Source": "/var/lib/ecs/deps/execute-command/certs/tls-ca-bundle.pem",
+          "Destination": "/ecs-execute-command-1e8ebec3-6aed-4dca-a085-80e50c25335e/certs/amazon-ssm-agent.crt"
+        },
+        {
+          "Source": "/var/log/ecs/exec/7982a8670adf49fab4297ee5ed51c0ba/ecs-exporter",
           "Destination": "/var/log/amazon/ssm"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/amazon-ssm-agent",
-          "Destination": "/ecs-execute-command-a432f505-77bf-448d-941e-65e7e3ff90af/amazon-ssm-agent"
+          "Destination": "/ecs-execute-command-1e8ebec3-6aed-4dca-a085-80e50c25335e/amazon-ssm-agent"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/ssm-agent-worker",
-          "Destination": "/ecs-execute-command-a432f505-77bf-448d-941e-65e7e3ff90af/ssm-agent-worker"
+          "Destination": "/ecs-execute-command-1e8ebec3-6aed-4dca-a085-80e50c25335e/ssm-agent-worker"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/ssm-session-worker",
-          "Destination": "/ecs-execute-command-a432f505-77bf-448d-941e-65e7e3ff90af/ssm-session-worker"
+          "Destination": "/ecs-execute-command-1e8ebec3-6aed-4dca-a085-80e50c25335e/ssm-session-worker"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/config/amazon-ssm-agent-0UGt2ZZN1BctTltnVCza6x6b3L_3aH5qs2ZCORdarTY=.json",
-          "Destination": "/ecs-execute-command-a432f505-77bf-448d-941e-65e7e3ff90af/configuration/amazon-ssm-agent.json"
+          "Destination": "/ecs-execute-command-1e8ebec3-6aed-4dca-a085-80e50c25335e/configuration/amazon-ssm-agent.json"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/config/seelog-gEZ-TIvHAyOLfMC5wiWRofgDMlDzaCZ6zcswnAoop84=.xml",
-          "Destination": "/ecs-execute-command-a432f505-77bf-448d-941e-65e7e3ff90af/configuration/seelog.xml"
-        },
-        {
-          "Source": "/var/lib/ecs/deps/execute-command/certs/tls-ca-bundle.pem",
-          "Destination": "/ecs-execute-command-a432f505-77bf-448d-941e-65e7e3ff90af/certs/amazon-ssm-agent.crt"
+          "Destination": "/ecs-execute-command-1e8ebec3-6aed-4dca-a085-80e50c25335e/configuration/seelog.xml"
         }
       ],
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9/dac9d371-8eee-49fb-b388-1805f49ba399",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba/a285ee8e-be29-482c-8f83-6abb2f80de10",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.212.111"
+            "10.0.130.99"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:f1:0d:9f:cb",
+          "MACAddress": "0a:ff:dc:b6:cc:07",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
-          "PrivateDNSName": "ip-10-0-212-111.ec2.internal",
+          "PrivateDNSName": "ip-10-0-130-99.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ]
     },
     {
-      "DockerId": "7c0a114cb338f9923ce85b3690f4e97b2dbf2a8c7532c4b78db72ba6a76a4db5",
+      "DockerId": "14b8880e766feef288ac7efce120acd4eaa16bc9ef34dd5d49ad191e50f7bf81",
       "Name": "main",
-      "DockerName": "ecs-ecs-exporter-fixtures-ec2-10-main-c4b981d298b2bddf9601",
-      "Image": "alpine",
-      "ImageID": "sha256:1991bd789d7184290c3cce84fd6af068b8b745e9bddf178661ce7f5ecf68135c",
+      "DockerName": "ecs-ecs-exporter-fixtures-ec2-20-main-f6d896aeb6dbdbba1800",
+      "Image": "829490980523.dkr.ecr.us-east-1.amazonaws.com/cdk-hnb659fds-container-assets-829490980523-us-east-1:6eccf2083ee645d7a5cb08837ab520e7d27332421eaec8918f684043f0fc6265",
+      "ImageID": "sha256:88023764150029322ef7e1179096fb7b2343bd9308ffb53c44bdce1960c35aeb",
       "Labels": {
         "com.amazonaws.ecs.cluster": "prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "main",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-ec2",
-        "com.amazonaws.ecs.task-definition-version": "10"
+        "com.amazonaws.ecs.task-definition-version": "20"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "RUNNING",
       "Limits": {
         "CPU": 2,
-        "Memory": 0
+        "Memory": 96
       },
-      "CreatedAt": "2026-09-13T21:26:28.365612582Z",
-      "StartedAt": "2026-09-13T21:26:28.859167145Z",
+      "CreatedAt": "2026-09-26T17:48:26.09964396Z",
+      "StartedAt": "2026-09-26T17:48:26.481746626Z",
       "Type": "NORMAL",
+      "Health": {
+        "status": "HEALTHY",
+        "statusSince": "2026-09-26T17:48:37.485000707Z"
+      },
       "Volumes": [
         {
-          "Source": "/var/lib/ecs/deps/execute-command/certs/tls-ca-bundle.pem",
-          "Destination": "/ecs-execute-command-f44c5dde-a859-4026-8093-f2d5fe6291bc/certs/amazon-ssm-agent.crt"
-        },
-        {
-          "Source": "/var/log/ecs/exec/cd9675674c9b47d6b16f5941e6e361d9/main",
-          "Destination": "/var/log/amazon/ssm"
-        },
-        {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/amazon-ssm-agent",
-          "Destination": "/ecs-execute-command-f44c5dde-a859-4026-8093-f2d5fe6291bc/amazon-ssm-agent"
+          "Destination": "/ecs-execute-command-6ad0a209-e6b8-473e-84ce-842fef019d78/amazon-ssm-agent"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/ssm-agent-worker",
-          "Destination": "/ecs-execute-command-f44c5dde-a859-4026-8093-f2d5fe6291bc/ssm-agent-worker"
+          "Destination": "/ecs-execute-command-6ad0a209-e6b8-473e-84ce-842fef019d78/ssm-agent-worker"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/ssm-session-worker",
-          "Destination": "/ecs-execute-command-f44c5dde-a859-4026-8093-f2d5fe6291bc/ssm-session-worker"
+          "Destination": "/ecs-execute-command-6ad0a209-e6b8-473e-84ce-842fef019d78/ssm-session-worker"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/config/amazon-ssm-agent-0UGt2ZZN1BctTltnVCza6x6b3L_3aH5qs2ZCORdarTY=.json",
-          "Destination": "/ecs-execute-command-f44c5dde-a859-4026-8093-f2d5fe6291bc/configuration/amazon-ssm-agent.json"
+          "Destination": "/ecs-execute-command-6ad0a209-e6b8-473e-84ce-842fef019d78/configuration/amazon-ssm-agent.json"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/config/seelog-gEZ-TIvHAyOLfMC5wiWRofgDMlDzaCZ6zcswnAoop84=.xml",
-          "Destination": "/ecs-execute-command-f44c5dde-a859-4026-8093-f2d5fe6291bc/configuration/seelog.xml"
+          "Destination": "/ecs-execute-command-6ad0a209-e6b8-473e-84ce-842fef019d78/configuration/seelog.xml"
+        },
+        {
+          "Source": "/var/lib/ecs/deps/execute-command/certs/tls-ca-bundle.pem",
+          "Destination": "/ecs-execute-command-6ad0a209-e6b8-473e-84ce-842fef019d78/certs/amazon-ssm-agent.crt"
+        },
+        {
+          "Source": "/var/log/ecs/exec/7982a8670adf49fab4297ee5ed51c0ba/main",
+          "Destination": "/var/log/amazon/ssm"
         }
       ],
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9/46e04279-af65-43d2-8a56-1274938b4b42",
+      "LogDriver": "awslogs",
+      "LogOptions": {
+        "awslogs-group": "FixtureCollectorStack-FixtureWorkloadLogGroup35F584B7-mgfY86xPluSb",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream": "fixture-workload/main/7982a8670adf49fab4297ee5ed51c0ba",
+        "mode": "non-blocking"
+      },
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba/37d4005b-5bfa-45f7-b7a9-d261e936c544",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.212.111"
+            "10.0.130.99"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:f1:0d:9f:cb",
+          "MACAddress": "0a:ff:dc:b6:cc:07",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
-          "PrivateDNSName": "ip-10-0-212-111.ec2.internal",
+          "PrivateDNSName": "ip-10-0-130-99.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ]
     },
     {
-      "DockerId": "4ffbc8c681bff2c721b777169aee004c874a3c8a83d3d47d71da7edb0ee383f6",
+      "DockerId": "ddb305f3f0f84f7920898487d1dbae2810c49c9dd8f6e5a1217819bbadeaad86",
       "Name": "nonessential",
-      "DockerName": "ecs-ecs-exporter-fixtures-ec2-10-nonessential-d89acee5bac8efdeb501",
+      "DockerName": "ecs-ecs-exporter-fixtures-ec2-20-nonessential-9ea2a0f9f3c1d5e3c201",
       "Image": "alpine",
-      "ImageID": "sha256:1991bd789d7184290c3cce84fd6af068b8b745e9bddf178661ce7f5ecf68135c",
+      "ImageID": "sha256:33bee74c45f307e3268adc2010c0f55c48e7a6041e12cd12432bb1a46e498e43",
       "Labels": {
         "com.amazonaws.ecs.cluster": "prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "nonessential",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-ec2",
-        "com.amazonaws.ecs.task-definition-version": "10"
+        "com.amazonaws.ecs.task-definition-version": "20"
       },
       "DesiredStatus": "RUNNING",
       "KnownStatus": "STOPPED",
@@ -167,67 +178,67 @@
         "CPU": 128,
         "Memory": 128
       },
-      "CreatedAt": "2026-09-13T21:26:28.355561703Z",
-      "StartedAt": "2026-09-13T21:26:28.856722307Z",
-      "FinishedAt": "2026-09-13T21:26:28.871652007Z",
+      "CreatedAt": "2026-09-26T17:48:26.460304459Z",
+      "StartedAt": "2026-09-26T17:48:28.072101253Z",
+      "FinishedAt": "2026-09-26T17:48:28.271208013Z",
       "Type": "NORMAL",
       "Volumes": [
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/amazon-ssm-agent",
-          "Destination": "/ecs-execute-command-4e17f87c-a0c4-4fc0-ad41-cbe5d3f0315e/amazon-ssm-agent"
+          "Destination": "/ecs-execute-command-0fcda330-7e00-4586-aa38-22b363d16ccd/amazon-ssm-agent"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/ssm-agent-worker",
-          "Destination": "/ecs-execute-command-4e17f87c-a0c4-4fc0-ad41-cbe5d3f0315e/ssm-agent-worker"
+          "Destination": "/ecs-execute-command-0fcda330-7e00-4586-aa38-22b363d16ccd/ssm-agent-worker"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/bin/3.3.4624.0/ssm-session-worker",
-          "Destination": "/ecs-execute-command-4e17f87c-a0c4-4fc0-ad41-cbe5d3f0315e/ssm-session-worker"
+          "Destination": "/ecs-execute-command-0fcda330-7e00-4586-aa38-22b363d16ccd/ssm-session-worker"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/config/amazon-ssm-agent-0UGt2ZZN1BctTltnVCza6x6b3L_3aH5qs2ZCORdarTY=.json",
-          "Destination": "/ecs-execute-command-4e17f87c-a0c4-4fc0-ad41-cbe5d3f0315e/configuration/amazon-ssm-agent.json"
+          "Destination": "/ecs-execute-command-0fcda330-7e00-4586-aa38-22b363d16ccd/configuration/amazon-ssm-agent.json"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/config/seelog-gEZ-TIvHAyOLfMC5wiWRofgDMlDzaCZ6zcswnAoop84=.xml",
-          "Destination": "/ecs-execute-command-4e17f87c-a0c4-4fc0-ad41-cbe5d3f0315e/configuration/seelog.xml"
+          "Destination": "/ecs-execute-command-0fcda330-7e00-4586-aa38-22b363d16ccd/configuration/seelog.xml"
         },
         {
           "Source": "/var/lib/ecs/deps/execute-command/certs/tls-ca-bundle.pem",
-          "Destination": "/ecs-execute-command-4e17f87c-a0c4-4fc0-ad41-cbe5d3f0315e/certs/amazon-ssm-agent.crt"
+          "Destination": "/ecs-execute-command-0fcda330-7e00-4586-aa38-22b363d16ccd/certs/amazon-ssm-agent.crt"
         },
         {
-          "Source": "/var/log/ecs/exec/cd9675674c9b47d6b16f5941e6e361d9/nonessential",
+          "Source": "/var/log/ecs/exec/7982a8670adf49fab4297ee5ed51c0ba/nonessential",
           "Destination": "/var/log/amazon/ssm"
         }
       ],
-      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9/5e5944e3-b7e7-40f7-a936-3c0a42c9ceec",
+      "ContainerARN": "arn:aws:ecs:us-east-1:829490980523:container/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba/f72e6b6e-29ac-4bf2-946a-28589e5d9c4f",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.212.111"
+            "10.0.130.99"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:f1:0d:9f:cb",
+          "MACAddress": "0a:ff:dc:b6:cc:07",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
-          "PrivateDNSName": "ip-10-0-212-111.ec2.internal",
+          "PrivateDNSName": "ip-10-0-130-99.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ]
     },
     {
-      "DockerId": "5cdcae00c54d008f540c3888b51a16b707e2c0f9880a8e2645aeb11a3a6c1e94",
+      "DockerId": "3f640ff04386c7b5fa5d54f4ffa4c295d4ddbb1aa890170ed85f9780ed718b21",
       "Name": "~internal~ecs~pause",
-      "DockerName": "ecs-ecs-exporter-fixtures-ec2-10-internalecspause-aaeaf1f6b6aa95c3f101",
+      "DockerName": "ecs-ecs-exporter-fixtures-ec2-20-internalecspause-a4a7d1cbe0d3ceb36b00",
       "Image": "amazon/amazon-ecs-pause:0.1.0",
       "ImageID": "",
       "Labels": {
         "com.amazonaws.ecs.cluster": "prom-ecs-exporter-fixtures",
         "com.amazonaws.ecs.container-name": "~internal~ecs~pause",
-        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/cd9675674c9b47d6b16f5941e6e361d9",
+        "com.amazonaws.ecs.task-arn": "arn:aws:ecs:us-east-1:829490980523:task/prom-ecs-exporter-fixtures/7982a8670adf49fab4297ee5ed51c0ba",
         "com.amazonaws.ecs.task-definition-family": "ecs-exporter-fixtures-ec2",
-        "com.amazonaws.ecs.task-definition-version": "10"
+        "com.amazonaws.ecs.task-definition-version": "20"
       },
       "DesiredStatus": "RESOURCES_PROVISIONED",
       "KnownStatus": "RESOURCES_PROVISIONED",
@@ -235,25 +246,25 @@
         "CPU": 2,
         "Memory": 0
       },
-      "CreatedAt": "2026-09-13T21:26:26.52779387Z",
-      "StartedAt": "2026-09-13T21:26:27.036867147Z",
+      "CreatedAt": "2026-09-26T17:48:24.312320538Z",
+      "StartedAt": "2026-09-26T17:48:24.891364488Z",
       "Type": "CNI_PAUSE",
       "Networks": [
         {
           "NetworkMode": "awsvpc",
           "IPv4Addresses": [
-            "10.0.212.111"
+            "10.0.130.99"
           ],
           "AttachmentIndex": 0,
-          "MACAddress": "0a:ff:f1:0d:9f:cb",
+          "MACAddress": "0a:ff:dc:b6:cc:07",
           "IPv4SubnetCIDRBlock": "10.0.128.0/17",
-          "PrivateDNSName": "ip-10-0-212-111.ec2.internal",
+          "PrivateDNSName": "ip-10-0-130-99.ec2.internal",
           "SubnetGatewayIpv4Address": "10.0.128.1/17"
         }
       ]
     }
   ],
-  "VPCID": "vpc-0cea1198fe8193967",
+  "VPCID": "vpc-0dea520269a087195",
   "ServiceName": "prom-ecs-exporter-fixtures-ec2",
   "FaultInjectionEnabled": false,
   "AvailabilityZoneID": "use1-az4"
