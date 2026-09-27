@@ -91,6 +91,22 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 	})
 	cluster.AddAsgCapacityProvider(capacityProvider, nil)
 
+	managedInstancesSecurityGroup := awsec2.NewSecurityGroup(stack, jsii.String("ManagedInstancesSecurityGroup"), &awsec2.SecurityGroupProps{
+		Vpc: vpc,
+	})
+	managedInstancesCapacityProvider := awsecs.NewManagedInstancesCapacityProvider(stack, jsii.String("ManagedInstancesCapacity"), &awsecs.ManagedInstancesCapacityProviderProps{
+		CapacityProviderName: jsii.String(resourceName + "-managed-instances"),
+		Subnets:              vpc.PrivateSubnets(),
+		SecurityGroups:       &[]awsec2.ISecurityGroup{managedInstancesSecurityGroup},
+		InstanceRequirements: &awsec2.InstanceRequirementsConfig{
+			VCpuCountMin:         jsii.Number(2),
+			MemoryMin:            awscdk.Size_Gibibytes(jsii.Number(2)),
+			AllowedInstanceTypes: &[]*string{jsii.String("t4g.small")},
+			BurstablePerformance: awsec2.BurstablePerformance_REQUIRED,
+		},
+	})
+	cluster.AddManagedInstancesCapacityProvider(managedInstancesCapacityProvider)
+
 	// We do not strictly need such an image to capture the fixtures we need,
 	// but given that there should always be an ecs-exporter sidecar in every
 	// real Task, it would be strange not to include in the fixture data here.
@@ -219,6 +235,60 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 		service.Connections().AllowFromAnyIpv4(awsec2.Port_AllTcp(), nil)
 	}
 
+	{
+		// Create a Managed Instances task.
+		taskDefinition := awsecs.NewTaskDefinition(stack, jsii.String("ManagedInstancesTaskDefinition"), &awsecs.TaskDefinitionProps{
+			Family:        jsii.String("ecs-exporter-fixtures-managed-instances"),
+			NetworkMode:   awsecs.NetworkMode_AWS_VPC,
+			Compatibility: awsecs.Compatibility_MANAGED_INSTANCES,
+			MemoryMiB:     jsii.String("256"),
+			RuntimePlatform: &awsecs.RuntimePlatform{
+				CpuArchitecture:       awsecs.CpuArchitecture_ARM64(),
+				OperatingSystemFamily: awsecs.OperatingSystemFamily_LINUX(),
+			},
+		})
+		taskDefinition.AddContainer(jsii.String("ManagedInstancesEcsExporter"), &awsecs.ContainerDefinitionOptions{
+			ContainerName:        jsii.String("ecs-exporter"),
+			Image:                ecsExporterImage,
+			MemoryReservationMiB: jsii.Number(128),
+			MemoryLimitMiB:       jsii.Number(128),
+			Cpu:                  jsii.Number(128),
+		})
+		taskDefinition.AddContainer(jsii.String("ManagedInstancesFixtureWorkload"), &awsecs.ContainerDefinitionOptions{
+			ContainerName:  jsii.String("main"),
+			Image:          fixtureWorkloadImage,
+			MemoryLimitMiB: jsii.Number(96),
+			HealthCheck:    fixtureWorkloadHealthCheck,
+			Logging:        fixtureWorkloadLogging,
+		})
+		taskDefinition.AddContainer(jsii.String("ManagedInstancesNonessential"), &awsecs.ContainerDefinitionOptions{
+			ContainerName:        jsii.String("nonessential"),
+			Image:                awsecs.ContainerImage_FromRegistry(jsii.String("alpine"), nil),
+			Command:              &[]*string{jsii.String("sh"), jsii.String("-c"), jsii.String("echo goodbye")},
+			MemoryReservationMiB: jsii.Number(128),
+			MemoryLimitMiB:       jsii.Number(128),
+			Cpu:                  jsii.Number(128),
+			Essential:            jsii.Bool(false),
+		})
+
+		// Yes, in CDK, you create a managed instances service with
+		// FargateService. What they were thinking when they decided on this
+		// design is a mystery.
+		service := awsecs.NewFargateService(stack, jsii.String("ManagedInstancesService"), &awsecs.FargateServiceProps{
+			ServiceName:       jsii.String(resourceName + "-managed-instances"),
+			Cluster:           cluster,
+			TaskDefinition:    taskDefinition,
+			DesiredCount:      jsii.Number(1),
+			MinHealthyPercent: jsii.Number(0),
+			CapacityProviderStrategies: &[]*awsecs.CapacityProviderStrategy{
+				{CapacityProvider: managedInstancesCapacityProvider.CapacityProviderName(), Weight: jsii.Number(1)},
+			},
+			EnableExecuteCommand: jsii.Bool(true),
+			CircuitBreaker:       &awsecs.DeploymentCircuitBreaker{Enable: jsii.Bool(true)},
+		})
+		service.Connections().AllowFromAnyIpv4(awsec2.Port_AllTcp(), nil)
+	}
+
 	awscdk.Aspects_Of(stack).Add(&CapacityProviderDependencyAspect{}, nil)
 
 	return stack
@@ -231,7 +301,7 @@ type CapacityProviderDependencyAspect struct{}
 //
 // https://github.com/aws/aws-cdk/issues/19275#issuecomment-1152860147
 func (CapacityProviderDependencyAspect) Visit(node constructs.IConstruct) {
-	if service, ok := node.(awsecs.Ec2Service); ok {
+	if service, ok := node.(awsecs.BaseService); ok {
 		for _, child := range *service.Cluster().Node().FindAll(constructs.ConstructOrder_PREORDER) {
 			if assoc, ok := child.(awsecs.CfnClusterCapacityProviderAssociations); ok {
 				assoc.Node().AddDependency(service.Cluster())

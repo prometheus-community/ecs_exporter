@@ -41,12 +41,12 @@ var (
 
 	taskCpuLimitDesc = prometheus.NewDesc(
 		"ecs_task_cpu_limit_vcpus",
-		"Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2; if no limit is set, this metric has no value.",
+		"Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2 or Managed Instances; if no limit is set, this metric has no value.",
 		taskLabels, nil)
 
 	taskMemLimitDesc = prometheus.NewDesc(
 		"ecs_task_memory_limit_bytes",
-		"Configured task memory limit in bytes. This is optional when running on EC2; if no limit is set, this metric has no value.",
+		"Configured task memory limit in bytes. This is optional when running on EC2 or Managed Instances; if no limit is set, this metric has no value.",
 		taskLabels, nil)
 
 	taskEphemeralStorageUsedDesc = prometheus.NewDesc(
@@ -335,17 +335,19 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		metadata.LaunchType,
 	)
 
-	// Task CPU/memory limits are optional when running on EC2 - the relevant
-	// limits may only exist at the container level.
+	// Task CPU/memory limits are optional when running on EC2 or Managed
+	// Instances - the relevant limits may only exist at the container level.
+	// Managed Instances reports an unconfigured task CPU limit as zero rather
+	// than omitting it.
 	if metadata.Limits != nil {
-		if metadata.Limits.CPU != nil {
+		if metadata.Limits.CPU != nil && *metadata.Limits.CPU > 0 {
 			ch <- prometheus.MustNewConstMetric(
 				taskCpuLimitDesc,
 				prometheus.GaugeValue,
 				*metadata.Limits.CPU,
 			)
 		}
-		if metadata.Limits.Memory != nil {
+		if metadata.Limits.Memory != nil && *metadata.Limits.Memory > 0 {
 			ch <- prometheus.MustNewConstMetric(
 				taskMemLimitDesc,
 				prometheus.GaugeValue,

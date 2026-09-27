@@ -10,9 +10,13 @@ API is subject to change at any time.
 
 The expectation is that we collect sufficient fixtures to exercise all the
 features of the exporter and all the hidden edge cases of the task metadata API
-with respect to task configuration. So, for example, we know that ECS on EC2 and
-on Fargate use completely different implementations of the API, so we should
-deploy all tasks to both in order to collect fixtures from both.
+with respect to task configuration. ECS on EC2, Fargate, and Managed Instances
+can use different implementations of the API, container runtimes, and cgroup
+versions, so we deploy the same task to all three and collect fixtures from each.
+
+The Managed Instances capacity provider selects `t4g.small`, the smallest
+Graviton instance supported by Managed Instances. Managed Instances requires
+more than one vCPU and does not support nano or micro instance sizes.
 
 The `main` container uses a standard-library-only Go workload built from
 [`fixture-workload`](./fixture-workload). It creates file-cache pressure and
@@ -76,6 +80,8 @@ aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --tas
 aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-fargate | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/fargate_task_stats.json.tmp && mv ../../ecscollector/testdata/fixtures/fargate_task_stats.json.tmp ../../ecscollector/testdata/fixtures/fargate_task_stats.json
 aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-ec2 | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e '.Containers |= sort_by(.Name)' > ../../ecscollector/testdata/fixtures/ec2_task_metadata.json.tmp && mv ../../ecscollector/testdata/fixtures/ec2_task_metadata.json.tmp ../../ecscollector/testdata/fixtures/ec2_task_metadata.json
 aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-ec2 | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/ec2_task_stats.json.tmp && mv ../../ecscollector/testdata/fixtures/ec2_task_stats.json.tmp ../../ecscollector/testdata/fixtures/ec2_task_stats.json
+aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-managed-instances | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e '.Containers |= sort_by(.Name)' > ../../ecscollector/testdata/fixtures/managed_instances_task_metadata.json.tmp && mv ../../ecscollector/testdata/fixtures/managed_instances_task_metadata.json.tmp ../../ecscollector/testdata/fixtures/managed_instances_task_metadata.json
+aws ecs execute-command --interactive --cluster prom-ecs-exporter-fixtures --task "$(aws ecs list-tasks --cluster prom-ecs-exporter-fixtures --service prom-ecs-exporter-fixtures-managed-instances | jq -r .taskArns[0])" --container ecs-exporter --command 'sh -c "wget -q -O- ${ECS_CONTAINER_METADATA_URI_V4}/task/stats; echo"' 2>&1 | sed -n '/^{/p' | head -n1 | jq -e 'to_entries | sort_by(.value.name) | from_entries' > ../../ecscollector/testdata/fixtures/managed_instances_task_stats.json.tmp && mv ../../ecscollector/testdata/fixtures/managed_instances_task_stats.json.tmp ../../ecscollector/testdata/fixtures/managed_instances_task_stats.json
 
 # Verify that the bounded startup workload completed and exercised the memory
 # accounting that the fixtures are intended to cover.
@@ -115,6 +121,27 @@ jq -e --arg id "$(jq -r '.Containers[] | select(.Name == "main") | .DockerId' ..
   $memory.stats.total_pgpgin > 0 and
   $memory.stats.total_pgpgout > 0
 ' ../../ecscollector/testdata/fixtures/fargate_task_stats.json
+
+jq -e '
+  .LaunchType == "MANAGED_INSTANCES" and
+  (.Containers[] | select(.Name == "main") |
+    .KnownStatus == "RUNNING" and .Health.status == "HEALTHY")
+' ../../ecscollector/testdata/fixtures/managed_instances_task_metadata.json
+jq -e --arg id "$(jq -r '.Containers[] | select(.Name == "main") | .DockerId' ../../ecscollector/testdata/fixtures/managed_instances_task_metadata.json)" '
+  .[$id].memory_stats as $memory |
+  $memory.limit == 100663296 and
+  $memory.stats.anon_thp > 0 and
+  $memory.stats.kernel_stack > 0 and
+  $memory.stats.sock > 0 and
+  $memory.stats.shmem > 0 and
+  $memory.stats.unevictable > 0 and
+  $memory.stats.slab_reclaimable > 0 and
+  $memory.stats.slab_unreclaimable > 0 and
+  $memory.stats.pglazyfree > 0 and
+  $memory.stats.pglazyfreed > 0 and
+  $memory.stats.pgscan > 0 and
+  $memory.stats.pgsteal > 0
+' ../../ecscollector/testdata/fixtures/managed_instances_task_stats.json
 
 # Destroy the stack.
 cdk destroy -y
