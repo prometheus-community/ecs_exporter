@@ -33,6 +33,8 @@ const nanoseconds = 1 / 1.0e9
 // standard metrics use bytes.
 const mebibytes = 1024 * 1024
 
+// These descriptors contain immutable metric metadata shared by every
+// collector instance. They do not hold metric sample state.
 var (
 	taskMetadataDesc = prometheus.NewDesc(
 		"ecs_task_metadata_info",
@@ -204,10 +206,15 @@ var networkLabels = []string{
 // NewCollector returns a new Collector that queries ECS metadata server
 // for ECS task and container metrics.
 func NewCollector(client *ecsmetadata.Client, logger *slog.Logger) prometheus.Collector {
-	return &collector{client: client, logger: logger}
+	return newCollector(context.Background(), client, logger)
+}
+
+func newCollector(ctx context.Context, client *ecsmetadata.Client, logger *slog.Logger) *collector {
+	return &collector{ctx: ctx, client: client, logger: logger}
 }
 
 type collector struct {
+	ctx    context.Context
 	client *ecsmetadata.Client
 	logger *slog.Logger
 }
@@ -245,8 +252,7 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
-	ctx := context.Background()
-	metadata, err := c.client.RetrieveTaskMetadata(ctx)
+	metadata, err := c.client.RetrieveTaskMetadata(c.ctx)
 	if err != nil {
 		c.logger.Debug("Failed to retrieve task metadata", "error", err)
 		// Signal that this Collect has failed. This ultimately results in an
@@ -322,7 +328,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		)
 	}
 
-	stats, err := c.client.RetrieveTaskStats(ctx)
+	stats, err := c.client.RetrieveTaskStats(c.ctx)
 	if err != nil {
 		c.logger.Debug("Failed to retrieve task stats", "error", err)
 		// Signal that this Collect has failed. This ultimately results in an
