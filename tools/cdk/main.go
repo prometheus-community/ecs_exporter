@@ -17,7 +17,9 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsautoscaling"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsecrassets"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsecs"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awslogs"
 	"github.com/aws/aws-cdk-go/awscdk/v2/customresources"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -64,6 +66,7 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 		},
 		NewInstancesProtectedFromScaleIn: jsii.Bool(true),
 	})
+	autoScalingGroup.AddUserData(jsii.String("echo madvise > /sys/kernel/mm/transparent_hugepage/enabled"))
 	autoScalingGroup.Connections().AllowFromAnyIpv4(awsec2.Port_AllTcp(), nil)
 	// https://github.com/aws/aws-cdk/issues/18179#issuecomment-1150981559
 	customresources.NewAwsCustomResource(stack, jsii.String("AsgForceDelete"), &customresources.AwsCustomResourceProps{
@@ -92,6 +95,28 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 	// but given that there should always be an ecs-exporter sidecar in every
 	// real Task, it would be strange not to include in the fixture data here.
 	ecsExporterImage := awsecs.ContainerImage_FromRegistry(jsii.String("quay.io/prometheuscommunity/ecs-exporter:v0.4.0"), nil)
+	fixtureWorkloadImage := awsecs.ContainerImage_FromAsset(jsii.String("fixture-workload"), &awsecs.AssetImageProps{
+		Platform: awsecrassets.Platform_LINUX_ARM64(),
+	})
+	fixtureWorkloadHealthCheck := &awsecs.HealthCheck{
+		Command: &[]*string{
+			jsii.String("CMD"),
+			jsii.String("/fixture-workload"),
+			jsii.String("healthcheck"),
+		},
+		Interval:    awscdk.Duration_Seconds(jsii.Number(5)),
+		Timeout:     awscdk.Duration_Seconds(jsii.Number(2)),
+		Retries:     jsii.Number(10),
+		StartPeriod: awscdk.Duration_Seconds(jsii.Number(120)),
+	}
+	fixtureWorkloadLogGroup := awslogs.NewLogGroup(stack, jsii.String("FixtureWorkloadLogGroup"), &awslogs.LogGroupProps{
+		RemovalPolicy: awscdk.RemovalPolicy_DESTROY,
+		Retention:     awslogs.RetentionDays_ONE_DAY,
+	})
+	fixtureWorkloadLogging := awsecs.LogDrivers_AwsLogs(&awsecs.AwsLogDriverProps{
+		StreamPrefix: jsii.String("fixture-workload"),
+		LogGroup:     fixtureWorkloadLogGroup,
+	})
 
 	{
 		// Create an EC2 task.
@@ -108,16 +133,12 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 			MemoryLimitMiB:       jsii.Number(128),
 			Cpu:                  jsii.Number(128),
 		})
-		taskDefinition.AddContainer(jsii.String("AlpineShell"), &awsecs.ContainerDefinitionOptions{
-			ContainerName: jsii.String("main"),
-			Image:         awsecs.ContainerImage_FromRegistry(jsii.String("alpine"), nil),
-			// Hang on forever.
-			Command: &[]*string{jsii.String("sh"), jsii.String("-c"), jsii.String("sleep infinity")},
-			PortMappings: &[]*awsecs.PortMapping{
-				// Open up the default iPerf port, to easily generate some
-				// traffic if desired.
-				{ContainerPort: jsii.Number(5201), HostPort: jsii.Number(5201)},
-			},
+		taskDefinition.AddContainer(jsii.String("FixtureWorkload"), &awsecs.ContainerDefinitionOptions{
+			ContainerName:  jsii.String("main"),
+			Image:          fixtureWorkloadImage,
+			MemoryLimitMiB: jsii.Number(96),
+			HealthCheck:    fixtureWorkloadHealthCheck,
+			Logging:        fixtureWorkloadLogging,
 		})
 		taskDefinition.AddContainer(jsii.String("Nonessential"), &awsecs.ContainerDefinitionOptions{
 			ContainerName:        jsii.String("nonessential"),
@@ -169,11 +190,12 @@ func NewFixtureCollectorStack(scope constructs.Construct, id string) awscdk.Stac
 			MemoryLimitMiB:       jsii.Number(128),
 			Cpu:                  jsii.Number(128),
 		})
-		taskDefinition.AddContainer(jsii.String("AlpineShell"), &awsecs.ContainerDefinitionOptions{
-			ContainerName: jsii.String("main"),
-			Image:         awsecs.ContainerImage_FromRegistry(jsii.String("alpine"), nil),
-			// Hang on forever.
-			Command: &[]*string{jsii.String("sh"), jsii.String("-c"), jsii.String("sleep infinity")},
+		taskDefinition.AddContainer(jsii.String("FixtureWorkload"), &awsecs.ContainerDefinitionOptions{
+			ContainerName:  jsii.String("main"),
+			Image:          fixtureWorkloadImage,
+			MemoryLimitMiB: jsii.Number(96),
+			HealthCheck:    fixtureWorkloadHealthCheck,
+			Logging:        fixtureWorkloadLogging,
 		})
 		taskDefinition.AddContainer(jsii.String("Nonessential"), &awsecs.ContainerDefinitionOptions{
 			ContainerName:        jsii.String("nonessential"),
