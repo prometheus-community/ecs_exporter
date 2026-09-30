@@ -1,3 +1,9 @@
+## 0.5.0 / 2026-09-30
+
+* [ENHANCEMENT] Add container memory metrics and support cgroups v2 #175, #179
+* [ENHANCEMENT] Add support for ECS Managed Instances #181
+* [BUGFIX] Return HTTP 500 from /metrics when ECS API requests fail #111
+
 ## 0.4.0 / 2025-03-19
 
 Breaking Changes:
