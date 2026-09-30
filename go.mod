@@ -7,7 +7,6 @@ require (
 	github.com/aws/amazon-ecs-agent/ecs-agent v0.0.0-20260421173302-3def019fc9fa
 	github.com/docker/docker v27.5.1+incompatible
 	github.com/prometheus/client_golang v1.24.1
-	github.com/prometheus/common v0.70.1
 	github.com/prometheus/exporter-toolkit v0.19.0
 )
 
@@ -38,6 +37,7 @@ require (
 	github.com/opencontainers/image-spec v1.1.0-rc3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
+	github.com/prometheus/common v0.70.1 // indirect
 	github.com/prometheus/procfs v0.21.1 // indirect
 	github.com/vishvananda/netlink v1.2.1-beta.2 // indirect
 	github.com/vishvananda/netns v0.0.4 // indirect
