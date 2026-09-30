@@ -23,11 +23,7 @@ import (
 	promcollectors "github.com/prometheus/client_golang/prometheus/collectors"
 	versioncollector "github.com/prometheus/client_golang/prometheus/collectors/version"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/prometheus/common/promslog"
-	"github.com/prometheus/common/promslog/flag"
-	"github.com/prometheus/common/version"
-	"github.com/prometheus/exporter-toolkit/web"
-	"github.com/prometheus/exporter-toolkit/web/kingpinflag"
+	"github.com/prometheus/exporter-toolkit/bootstrap"
 
 	"github.com/prometheus-community/ecs_exporter/ecscollector"
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
@@ -36,34 +32,36 @@ import (
 const exporter = "ecs_exporter"
 
 func main() {
-	promslogConfig := &promslog.Config{}
-	flag.AddFlags(kingpin.CommandLine, promslogConfig)
+	runner := bootstrap.New(bootstrap.Config{
+		Name:                  exporter,
+		Description:           "Prometheus Exporter for ECS",
+		DefaultAddress:        ":9779",
+		MetricsHandlerFactory: newMetricsHandler,
+	})
+	if err := runner.Run(); err != nil {
+		if runner.Logger == nil {
+			kingpin.CommandLine.Errorf("%s, try --help", err)
+		} else {
+			runner.Logger.Error("Error running exporter", "err", err)
+		}
+		os.Exit(1)
+	}
+}
 
-	metricsPath := kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").String()
-	disableExporterMetrics := kingpin.Flag(
-		"web.disable-exporter-metrics",
-		"Exclude metrics about the exporter itself (promhttp_*, process_*, go_*).",
-	).Bool()
-	toolkitFlags := kingpinflag.AddFlags(kingpin.CommandLine, ":9779")
-
+func newMetricsHandler(b *bootstrap.Bootstrap) (http.Handler, error) {
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(versioncollector.NewCollector(exporter))
-	kingpin.Version(version.Print(exporter))
-
-	kingpin.HelpFlag.Short('h')
-	kingpin.Parse()
-
-	logger := promslog.New(promslogConfig)
 
 	client, err := ecsmetadata.NewClientFromEnvironment()
 	if err != nil {
-		logger.Error("Error creating client", "error", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("creating ECS metadata client: %w", err)
 	}
-	registry.MustRegister(ecscollector.NewCollector(client, logger))
+	registry.MustRegister(ecscollector.NewCollector(client, b.Logger))
 
-	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
-	if !*disableExporterMetrics {
+	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{
+		MaxRequestsInFlight: b.MaxRequests,
+	})
+	if !b.DisableExporterMetrics {
 		registry.MustRegister(
 			promcollectors.NewProcessCollector(promcollectors.ProcessCollectorOpts{}),
 			promcollectors.NewGoCollector(),
@@ -71,36 +69,10 @@ func main() {
 		handler = promhttp.InstrumentMetricHandler(registry, handler)
 	}
 
-	http.Handle(*metricsPath, handler)
-	if *metricsPath != "/" && *metricsPath != "" {
-		landingConfig := web.LandingConfig{
-			Name:        exporter,
-			Description: "Prometheus Exporter for ECS",
-			Version:     version.Info(),
-			Links: []web.LandingLinks{
-				{
-					Address: *metricsPath,
-					Text:    "Metrics",
-				},
-			},
-		}
-		landingPage, err := web.NewLandingPage(landingConfig)
-		if err != nil {
-			logger.Error("Error creating landing page", "err", err)
-			os.Exit(1)
-		}
-		http.Handle("/", landingPage)
-	}
-
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	b.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "ok")
+		_, _ = fmt.Fprint(w, "ok")
 	})
 
-	srv := &http.Server{}
-	if err := web.ListenAndServe(srv, toolkitFlags, logger); err != nil {
-		logger.Error("Error starting server", "err", err)
-		os.Exit(1)
-	}
-
+	return handler, nil
 }
