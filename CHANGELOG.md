@@ -1,3 +1,8 @@
+## 0.6.0 / 2026-10-02
+
+* [ENHANCEMENT] Make ecs_exporter embeddable as per [the
+  convention](https://github.com/prometheus/prometheus-opentelemetry-collector/blob/main/docs/embeddable-exporters.md).
+
 ## 0.5.0 / 2026-09-30
 
 * [ENHANCEMENT] Add container memory metrics and support cgroups v2 #175, #179
