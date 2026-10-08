@@ -48,11 +48,11 @@ func fixtureClient(taskMetadataPath, taskStatsPath string) (*ecsmetadata.Client,
 
 func fixtureClientFromResponses(taskMetadata, taskStats []byte) (*ecsmetadata.Client, *httptest.Server) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /task", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /task", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Add("content-type", "application/json")
 		w.Write(taskMetadata)
 	})
-	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Add("content-type", "application/json")
 		w.Write(taskStats)
 	})
@@ -209,11 +209,11 @@ func TestConfiguredMemoryLimitMib(t *testing.T) {
 
 func TestApiErrors(t *testing.T) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /task", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /task", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(500)
 		w.Write([]byte("Internal Server Error"))
 	})
-	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(500)
 		w.Write([]byte("Internal Server Error"))
 	})

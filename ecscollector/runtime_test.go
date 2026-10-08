@@ -94,7 +94,7 @@ func TestRuntimeShutdownCancelsCollection(t *testing.T) {
 				}
 				fmt.Fprint(w, taskMetadataResponse("cluster"))
 			})
-			mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc("GET /task/stats", func(_ http.ResponseWriter, r *http.Request) {
 				close(started)
 				<-r.Context().Done()
 				close(canceled)
@@ -136,10 +136,10 @@ func TestRuntimeShutdownCancelsCollection(t *testing.T) {
 func newFixtureRuntime(t *testing.T, cluster string) (*Runtime, *prometheus.Registry, *httptest.Server) {
 	t.Helper()
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /task", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /task", func(w http.ResponseWriter, _ *http.Request) {
 		fmt.Fprint(w, taskMetadataResponse(cluster))
 	})
-	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /task/stats", func(w http.ResponseWriter, _ *http.Request) {
 		fmt.Fprint(w, `{}`)
 	})
 	server := httptest.NewServer(mux)
