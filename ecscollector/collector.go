@@ -41,7 +41,7 @@ var (
 		"ECS task metadata, sourced from the task metadata endpoint version 4.",
 		taskMetadataLabels, nil)
 
-	taskCpuLimitDesc = prometheus.NewDesc(
+	taskCPULimitDesc = prometheus.NewDesc(
 		"ecs_task_cpu_limit_vcpus",
 		"Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2 or Managed Instances; if no limit is set, this metric has no value.",
 		taskLabels, nil)
@@ -271,7 +271,7 @@ type collector struct {
 
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- taskMetadataDesc
-	ch <- taskCpuLimitDesc
+	ch <- taskCPULimitDesc
 	ch <- taskMemLimitDesc
 	ch <- taskEphemeralStorageUsedDesc
 	ch <- taskEphemeralStorageAllocatedDesc
@@ -348,7 +348,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	if metadata.Limits != nil {
 		if metadata.Limits.CPU != nil && *metadata.Limits.CPU > 0 {
 			ch <- prometheus.MustNewConstMetric(
-				taskCpuLimitDesc,
+				taskCPULimitDesc,
 				prometheus.GaugeValue,
 				*metadata.Limits.CPU,
 			)
