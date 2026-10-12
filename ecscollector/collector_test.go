@@ -14,15 +14,18 @@
 package ecscollector
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"log/slog"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
@@ -128,6 +131,82 @@ func TestFargateMetrics(t *testing.T) {
 	defer metadataServer.Close()
 	collector := NewCollector(metadataClient, slog.Default())
 	assertSnapshot(t, collector, "testdata/snapshots/fargate_metrics.txt")
+}
+
+func TestClockDriftMetrics(t *testing.T) {
+	rawMetadata, err := os.ReadFile("testdata/fixtures/fargate_task_metadata.json")
+	if err != nil {
+		t.Fatalf("failed to read task metadata fixture: %v", err)
+	}
+	stats, err := os.ReadFile("testdata/fixtures/fargate_task_stats.json")
+	if err != nil {
+		t.Fatalf("failed to read task stats fixture: %v", err)
+	}
+
+	const (
+		boundName = "ecs_task_clock_error_bound_seconds"
+		refName   = "ecs_task_clock_reference_timestamp_seconds"
+		syncName  = "ecs_task_clock_synchronized"
+	)
+	full := map[string]float64{boundName: 0.0005515185, refName: 1790444971, syncName: 1}
+	omit := func(name string) map[string]float64 {
+		out := maps.Clone(full)
+		delete(out, name)
+		return out
+	}
+	unsynced := maps.Clone(full)
+	unsynced[syncName] = 0
+
+	// Each case changes one field of the fixture's ClockDrift block; a nil
+	// value removes it. The synchronized case is covered by the Fargate
+	// snapshot and the missing block by the EC2 snapshot.
+	tests := []struct {
+		name  string
+		field string
+		value any
+		want  map[string]float64
+	}{
+		{"not synchronized", "ClockSynchronizationStatus", "NOT_SYNCHRONIZED", unsynced},
+		{"zero bound", "ClockErrorBound", 0, omit(boundName)},
+		{"no reference timestamp", "ReferenceTimestamp", nil, omit(refName)},
+		{"no status", "ClockSynchronizationStatus", nil, omit(syncName)},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var metadata map[string]any
+			if err := json.Unmarshal(rawMetadata, &metadata); err != nil {
+				t.Fatalf("failed to decode task metadata fixture: %v", err)
+			}
+			drift := metadata["ClockDrift"].(map[string]any)
+			if test.value == nil {
+				delete(drift, test.field)
+			} else {
+				drift[test.field] = test.value
+			}
+			body, err := json.Marshal(metadata)
+			if err != nil {
+				t.Fatalf("failed to encode task metadata: %v", err)
+			}
+			client, server := fixtureClientFromResponses(body, stats)
+			defer server.Close()
+
+			registry := prometheus.NewRegistry()
+			registry.MustRegister(NewCollector(client, slog.Default()))
+			families, err := registry.Gather()
+			if err != nil {
+				t.Fatalf("failed to gather metrics: %v", err)
+			}
+			got := map[string]float64{}
+			for _, family := range families {
+				if strings.HasPrefix(family.GetName(), "ecs_task_clock_") {
+					got[family.GetName()] = family.GetMetric()[0].GetGauge().GetValue()
+				}
+			}
+			if !maps.Equal(got, test.want) {
+				t.Fatalf("clock metrics = %v, want %v", got, test.want)
+			}
+		})
+	}
 }
 
 func TestEc2Metrics(t *testing.T) {

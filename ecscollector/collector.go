@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	tmdsv4 "github.com/aws/amazon-ecs-agent/ecs-agent/tmds/handlers/v4/state"
 	"github.com/docker/docker/api/types/container"
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
 	"github.com/prometheus/client_golang/prometheus"
@@ -28,6 +29,9 @@ import (
 // ECS cpu_stats are from upstream docker/moby. These values are in nanoseconds.
 // https://github.com/moby/moby/blob/49f021ebf00a76d74f5ce158244083e2dfba26fb/api/types/stats.go#L18-L40
 const nanoseconds = 1 / 1.0e9
+
+// ClockErrorBound in task metadata is expressed in milliseconds.
+const milliseconds = 1 / 1.0e3
 
 // Task definition memory parameters are defined in MiB, while Prometheus
 // standard metrics use bytes.
@@ -69,6 +73,21 @@ var (
 	taskImagePullStopDesc = prometheus.NewDesc(
 		"ecs_task_image_pull_stop_timestamp_seconds",
 		"The time at which the task stopped (i.e. completed) pulling docker images for its containers.",
+		taskLabels, nil)
+
+	taskClockErrorBoundDesc = prometheus.NewDesc(
+		"ecs_task_clock_error_bound_seconds",
+		"Upper bound on the task clock error relative to UTC, as reported by Amazon Time Sync. This is a bound, not a measured offset. Absent when metadata omits ClockDrift or the bound.",
+		taskLabels, nil)
+
+	taskClockReferenceTimestampDesc = prometheus.NewDesc(
+		"ecs_task_clock_reference_timestamp_seconds",
+		"Unix time of the reference measurement behind the reported clock error bound. Absent when metadata omits ClockDrift or the timestamp.",
+		taskLabels, nil)
+
+	taskClockSynchronizedDesc = prometheus.NewDesc(
+		"ecs_task_clock_synchronized",
+		"1 if the most recent synchronization of the task clock with the reference time succeeded, otherwise 0. Absent when metadata omits ClockDrift or the status.",
 		taskLabels, nil)
 
 	restartTotalDesc = prometheus.NewDesc(
@@ -277,6 +296,9 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- taskEphemeralStorageAllocatedDesc
 	ch <- taskImagePullStartDesc
 	ch <- taskImagePullStopDesc
+	ch <- taskClockErrorBoundDesc
+	ch <- taskClockReferenceTimestampDesc
+	ch <- taskClockSynchronizedDesc
 	ch <- restartTotalDesc
 	ch <- cpuTotalDesc
 	ch <- memUsageDesc
@@ -388,6 +410,37 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			prometheus.GaugeValue,
 			float64(metadata.PullStoppedAt.UnixNano())*nanoseconds,
 		)
+	}
+
+	if cd := metadata.ClockDrift; cd != nil {
+		// ClockErrorBound is a plain float64 and the agent drops a zero value
+		// when it writes the JSON, so 0 and "absent" look the same. Do not
+		// export that as a perfect clock.
+		if cd.ClockErrorBound != 0 {
+			ch <- prometheus.MustNewConstMetric(
+				taskClockErrorBoundDesc,
+				prometheus.GaugeValue,
+				cd.ClockErrorBound*milliseconds,
+			)
+		}
+		if cd.ReferenceTimestamp != nil {
+			ch <- prometheus.MustNewConstMetric(
+				taskClockReferenceTimestampDesc,
+				prometheus.GaugeValue,
+				float64(cd.ReferenceTimestamp.UnixNano())*nanoseconds,
+			)
+		}
+		if cd.ClockSynchronizationStatus != "" {
+			synced := 0.0
+			if cd.ClockSynchronizationStatus == tmdsv4.ClockStatusSynchronized {
+				synced = 1
+			}
+			ch <- prometheus.MustNewConstMetric(
+				taskClockSynchronizedDesc,
+				prometheus.GaugeValue,
+				synced,
+			)
+		}
 	}
 
 	stats, err := c.client.RetrieveTaskStats(c.ctx)

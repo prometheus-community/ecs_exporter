@@ -86,6 +86,15 @@ ecs_network_transmit_packets_dropped_total{interface="eth1"} 0
 # HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
 # TYPE ecs_network_transmit_packets_total counter
 ecs_network_transmit_packets_total{interface="eth1"} 1674
+# HELP ecs_task_clock_error_bound_seconds Upper bound on the task clock error relative to UTC, as reported by Amazon Time Sync. This is a bound, not a measured offset. Absent when metadata omits ClockDrift or the bound.
+# TYPE ecs_task_clock_error_bound_seconds gauge
+ecs_task_clock_error_bound_seconds 0.0005515185
+# HELP ecs_task_clock_reference_timestamp_seconds Unix time of the reference measurement behind the reported clock error bound. Absent when metadata omits ClockDrift or the timestamp.
+# TYPE ecs_task_clock_reference_timestamp_seconds gauge
+ecs_task_clock_reference_timestamp_seconds 1.790444971e+09
+# HELP ecs_task_clock_synchronized 1 if the most recent synchronization of the task clock with the reference time succeeded, otherwise 0. Absent when metadata omits ClockDrift or the status.
+# TYPE ecs_task_clock_synchronized gauge
+ecs_task_clock_synchronized 1
 # HELP ecs_task_cpu_limit_vcpus Configured task CPU limit in vCPUs (1 vCPU = 1024 CPU units). This is optional when running on EC2 or Managed Instances; if no limit is set, this metric has no value.
 # TYPE ecs_task_cpu_limit_vcpus gauge
 ecs_task_cpu_limit_vcpus 0.25

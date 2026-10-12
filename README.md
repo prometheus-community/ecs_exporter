@@ -93,6 +93,14 @@ the task-level limit is used instead. That fallback value is shared capacity and
 must not be summed across containers as if it were independently reserved for
 each one.
 
+## Task clock metrics
+
+Fargate and ECS Managed Instances expose Amazon Time Sync clock drift in the
+task metadata `ClockDrift` block. EC2 omits that block, so the clock series are
+absent rather than reported as zero. The error bound is an [upper
+bound](https://aws.amazon.com/blogs/containers/run-time-sensitive-workloads-on-ecs-fargate-with-clock-accuracy-tracking/)
+on clock error, not a measured offset.
+
 ## Example output
 
 Check out the [metrics snapshots](./ecscollector/testdata/snapshots) which
