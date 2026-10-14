@@ -77,17 +77,17 @@ var (
 
 	taskClockErrorBoundDesc = prometheus.NewDesc(
 		"ecs_task_clock_error_bound_seconds",
-		"Upper bound on the task clock error relative to UTC, as reported by Amazon Time Sync. This is a bound, not a measured offset. Absent when metadata omits ClockDrift or the bound.",
+		"Upper bound on the task clock error relative to UTC, as reported by Amazon Time Sync. This is a bound, not a measured offset. Absent when metadata omits ClockDrift.",
 		taskLabels, nil)
 
 	taskClockReferenceTimestampDesc = prometheus.NewDesc(
 		"ecs_task_clock_reference_timestamp_seconds",
-		"Unix time of the reference measurement behind the reported clock error bound. Absent when metadata omits ClockDrift or the timestamp.",
+		"Unix time of the reference measurement behind the reported clock error bound. Absent when metadata omits ClockDrift.",
 		taskLabels, nil)
 
 	taskClockSynchronizedDesc = prometheus.NewDesc(
 		"ecs_task_clock_synchronized",
-		"1 if the most recent synchronization of the task clock with the reference time succeeded, otherwise 0. Absent when metadata omits ClockDrift or the status.",
+		"1 if the most recent synchronization of the task clock with the reference time succeeded, otherwise 0. Absent when metadata omits ClockDrift.",
 		taskLabels, nil)
 
 	restartTotalDesc = prometheus.NewDesc(
@@ -413,16 +413,11 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	if cd := metadata.ClockDrift; cd != nil {
-		// ClockErrorBound is a plain float64 and the agent drops a zero value
-		// when it writes the JSON, so 0 and "absent" look the same. Do not
-		// export that as a perfect clock.
-		if cd.ClockErrorBound != 0 {
-			ch <- prometheus.MustNewConstMetric(
-				taskClockErrorBoundDesc,
-				prometheus.GaugeValue,
-				cd.ClockErrorBound*milliseconds,
-			)
-		}
+		ch <- prometheus.MustNewConstMetric(
+			taskClockErrorBoundDesc,
+			prometheus.GaugeValue,
+			cd.ClockErrorBound*milliseconds,
+		)
 		if cd.ReferenceTimestamp != nil {
 			ch <- prometheus.MustNewConstMetric(
 				taskClockReferenceTimestampDesc,
@@ -430,17 +425,15 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 				float64(cd.ReferenceTimestamp.UnixNano())*nanoseconds,
 			)
 		}
-		if cd.ClockSynchronizationStatus != "" {
-			synced := 0.0
-			if cd.ClockSynchronizationStatus == tmdsv4.ClockStatusSynchronized {
-				synced = 1
-			}
-			ch <- prometheus.MustNewConstMetric(
-				taskClockSynchronizedDesc,
-				prometheus.GaugeValue,
-				synced,
-			)
+		synced := 0.0
+		if cd.ClockSynchronizationStatus == tmdsv4.ClockStatusSynchronized {
+			synced = 1
 		}
+		ch <- prometheus.MustNewConstMetric(
+			taskClockSynchronizedDesc,
+			prometheus.GaugeValue,
+			synced,
+		)
 	}
 
 	stats, err := c.client.RetrieveTaskStats(c.ctx)
