@@ -106,6 +106,15 @@ ecs_network_transmit_packets_dropped_total{interface="eth1"} 0
 # HELP ecs_network_transmit_packets_total Cumulative total count of network packets transmitted.
 # TYPE ecs_network_transmit_packets_total counter
 ecs_network_transmit_packets_total{interface="eth1"} 112
+# HELP ecs_task_clock_error_bound_seconds Upper bound on the task clock error relative to UTC, as reported by Amazon Time Sync. This is a bound, not a measured offset. Absent when metadata omits ClockDrift.
+# TYPE ecs_task_clock_error_bound_seconds gauge
+ecs_task_clock_error_bound_seconds 0.000831837
+# HELP ecs_task_clock_reference_timestamp_seconds Unix time of the reference measurement behind the reported clock error bound. Absent when metadata omits ClockDrift.
+# TYPE ecs_task_clock_reference_timestamp_seconds gauge
+ecs_task_clock_reference_timestamp_seconds 1.790449703e+09
+# HELP ecs_task_clock_synchronized 1 if the most recent synchronization of the task clock with the reference time succeeded, otherwise 0. Absent when metadata omits ClockDrift.
+# TYPE ecs_task_clock_synchronized gauge
+ecs_task_clock_synchronized 1
 # HELP ecs_task_image_pull_start_timestamp_seconds The time at which the task started pulling docker images for its containers.
 # TYPE ecs_task_image_pull_start_timestamp_seconds gauge
 ecs_task_image_pull_start_timestamp_seconds 1.790449641353277e+09

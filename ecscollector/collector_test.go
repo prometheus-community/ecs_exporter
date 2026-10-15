@@ -14,6 +14,7 @@
 package ecscollector
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
@@ -23,6 +24,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/prometheus-community/ecs_exporter/ecsmetadata"
@@ -128,6 +130,28 @@ func TestFargateMetrics(t *testing.T) {
 	defer metadataServer.Close()
 	collector := NewCollector(metadataClient, slog.Default())
 	assertSnapshot(t, collector, "testdata/snapshots/fargate_metrics.txt")
+}
+
+func TestClockNotSynchronized(t *testing.T) {
+	taskMetadata, err := os.ReadFile("testdata/fixtures/fargate_task_metadata.json")
+	if err != nil {
+		t.Fatalf("failed to read task metadata fixture: %v", err)
+	}
+	taskStats, err := os.ReadFile("testdata/fixtures/fargate_task_stats.json")
+	if err != nil {
+		t.Fatalf("failed to read task stats fixture: %v", err)
+	}
+	taskMetadata = bytes.Replace(taskMetadata, []byte(`"SYNCHRONIZED"`), []byte(`"NOT_SYNCHRONIZED"`), 1)
+	client, server := fixtureClientFromResponses(taskMetadata, taskStats)
+	defer server.Close()
+
+	expected := `# HELP ecs_task_clock_synchronized 1 if the most recent synchronization of the task clock with the reference time succeeded, otherwise 0. Absent when metadata omits ClockDrift.
+# TYPE ecs_task_clock_synchronized gauge
+ecs_task_clock_synchronized 0
+`
+	if err := testutil.CollectAndCompare(NewCollector(client, slog.Default()), strings.NewReader(expected), "ecs_task_clock_synchronized"); err != nil {
+		t.Fatalf("unexpected clock synchronization metric: %v", err)
+	}
 }
 
 func TestEc2Metrics(t *testing.T) {
