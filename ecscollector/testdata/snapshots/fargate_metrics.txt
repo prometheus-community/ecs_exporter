@@ -1,7 +1,15 @@
+# HELP ecs_container_cpu_kernel_seconds_total Cumulative container CPU time spent in kernel mode in seconds. With cgroup v1, this is sampled at clock tick granularity, so user and kernel time may not add up to total CPU usage.
+# TYPE ecs_container_cpu_kernel_seconds_total counter
+ecs_container_cpu_kernel_seconds_total{container_name="ecs-exporter"} 0.1
+ecs_container_cpu_kernel_seconds_total{container_name="main"} 1.09
 # HELP ecs_container_cpu_usage_seconds_total Cumulative total container CPU usage in seconds.
 # TYPE ecs_container_cpu_usage_seconds_total counter
 ecs_container_cpu_usage_seconds_total{container_name="ecs-exporter"} 0.24185750700000003
 ecs_container_cpu_usage_seconds_total{container_name="main"} 1.773909629
+# HELP ecs_container_cpu_user_seconds_total Cumulative container CPU time spent in user mode in seconds. With cgroup v1, this is sampled at clock tick granularity, so user and kernel time may not add up to total CPU usage.
+# TYPE ecs_container_cpu_user_seconds_total counter
+ecs_container_cpu_user_seconds_total{container_name="ecs-exporter"} 0.13
+ecs_container_cpu_user_seconds_total{container_name="main"} 0.67
 # HELP ecs_container_memory_active_file_bytes Current memory on the container cgroup's active file LRU list in bytes.
 # TYPE ecs_container_memory_active_file_bytes gauge
 ecs_container_memory_active_file_bytes{container_name="ecs-exporter"} 147456
