@@ -12,7 +12,7 @@ formats](https://prometheus.io/docs/instrumenting/exposition_formats/).
 Run the following container as a sidecar on ECS tasks:
 
 ```
-quay.io/prometheuscommunity/ecs-exporter:v0.4.0
+quay.io/prometheuscommunity/ecs-exporter:v0.7.0
 ```
 
 An example Fargate task definition that includes the container

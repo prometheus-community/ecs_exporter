@@ -1,3 +1,8 @@
+## 0.7.0 / 2026-10-16
+* [ENHANCEMENT] Add new metrics: `ecs_container_cpu_user_seconds_total`,
+  `ecs_container_cpu_kernel_seconds_total`, `ecs_task_clock_error_bound_seconds`,
+  `ecs_task_clock_reference_timestamp_seconds`, `ecs_task_clock_synchronized` #191 #194
+
 ## 0.6.0 / 2026-10-02
 
 * [ENHANCEMENT] Make ecs_exporter embeddable as per [the
