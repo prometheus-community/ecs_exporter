@@ -100,6 +100,16 @@ var (
 		"Cumulative total container CPU usage in seconds.",
 		containerLabels, nil)
 
+	cpuUserDesc = prometheus.NewDesc(
+		"ecs_container_cpu_user_seconds_total",
+		"Cumulative container CPU time spent in user mode in seconds. With cgroup v1, this is sampled at clock tick granularity, so user and kernel time may not add up to total CPU usage.",
+		containerLabels, nil)
+
+	cpuKernelDesc = prometheus.NewDesc(
+		"ecs_container_cpu_kernel_seconds_total",
+		"Cumulative container CPU time spent in kernel mode in seconds. With cgroup v1, this is sampled at clock tick granularity, so user and kernel time may not add up to total CPU usage.",
+		containerLabels, nil)
+
 	memUsageDesc = prometheus.NewDesc(
 		"ecs_container_memory_usage_bytes",
 		"Current container memory usage reported by the runtime in bytes, including page cache and accounted kernel memory.",
@@ -301,6 +311,8 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- taskClockSynchronizedDesc
 	ch <- restartTotalDesc
 	ch <- cpuTotalDesc
+	ch <- cpuUserDesc
+	ch <- cpuKernelDesc
 	ch <- memUsageDesc
 	ch <- memLimitDesc
 	ch <- memCacheSizeDesc
@@ -478,6 +490,18 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 			cpuTotalDesc,
 			prometheus.CounterValue,
 			float64(s.CPUStats.CPUUsage.TotalUsage)*nanoseconds,
+			containerLabelVals...,
+		)
+		ch <- prometheus.MustNewConstMetric(
+			cpuUserDesc,
+			prometheus.CounterValue,
+			float64(s.CPUStats.CPUUsage.UsageInUsermode)*nanoseconds,
+			containerLabelVals...,
+		)
+		ch <- prometheus.MustNewConstMetric(
+			cpuKernelDesc,
+			prometheus.CounterValue,
+			float64(s.CPUStats.CPUUsage.UsageInKernelmode)*nanoseconds,
 			containerLabelVals...,
 		)
 
