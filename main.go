@@ -19,8 +19,6 @@ import (
 	"os"
 
 	"github.com/alecthomas/kingpin/v2"
-	"github.com/prometheus/client_golang/prometheus"
-	promcollectors "github.com/prometheus/client_golang/prometheus/collectors"
 	versioncollector "github.com/prometheus/client_golang/prometheus/collectors/version"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/exporter-toolkit/bootstrap"
@@ -49,25 +47,17 @@ func main() {
 }
 
 func newMetricsHandler(b *bootstrap.Bootstrap) (http.Handler, error) {
-	registry := prometheus.NewRegistry()
-	registry.MustRegister(versioncollector.NewCollector(exporter))
+	b.Registry.MustRegister(versioncollector.NewCollector(exporter))
 
 	client, err := ecsmetadata.NewClientFromEnvironment()
 	if err != nil {
 		return nil, fmt.Errorf("creating ECS metadata client: %w", err)
 	}
-	registry.MustRegister(ecscollector.NewCollector(client, b.Logger))
+	b.Registry.MustRegister(ecscollector.NewCollector(client, b.Logger))
 
-	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{
+	handler := promhttp.HandlerFor(b.Registry, promhttp.HandlerOpts{
 		MaxRequestsInFlight: b.MaxRequests,
 	})
-	if !b.DisableExporterMetrics {
-		registry.MustRegister(
-			promcollectors.NewProcessCollector(promcollectors.ProcessCollectorOpts{}),
-			promcollectors.NewGoCollector(),
-		)
-		handler = promhttp.InstrumentMetricHandler(registry, handler)
-	}
 
 	b.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
