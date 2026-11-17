@@ -9,14 +9,17 @@ metrics](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metada
 in the [Prometheus exposition
 formats](https://prometheus.io/docs/instrumenting/exposition_formats/).
 
+See the [documentation](docs/README.md) for setup, configuration and the full
+list of metrics.
+
 Run the following container as a sidecar on ECS tasks:
 
 ```
 quay.io/prometheuscommunity/ecs-exporter:v0.7.0
 ```
 
-An example Fargate task definition that includes the container
-is [available](#example-task-definition).
+An example container definition is in the [getting started
+guide](docs/getting-started.md#in-a-task-definition-file).
 
 To add ECS exporter to your existing ECS task:
 
